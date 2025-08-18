@@ -1,6 +1,7 @@
 package plant;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.springframework.http.*;
@@ -17,33 +18,45 @@ public class PlantClient {
 
         String postPath = "/plants/add";
 
-        String listening = "localhost:1111";
+        String listening = "localhost:";
+        String port = "-1";
         String administration = "localhost:8080";
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Insert Id: ");
-
+        System.out.print("Insert port number: ");
         try {
-            id = inFromUser.readLine();
-        } catch (Exception e) {
+            port = inFromUser.readLine();
+            listening += port;
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        PowerPlant plant = new PowerPlant(id, listening, administration);
+        PowerPlant plant = null;
+        while (true){
+            System.out.print("Insert Id: ");
+            try {
+                id = inFromUser.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+            plant = new PowerPlant(id, listening, administration);
 
-        HttpEntity<PowerPlant> request = new HttpEntity<>(plant, headers);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            ResponseEntity<String> postResponse = client.postForEntity(serverAddress + postPath, request, String.class);
+            HttpEntity<PowerPlant> request = new HttpEntity<>(plant, headers);
 
-            System.out.println("POST Response: " + postResponse.getStatusCode());
+            try {
+                ResponseEntity<String> postResponse = client.postForEntity(serverAddress + postPath, request, String.class);
 
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.CONFLICT)
-                System.out.println("POST Response: " + HttpStatus.CONFLICT + "\n\t" + e.getResponseBodyAsString());
+                System.out.println("POST Response: " + postResponse.getStatusCode());
+                break;
+
+            } catch (HttpClientErrorException e) {
+                if (e.getStatusCode() == HttpStatus.CONFLICT)
+                    System.out.println("POST Response: " + HttpStatus.CONFLICT + "\n\t" + e.getResponseBodyAsString() + "\n");
+            }
         }
 
         // GET REQUEST (get all plants)

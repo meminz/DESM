@@ -3,14 +3,14 @@ package administration.model;
 public class Plant {
     private String plantId;
     private String listeningAddress;
-    private String adminServer;
+    // private String adminServer;
 
     public Plant(){}
 
-    public Plant(String id, String listeningAddress, String adminServer) {
+    public Plant(String id, String listeningAddress) { //, String adminServer) {
         this.plantId = id;
         this.listeningAddress = listeningAddress;
-        this.adminServer = adminServer;
+        // this.adminServer = adminServer;
     }
 
     public String getId() {
@@ -29,13 +29,9 @@ public class Plant {
         this.listeningAddress = listeningAddress;
     }
 
-    public String getAdminServer() {
-        return adminServer;
+    @Override
+    public String toString() {
+        return "Id: " + plantId + ", listening on: " + listeningAddress;
     }
-
-    public void setAdminServer(String adminServer) {
-        this.adminServer = adminServer;
-    }
-
 
 }

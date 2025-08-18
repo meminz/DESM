@@ -39,21 +39,15 @@ public class PlantService {
 
 
     public synchronized Plant getById(String id) {
-        System.out.println("called");
         for (Plant plant : plantsList) {
-
-            // System.out.println(plant.getId());
-            // System.out.println(id);
-
-            if (plant.getId().equals("-1") && plant.getId().equals(id)) {
-                // System.out.println(plant);
+            if (plant.getId().equals(id))
                 return plant;
-            }
         }
         return null; 
     }
 
     public synchronized void removePlantById(String id){
         plantsList.removeIf(p -> p.getId().equals(id));
+        idsList.removeIf(p -> p.equals(id));
     }
 }

@@ -2,6 +2,7 @@ package administration.controller;
 
 import java.util.List;
 import administration.service.*;
+import administration.AdministrationServer;
 import administration.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -62,5 +64,12 @@ public class PlantsController {
     public ResponseEntity<?> removePlant(@PathVariable("id") String plantId){
         plantService.removePlantById(plantId);
         return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/pollution/statistics")
+    public ResponseEntity<Double> getPollutionStatistics(@RequestParam("t1") long t1, @RequestParam("t2") long t2) {
+        double average = AdministrationServer.calculateAverageBetweenTimestamps(t1,t2);
+        return ResponseEntity.ok(average);
     }
 }

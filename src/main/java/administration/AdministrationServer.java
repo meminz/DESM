@@ -23,7 +23,7 @@ public class AdministrationServer {
         SpringApplication.run(AdministrationServer.class, args);
         System.out.println("Server running on http://localhost:8080");
 
-        // Start MQTT subscriber
+        // Start MQTT subscriber for pollution data
         startMqttSubscriber();
     }
 
@@ -63,20 +63,25 @@ public class AdministrationServer {
 
 
     public static double calculateAverageBetweenTimestamps(long t1, long t2) {
+        if (pollutionByTimestamp.isEmpty() || pollutionByTimestamp == null) {
+            System.out.println("No pollution data available.");
+            return 0.0;
+        }
+
         List<Double> matchingValues = new ArrayList<>();
-        
+
         synchronized(pollutionByTimestamp) {
             // Get all entries between t1 and t2
             NavigableMap<Long, List<PollutionReading>> range = 
                 pollutionByTimestamp.subMap(t1, true, t2, true);
-                
+
             for (List<PollutionReading> readings : range.values()) {
                 for (PollutionReading reading : readings) {
                     matchingValues.addAll(reading.getAverages());
                 }
             }
         }
-        
+
         return matchingValues.stream()
                 .mapToDouble(Double::doubleValue)
                 .average()
