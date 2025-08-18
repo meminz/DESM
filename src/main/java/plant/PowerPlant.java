@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,8 +28,9 @@ public class PowerPlant {
     private Thread dataProcessingThread;
 
     // mqtt
-    private MqttClient pollutionMqttClient;
+    private MqttClient mqttClient;
     private static final String POLLUTION_TOPIC = "pollution/data";
+    private static final String ENERGY_TOPIC = "energy/requests";
     private static final String MQTT_BROKER = "tcp://localhost:1883";
 
     // INIT
@@ -51,18 +49,17 @@ public class PowerPlant {
     public void initializePlant() {
         try {
             // TODO
-            // registerWithAdminServer();
             // introduceToExistingPlants(existingPlants);
-            // subscribeToEnergyRequests();
 
-            // Initialize pollution MQTT (separate from energy requests)
-            initializePollutionMqtt();
+            // Initialize MQTT client and subscribe to energy request topic
+            initializeMqtt();
 
+            // Start pollution data sensor and publish it on pollution data topic
             startSensor();
 
             startShutdownListener();
         } catch (Exception e) {
-            // cleanup();
+            // TODO
         }
     }
 
@@ -90,7 +87,7 @@ public class PowerPlant {
 
         // Send averages to server via MQTT
         if (!pendingAverages.isEmpty()) {
-            sendPollutionDataToServer();
+            publishPollutionData();
             pendingAverages.clear();
         }
     }
@@ -121,17 +118,39 @@ public class PowerPlant {
     }
 
     // MQTT
-    private void initializePollutionMqtt() throws MqttException {
-        String clientId = "plant_pollution_" + plantId;
-        pollutionMqttClient = new MqttClient(MQTT_BROKER, clientId);
+    private void initializeMqtt() throws MqttException {
+        String clientId = "plant_" + plantId;
+        mqttClient = new MqttClient(MQTT_BROKER, clientId);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(true);
 
-        pollutionMqttClient.connect(options);
+        mqttClient.setCallback(new MqttCallback() {
+            @Override
+            public void messageArrived(String topic, MqttMessage message) {
+                if (ENERGY_TOPIC.equals(topic)){
+                    String jsonMessage = new String(message.getPayload());
+                    System.out.println("Received energy request: " + jsonMessage);
+                    // TODO handle energy request (start election)
+                }
+
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+                System.err.println("MQTT connection lost!");
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+            }
+        });
+
+        mqttClient.connect(options);
+        mqttClient.subscribe(ENERGY_TOPIC);
     }
 
-    private void sendPollutionDataToServer() {
+    private void publishPollutionData() {
         try {
             // Create JSON message
             JSONObject message = new JSONObject();
@@ -145,7 +164,7 @@ public class PowerPlant {
             MqttMessage mqttMessage = new MqttMessage(message.toString().getBytes());
             mqttMessage.setQos(1); // At least once delivery
 
-            pollutionMqttClient.publish(POLLUTION_TOPIC, mqttMessage);
+            mqttClient.publish(POLLUTION_TOPIC, mqttMessage);
 
             System.out.println("Sent pollution data: " + pendingAverages.size() + " averages");
 
@@ -155,20 +174,20 @@ public class PowerPlant {
         }
     }
 
+
+
     private void disconnectMqttClients() {
         try {
             // Disconnect pollution MQTT client
-            if (pollutionMqttClient != null && pollutionMqttClient.isConnected()) {
-                pollutionMqttClient.disconnect();
-                pollutionMqttClient.close();
+            if (mqttClient != null && mqttClient.isConnected()) {
+                mqttClient.disconnect();
+                mqttClient.close();
             }
 
-            // TODO
-            // Disconnect energy request MQTT client (if separate)
-            // if (energyMqttClient != null && energyMqttClient.isConnected()) {
-            // energyMqttClient.disconnect();
-            // energyMqttClient.close();
-            // }
+            // Disconnect energy request MQTT client
+            if (mqttClient != null && mqttClient.isConnected()) { // energyMqttClient.disconnect();
+            mqttClient.close();
+            }
 
             System.out.println("MQTT clients disconnected.");
 
