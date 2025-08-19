@@ -5,7 +5,7 @@ import java.util.Scanner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import administration.model.Plant;
+import administration.model.PlantInfo;
 
 
 public class AdministrationClient {
@@ -60,13 +60,13 @@ public class AdministrationClient {
 
     private static void listCurrentPlants() {
         String getPath = "/plants";
-        ResponseEntity<Plant[]> getPlantsResponse = restTemplate.getForEntity(ADMIN_SERVER_URL + getPath, Plant[].class);
+        ResponseEntity<PlantInfo[]> getPlantsResponse = restTemplate.getForEntity(ADMIN_SERVER_URL + getPath, PlantInfo[].class);
         // System.out.println("GET All Response: " + getPlantsResponse.getStatusCode());
 
         if (getPlantsResponse.getStatusCode().is2xxSuccessful()) {
             System.out.println("\n=== Current Plants in the Network ===");
             
-            for (Plant p : getPlantsResponse.getBody()){
+            for (PlantInfo p : getPlantsResponse.getBody()){
                 System.out.println(p);
             }
         } else {

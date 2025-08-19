@@ -30,13 +30,13 @@ public class PlantsController {
 
     // Return list of plants
     @GetMapping
-    public ResponseEntity<List<Plant>> getPlantsList() {
+    public ResponseEntity<List<PlantInfo>> getPlantsList() {
         return ResponseEntity.ok(plantService.getPlantsList());
     }
 
     // Add a new plant
     @PostMapping("/add")
-    public ResponseEntity<?> addPlant(@RequestBody Plant plant) {
+    public ResponseEntity<?> addPlant(@RequestBody PlantInfo plant) {
         if (plantService.add(plant)) return ResponseEntity.ok().build();
         else {
            return ResponseEntity
@@ -47,8 +47,8 @@ public class PlantsController {
 
     // Get plant by id
     @GetMapping("/get/{id}")
-    public ResponseEntity<Plant> getById(@PathVariable String id) {
-        Plant plant = plantService.getById(id);
+    public ResponseEntity<PlantInfo> getById(@PathVariable String id) {
+        PlantInfo plant = plantService.getById(id);
         
         // System.out.println(id);
 

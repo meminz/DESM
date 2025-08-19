@@ -1,5 +1,5 @@
 package administration.service;
-import administration.model.Plant;
+import administration.model.PlantInfo;
 
 import org.springframework.stereotype.Service;
 
@@ -11,14 +11,14 @@ import java.util.Set;
 @Service //Spring automatically makes this class a singleton bean
 public class PlantService {
 
-    private final List<Plant> plantsList = new ArrayList<>();
+    private final List<PlantInfo> plantsList = new ArrayList<>();
     private final Set<String> idsList = new HashSet<>();
 
-    public synchronized List<Plant> getPlantsList() {
+    public synchronized List<PlantInfo> getPlantsList() {
         return new ArrayList<>(plantsList);
     }
 
-    public synchronized void setPlantsList(List<Plant> plants) {
+    public synchronized void setPlantsList(List<PlantInfo> plants) {
         plantsList.clear();
         plantsList.addAll(plants);
     }
@@ -27,7 +27,7 @@ public class PlantService {
         return idsList.contains(id);
     }
 
-    public boolean add(Plant plant){
+    public boolean add(PlantInfo plant){
         if (idAlreadyExists(plant.getId())){
             return false;
         } else {
@@ -38,8 +38,8 @@ public class PlantService {
     }
 
 
-    public synchronized Plant getById(String id) {
-        for (Plant plant : plantsList) {
+    public synchronized PlantInfo getById(String id) {
+        for (PlantInfo plant : plantsList) {
             if (plant.getId().equals(id))
                 return plant;
         }

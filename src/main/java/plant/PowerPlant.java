@@ -1,7 +1,10 @@
 package plant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.eclipse.paho.client.mqttv3.*;
@@ -18,7 +21,17 @@ public class PowerPlant {
     private String plantId;
     private String listeningAddress;
     private String adminServer;
+
     private volatile boolean isShuttingDown;
+
+    // ring network
+    private String nextPlantAddress;
+    private String prevPlantAddress;
+    private String currentElectionId;
+    private volatile boolean isProvidingEnergy = false;
+    private volatile boolean isInElection = false;
+    private final Object electionLock = new Object();
+    private final Random rnd = new Random();
 
     // sensing
     private PollutionSensor pollutionSensor;
@@ -34,8 +47,7 @@ public class PowerPlant {
     private static final String MQTT_BROKER = "tcp://localhost:1883";
 
     // INIT
-    public PowerPlant() {
-    }
+    public PowerPlant() {}
 
     public PowerPlant(String id, String listeningAddress, String adminServer) {
         this.plantId = id;
@@ -46,10 +58,10 @@ public class PowerPlant {
         // this.sensor=new PollutionSensor(buffer);
     }
 
-    public void initializePlant() {
+    public void initializePlant(PlantInfo[] plants) {
         try {
-            // TODO
-            // introduceToExistingPlants(existingPlants);
+            // Set up ring connections
+            joinRingNetwork(plants);
 
             // Initialize MQTT client and subscribe to energy request topic
             initializeMqtt();
@@ -58,11 +70,107 @@ public class PowerPlant {
             startSensor();
 
             startShutdownListener();
+
+            System.out.println("Plant correctly initialized.\n");
         } catch (Exception e) {
             // TODO
         }
     }
 
+    
+    // RING NETWORK
+    public void joinRingNetwork(PlantInfo[] existingPlants) {
+        List<PlantInfo> tmpList = Arrays.asList(existingPlants);
+
+        tmpList.sort(Comparator.comparing(PlantInfo::getId));
+
+        int myIndex = findMyIndex(tmpList);
+        int size = tmpList.size();
+        
+        // ### MADE BY CLAUDE SONNET 4
+        if (size > 1) {
+            int nextIndex = (myIndex + 1) % size;
+            nextPlantAddress = tmpList.get(nextIndex).getListeningAddress();
+
+            int prevIndex = (myIndex - 1 + size) % size;
+            prevPlantAddress = tmpList.get(prevIndex).getListeningAddress();
+        } else {
+            nextPlantAddress = null;
+            prevPlantAddress = null;
+        }
+        // ###
+
+        System.out.println("Ring setup: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
+
+    }
+
+
+    private int findMyIndex(List<PlantInfo> plants) {
+        for (int i = 0; i < plants.size(); i++)
+            if (plants.get(i).getId().equals(plantId))
+                return i;
+
+        return -1; // it can't happen
+    }
+
+
+    private void startElection(String requestId, int energyAmount) {
+        synchronized(electionLock){
+            if (isProvidingEnergy) return;
+
+            if (isInElection && requestId.equals(currentElectionId)) return;
+
+            System.out.println("Starting election for request " + requestId);
+
+            isInElection = true;
+            currentElectionId = requestId;
+
+            double myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
+            System.out.println("Current price: " + myPrice);
+
+            ElectionMessage msg = new ElectionMessage(plantId, myPrice, requestId, energyAmount);
+            sendToNextPlant(msg);
+        }
+    }
+
+
+
+    private void sendToNextPlant(ElectionMessage msg) {
+        if (nextPlantAddress == null) {
+            handleElectionWin(msg.getRequestId(), msg.getEnergyAmount());
+            return;
+        }
+
+        System.out.println("Sending election message to the next plant at " + nextPlantAddress);
+
+        // TODO gRPC message
+    }
+
+    public void handleElectionWin(String requestId, int energyAmount) {
+        isProvidingEnergy = true;
+
+        Thread provideEnergy = new Thread(() -> {
+            try {
+                System.out.println("\n======\nStarting energy production (" + energyAmount + "kWh)");
+
+                Thread.sleep(energyAmount);
+
+                System.out.println("Energy production completed for request " + requestId + "\n======\n");
+
+            } catch (InterruptedException e) {
+                System.out.println("Energy production interrupted: " + e.getMessage());
+                Thread.currentThread().interrupt();
+            } finally {
+                isProvidingEnergy = false;
+            }
+        });
+        
+        provideEnergy.start();
+
+    }
+
+
+    
     // POLLUTION
     private void processAndSendPollutionData() {
         // List<Measurement> newMeasurements = sensor.getBuffer().readAllAndClean();
@@ -98,6 +206,7 @@ public class PowerPlant {
 
         sensorThread = new Thread(pollutionSensor);
         sensorThread.start();
+        System.out.println("Started pollution sensor...");
 
         startDataProcessing();
     }
@@ -128,11 +237,22 @@ public class PowerPlant {
         mqttClient.setCallback(new MqttCallback() {
             @Override
             public void messageArrived(String topic, MqttMessage message) {
+            try{
                 if (ENERGY_TOPIC.equals(topic)){
                     String jsonMessage = new String(message.getPayload());
-                    System.out.println("Received energy request: " + jsonMessage);
-                    // TODO handle energy request (start election)
+                    JSONObject json = new JSONObject(jsonMessage);
+                    String requestId = json.getString("requestId");
+                    int energyAmount = json.getInt("energyAmount");
+
+                    System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
+
+                    
+                    // Handle energy request (start election)
+                    startElection(requestId, energyAmount);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             }
 

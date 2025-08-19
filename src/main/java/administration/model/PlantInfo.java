@@ -1,13 +1,13 @@
 package administration.model;
 
-public class Plant {
+public class PlantInfo {
     private String plantId;
     private String listeningAddress;
     // private String adminServer;
 
-    public Plant(){}
+    public PlantInfo(){}
 
-    public Plant(String id, String listeningAddress) { //, String adminServer) {
+    public PlantInfo(String id, String listeningAddress) { //, String adminServer) {
         this.plantId = id;
         this.listeningAddress = listeningAddress;
         // this.adminServer = adminServer;

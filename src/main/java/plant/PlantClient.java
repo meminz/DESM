@@ -61,19 +61,19 @@ public class PlantClient {
 
         // GET REQUEST (get all plants)
         String getPath = "/plants";
-        ResponseEntity<PowerPlant[]> getAllResponse = client.getForEntity(serverAddress + getPath, PowerPlant[].class);
+        ResponseEntity<PlantInfo[]> getAllResponse = client.getForEntity(serverAddress + getPath, PlantInfo[].class);
         System.out.println("GET All Response: " + getAllResponse.getStatusCode());
 
-        PowerPlant[] plants = getAllResponse.getBody();
+        PlantInfo[] plants = getAllResponse.getBody();
         if (plants != null) {
             System.out.println("Plants List:");
-            for (PowerPlant p : plants) {
+            for (PlantInfo p : plants) {
                 System.out.println("\t" + p);
             }
             System.out.println();
         }
 
-        plant.initializePlant();
+        plant.initializePlant(plants);
 
 
     }

@@ -10,6 +10,7 @@ public class renewableEnergyProvider {
     private static final String MQTT_BROKER = "tcp://localhost:1883";
     private static final String ENERGY_TOPIC = "energy/requests";
     private static final int REQUEST_INTERVAL = 10000; // milliseconds
+    private static int ID = 0;
     private static Random rnd = new Random();
 
     private static MqttClient energyMqttClient;
@@ -73,6 +74,7 @@ public class renewableEnergyProvider {
 
             // Create JSON message
             JSONObject message = new JSONObject();
+            message.put("requestId", "req-" + ID++);
             message.put("timestamp", System.currentTimeMillis());
             message.put("energyAmount", requestedEnergy);
 
