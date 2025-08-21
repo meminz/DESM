@@ -11,8 +11,6 @@ import org.springframework.web.client.RestTemplate;
 public class PlantClient {
 
     public static void main(String[] args) {
-        String id = "-1";
-
         RestTemplate client = new RestTemplate();
         String serverAddress = "http://localhost:8080";
 
@@ -21,6 +19,7 @@ public class PlantClient {
         String listening = "localhost:";
         String port = "-1";
         String administration = "localhost:8080";
+        String id = "-1";
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Insert port number: ");
@@ -75,7 +74,6 @@ public class PlantClient {
 
         plant.initializePlant(plants);
 
-
     }
-    
+
 }

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option java_package = "plant.grpc";
+
+package plantcomms;
+
+service PlantCommunication {
+    rpc SendElectionMessage(ElectionMessage) returns (ElectionResponse);
+
+    rpc SendCoordinatorMessage(CoordinatorMessage) returns (CoordinatorResponse);
+}
+
+message ElectionMessage {
+    string initiator_id = 1;
+    string current_holder_id = 2;
+    double best_bid = 3;
+    string current_winner_id = 4;
+    string request_id = 5;
+    int32 energy_request = 6;
+}
+
+message ElectionResponse {
+    bool success = 1;
+    string message = 2;   
+}
+
+message CoordinatorMessage {
+    string winner_id = 1;
+    string request_id = 2;
+}
+
+message CoordinatorResponse {
+    bool success = 1;
+    string message = 2;
+}

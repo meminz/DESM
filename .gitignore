@@ -1,2 +1,4 @@
 .devcontainer
-dependencies
+.vscode
+
+*tcplocalhost*

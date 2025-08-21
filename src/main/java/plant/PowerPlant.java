@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import Simulators.Measurement;
 import Simulators.PollutionSensor;
+import io.grpc.Server;
 
 public class PowerPlant {
     private String plantId;
@@ -32,6 +33,8 @@ public class PowerPlant {
     private volatile boolean isInElection = false;
     private final Object electionLock = new Object();
     private final Random rnd = new Random();
+    private Server grpcServer;
+    private int grpcPort;
 
     // sensing
     private PollutionSensor pollutionSensor;
