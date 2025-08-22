@@ -1,5 +1,6 @@
 package plant;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -7,16 +8,27 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-
 import org.springframework.web.client.RestTemplate;
 
 import Simulators.Measurement;
 import Simulators.PollutionSensor;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import io.grpc.stub.StreamObserver;
+import plant.grpc.PlantComms.ElectionMessageProto;
+import plant.grpc.PlantComms.ElectionResponseProto;
+import plant.grpc.PlantCommunicationGrpc;
+import plant.grpc.PlantCommunicationGrpc.PlantCommunicationImplBase;
 
 public class PowerPlant {
     private String plantId;
@@ -35,6 +47,7 @@ public class PowerPlant {
     private final Random rnd = new Random();
     private Server grpcServer;
     private int grpcPort;
+    private double myPrice;
 
     // sensing
     private PollutionSensor pollutionSensor;
@@ -49,7 +62,9 @@ public class PowerPlant {
     private static final String ENERGY_TOPIC = "energy/requests";
     private static final String MQTT_BROKER = "tcp://localhost:1883";
 
-    // INIT
+    /*
+     * INIT
+     */
     public PowerPlant() {}
 
     public PowerPlant(String id, String listeningAddress, String adminServer) {
@@ -66,6 +81,9 @@ public class PowerPlant {
             // Set up ring connections
             joinRingNetwork(plants);
 
+            // Start gRPC server for plant2plant communication
+            startGrpcServer();
+
             // Initialize MQTT client and subscribe to energy request topic
             initializeMqtt();
 
@@ -80,8 +98,9 @@ public class PowerPlant {
         }
     }
 
-    
-    // RING NETWORK
+    /*
+     * RING NETWORK
+     */
     public void joinRingNetwork(PlantInfo[] existingPlants) {
         List<PlantInfo> tmpList = Arrays.asList(existingPlants);
 
@@ -128,25 +147,70 @@ public class PowerPlant {
             isInElection = true;
             currentElectionId = requestId;
 
-            double myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
+            myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
             System.out.println("Current price: " + myPrice);
 
-            ElectionMessage msg = new ElectionMessage(plantId, myPrice, requestId, energyAmount);
+            // ElectionMessage msg = new ElectionMessage(plantId, myPrice, requestId, energyAmount);
+            ElectionMessageProto msg = ElectionMessageProto.newBuilder()
+            .setInitiatorId(plantId)
+            .setCurrentHolderId(plantId)
+            .setBestBid(myPrice)
+            .setCurrentWinnerId(plantId)
+            .setRequestId(requestId)
+            .setEnergyRequest(energyAmount)
+            .build();
+
+
             sendToNextPlant(msg);
         }
     }
 
 
 
-    private void sendToNextPlant(ElectionMessage msg) {
+    private void sendToNextPlant(ElectionMessageProto msg) {
         if (nextPlantAddress == null) {
-            handleElectionWin(msg.getRequestId(), msg.getEnergyAmount());
+            handleElectionWin(msg.getRequestId(), msg.getEnergyRequest());
             return;
         }
 
         System.out.println("Sending election message to the next plant at " + nextPlantAddress);
 
         // TODO gRPC message
+
+        ManagedChannel channel = null;
+
+        try {
+            channel = ManagedChannelBuilder.forAddress(listeningAddress.split(":")[0], grpcPort)
+            .usePlaintext()
+            .build();
+
+            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub =
+                PlantCommunicationGrpc.newBlockingStub(channel)
+                .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
+
+            System.out.println("Sending gRPC election message to: " + nextPlantAddress);
+            
+            ElectionResponseProto response = stub.sendElectionMessageProto(msg);
+
+            if (response.getSuccess()) 
+                System.out.println("Successfully sent election message");
+            else
+                System.out.println("Error sending election message");
+
+        } catch (Exception e) {
+            System.out.println("Error sending election message: " + e.getMessage());
+            e.printStackTrace();
+
+        } finally {
+            if (channel != null) {
+                try {
+                    channel.shutdown().awaitTermination(1, java.util.concurrent.TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
     }
 
     public void handleElectionWin(String requestId, int energyAmount) {
@@ -173,8 +237,144 @@ public class PowerPlant {
     }
 
 
+    private void startGrpcServer() {
+        try{
+            grpcPort = Integer.parseInt(listeningAddress.split(":")[1]);
+
+            grpcServer = ServerBuilder.forPort(grpcPort)
+            .addService(new PlantCommsService())
+            .build()
+            .start();
+
+            System.out.println("gRPC server started on port: " + grpcPort);
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (grpcServer != null)
+                    grpcServer.shutdown();
+            }));
+
+        } catch (IOException e) {
+            System.out.println("Failed to start gRPC server: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    protected void handleIncomingElectionMessage(ElectionMessageProto proto) {
+        synchronized (electionLock) {
+            String initiatorId = proto.getInitiatorId();
+            String currentHolderId = proto.getCurrentHolderId();
+            double bestBid = proto.getBestBid();
+            String currentWinnerId = proto.getCurrentWinnerId();
+            String requestId = proto.getRequestId();
+            int energyAmount = proto.getEnergyRequest();
+
+            System.out.println("Processing election message: initiator=" + initiatorId + 
+                          ", bestBid=" + bestBid + 
+                          ", bestCandidate=" + currentWinnerId);
+
+            
+            // If my message comes back to me, election is complete
+            if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
+                System.out.println("Election message returned to initiator - election complete!");
+
+                handleElectionComplete(currentWinnerId, requestId, energyAmount);
+
+                return;
+            }
+
+            // If I'm busy, just forward the message
+            if (isProvidingEnergy) {
+                System.out.println("Busy..., forwarding election message");
+                sendToNextPlant(proto);
+                return;
+            }
+
+            // If I'm fre, I join the election
+            if (!isInElection || !requestId.equals(currentElectionId)) {
+                System.out.println("Joining election for request: " + requestId);
+                isInElection = true;
+                currentElectionId = requestId;
+
+                // Generate my bid (only because I'm not already in the election)
+                myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble();
+                System.out.println("Current price: " + myPrice);
+            }
+
+
+            boolean winner = isBetterCandidate(myPrice, plantId, bestBid, currentWinnerId);
+
+            ElectionMessageProto updatedMessage = proto.toBuilder()
+            .setCurrentHolderId(plantId)
+            .build();
+
+
+            if (winner) {
+                updatedMessage = updatedMessage.toBuilder()
+                    .setBestBid(myPrice)
+                    .setCurrentWinnerId(plantId)
+                    .build();
+
+                System.out.println("Plant " + plantId + " is now the best candidate");
+            }
+            
+            sendToNextPlant(proto);
+
+        }
+    }
+
     
-    // POLLUTION
+    private void handleElectionComplete(String winnerId, String requestId, int energyAmount) {
+        synchronized (electionLock) {
+            System.out.println("--- Election Complete ---" +
+            "\nWinner: " + winnerId + " for request " + requestId);
+
+            if (winnerId.equals(plantId))
+                handleElectionWin(requestId, energyAmount);
+
+            isInElection = false;
+            currentElectionId = null;
+
+            System.out.println("Election finished - ready for next request");
+        }
+    }
+
+    private boolean isBetterCandidate(double myPrice, String plantId, double bestBid, String currentWinnerId) {
+        if (myPrice == bestBid)
+            return plantId.compareTo(currentWinnerId) > 0;
+
+        return myPrice > bestBid;
+    }
+
+
+    // Service as a subclass to handle synchronization problems easier
+    private class PlantCommsService extends PlantCommunicationImplBase {
+
+        @Override
+        public void sendElectionMessageProto(ElectionMessageProto request, StreamObserver<ElectionResponseProto> responseObserver) {
+            try{
+                System.out.println("Received election message from: " + request.getCurrentHolderId());
+
+                handleIncomingElectionMessage(request);
+
+                ElectionResponseProto response = ElectionResponseProto.newBuilder()
+                .setSuccess(true)
+                .setMessage("Election message processed")
+                .build();
+
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+            } catch (Exception e) {
+                System.out.println("Error processing election message: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        // No winner message for simplicity (we don't need to coordinate any work)
+    }
+
+    /*
+     * POLLUTION
+     */
     private void processAndSendPollutionData() {
         // List<Measurement> newMeasurements = sensor.getBuffer().readAllAndClean();
         slidingWindow.addAll(pollutionSensor.getBuffer().readAllAndClean());
@@ -197,10 +397,8 @@ public class PowerPlant {
         }
 
         // Send averages to server via MQTT
-        if (!pendingAverages.isEmpty()) {
+        if (!pendingAverages.isEmpty())
             publishPollutionData();
-            pendingAverages.clear();
-        }
     }
 
     public void startSensor() {
@@ -211,10 +409,6 @@ public class PowerPlant {
         sensorThread.start();
         System.out.println("Started pollution sensor...");
 
-        startDataProcessing();
-    }
-
-    private void startDataProcessing() {
         dataProcessingThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) { // && !sensor.getStopCondition()) {
                 try {
@@ -229,7 +423,9 @@ public class PowerPlant {
         dataProcessingThread.start();
     }
 
-    // MQTT
+    /*
+     * MQTT
+     */
     private void initializeMqtt() throws MqttException {
         String clientId = "plant_" + plantId;
         mqttClient = new MqttClient(MQTT_BROKER, clientId);
@@ -319,8 +515,9 @@ public class PowerPlant {
         }
     }
 
-
-// SHUTDOWN
+    /*
+     * SHUTDOWN
+     */
     private void startShutdownListener() {
         Thread shutdownThread = new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
@@ -348,7 +545,8 @@ public class PowerPlant {
             stopSensorAndProcessing();
 
             // TODO
-            // 2. Notify other plants (if needed for optional parts)
+            // 2. Notify other plants 
+            // ? what if im in an election
             // notifyOtherPlants();
 
             // 3. Notify administration server
@@ -408,8 +606,9 @@ public class PowerPlant {
 
 
     
-
-    // GETTERS and SETTERS
+    /*
+     * GETTERS and SETTERS
+     */
     public String getId() {
         return this.plantId;
     }

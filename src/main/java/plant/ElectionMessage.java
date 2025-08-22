@@ -38,5 +38,4 @@ public class ElectionMessage {
         return energyAmount;
     }
 
-
 }
