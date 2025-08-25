@@ -519,7 +519,8 @@ public class PowerPlant {
                           ", bestCandidate=" + currentWinnerId);
 
            
-            // TODO THIS SHOULD BE IMPOSSIBLE
+            // TODO 
+            // this could happen e.g. 2 node ring, second node is busy with a request and just forwards message
             if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
                 System.out.println("WTF - Received message from myself");
                 return;   
@@ -546,7 +547,7 @@ public class PowerPlant {
             // If I'm busy, just forward the message
             if (isProvidingEnergy) {
                 System.out.println("Busy..., forwarding election message");
-                sendToNextPlant(proto);
+                sendToNextPlant(proto.toBuilder().setCurrentHolderId(plantId).build());
                 return;
             }
 
