@@ -1,32 +1,18 @@
 package plant;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
 
 import Simulators.Measurement;
 import Simulators.PollutionSensor;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.*;
 import io.grpc.stub.StreamObserver;
-import plant.grpc.PlantComms.ElectionMessageProto;
-import plant.grpc.PlantComms.ElectionResponseProto;
+import plant.grpc.PlantComms.*;
 import plant.grpc.PlantCommunicationGrpc;
 import plant.grpc.PlantCommunicationGrpc.PlantCommunicationImplBase;
 
@@ -43,11 +29,14 @@ public class PowerPlant {
     private String currentElectionId;
     private volatile boolean isProvidingEnergy = false;
     private volatile boolean isInElection = false;
+    private final Object ringLock = new Object();
     private final Object electionLock = new Object();
     private final Random rnd = new Random();
     private Server grpcServer;
     private int grpcPort;
     private double myPrice;
+    private final Map<String, String> allPlants = new HashMap<>(); // plantId -> address
+    private List<String> sortedPlantIds = new ArrayList<>(); // maintains ring order
 
     // sensing
     private PollutionSensor pollutionSensor;
@@ -78,18 +67,22 @@ public class PowerPlant {
 
     public void initializePlant(PlantInfo[] plants) {
         try {
-            // Set up ring connections
-            joinRingNetwork(plants);
+            // Build local topology representation
+            buildLocalTopology(plants);
 
             // Start gRPC server for plant2plant communication
             startGrpcServer();
+            
+            // Set up ring connections
+            joinRingNetwork(plants);
 
             // Initialize MQTT client and subscribe to energy request topic
             initializeMqtt();
 
             // Start pollution data sensor and publish it on pollution data topic
-            startSensor();
+            // startSensor();
 
+            // Thread to handle stdin (only checks for exit command)
             startShutdownListener();
 
             System.out.println("Plant correctly initialized.\n");
@@ -124,9 +117,73 @@ public class PowerPlant {
 
         System.out.println("Ring setup: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
 
+        sendGreetings();
+
+    }
+
+    
+    private void sendGreetings() {
+    // TODO
+        if (nextPlantAddress == null) {
+            System.out.println("No next plant - single node ring");
+            return;
+        }
+        
+        try {
+            System.out.println("Sending initial greeting to next plant: " + nextPlantAddress);
+            
+            String[] parts = nextPlantAddress.split(":");
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
+                .usePlaintext()
+                .build();
+            
+            PlantCommunicationGrpc.PlantCommunicationStub stub = 
+                PlantCommunicationGrpc.newStub(channel)
+                .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
+            
+            GreetingsMessage greeting = GreetingsMessage.newBuilder()
+                .setPlantId(this.plantId)
+                .setListeningAddress(this.listeningAddress)
+                .build();
+            
+            stub.sendGreetingsMessage(
+                greeting,
+                new StreamObserver<GreetingsResponse>() {
+
+                    @Override
+                    public void onNext(GreetingsResponse response) {
+                        System.out.println("Initial greetings message sent successfully: " + response.getSuccess());
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        System.out.println("Error forwarding greetings: " + t.getMessage());
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        System.out.println();
+                        channel.shutdown();
+                    }
+                    
+                });
+
+        } catch (Exception e) {
+            System.err.println("Error sending initial greeting: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
+
+
+
+
+
+
+
+
+        
     private int findMyIndex(List<PlantInfo> plants) {
         for (int i = 0; i < plants.size(); i++)
             if (plants.get(i).getId().equals(plantId))
@@ -135,6 +192,26 @@ public class PowerPlant {
         return -1; // it can't happen
     }
 
+
+    private void buildLocalTopology(PlantInfo[] plants) {
+        synchronized (ringLock) {
+            allPlants.clear();
+            sortedPlantIds.clear();
+            
+            // Local topology
+            for (PlantInfo plant : plants)
+                allPlants.put(plant.getId(), plant.getListeningAddress());
+
+
+            // Ring order
+            for (String plantId : allPlants.keySet())
+                sortedPlantIds.add(plantId);
+
+            sortedPlantIds.sort(String::compareTo);
+            
+            System.out.println("Local topology built with " + allPlants.size() + " plants: " + sortedPlantIds);
+        }
+    }
 
     private void startElection(String requestId, int energyAmount) {
         synchronized(electionLock){
@@ -151,7 +228,7 @@ public class PowerPlant {
             System.out.println("Current price: " + myPrice);
 
             // ElectionMessage msg = new ElectionMessage(plantId, myPrice, requestId, energyAmount);
-            ElectionMessageProto msg = ElectionMessageProto.newBuilder()
+            ElectionMessage msg = ElectionMessage.newBuilder()
             .setInitiatorId(plantId)
             .setCurrentHolderId(plantId)
             .setBestBid(myPrice)
@@ -167,7 +244,7 @@ public class PowerPlant {
 
 
 
-    private void sendToNextPlant(ElectionMessageProto msg) {
+    private void sendToNextPlant(ElectionMessage msg) {
         if (nextPlantAddress == null) {
             handleElectionWin(msg.getRequestId(), msg.getEnergyRequest());
             return;
@@ -175,12 +252,13 @@ public class PowerPlant {
 
         System.out.println("Sending election message to the next plant at " + nextPlantAddress);
 
-        // TODO gRPC message
 
         ManagedChannel channel = null;
 
         try {
-            channel = ManagedChannelBuilder.forAddress(listeningAddress.split(":")[0], grpcPort)
+            // channel = ManagedChannelBuilder.forAddress(listeningAddress.split(":")[0], grpcPort)
+            String[] parts = nextPlantAddress.split(":");
+            channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
             .usePlaintext()
             .build();
 
@@ -190,7 +268,7 @@ public class PowerPlant {
 
             System.out.println("Sending gRPC election message to: " + nextPlantAddress);
             
-            ElectionResponseProto response = stub.sendElectionMessageProto(msg);
+            ElectionResponse response = stub.sendElectionMessage(msg);
 
             if (response.getSuccess()) 
                 System.out.println("Successfully sent election message");
@@ -259,7 +337,175 @@ public class PowerPlant {
         }
     }
 
-    protected void handleIncomingElectionMessage(ElectionMessageProto proto) {
+// ### MADE BY CLAUDE 4
+    private void handleNewPlantJoined(String newPlantId, String newListeningAddress) {
+        synchronized (ringLock) {
+            // If this greeting is from myself, the message completed the ring
+            if (newPlantId.equals(this.plantId)) {
+                System.out.println("Greeting message completed the ring. Topology update finished.");
+                return;
+            }
+
+            System.out.println("Adding plant " + newPlantId + " to local topology");
+            
+            // Add new plant to local topology
+            allPlants.put(newPlantId, newListeningAddress);
+            
+            // Rebuild sorted list
+            sortedPlantIds.clear();
+            for (String plantId : allPlants.keySet())
+                sortedPlantIds.add(plantId);
+
+            sortedPlantIds.sort(String::compareTo);
+            
+            // Recalculate my ring connections based on new topology
+            recalculateRingConnections();
+            
+            System.out.println("Updated topology: " + sortedPlantIds);
+            System.out.println("My connections: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
+
+           
+            System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress);
+            forwardGreetingsAsync(newPlantId, newListeningAddress);
+       }
+        
+        // Outside the synchronized block to avoid deadlock
+
+    }
+
+
+    // private void forwardGreetings(String originPlantId, String originAddress) {
+    //     if (nextPlantAddress == null) {
+    //         System.out.println("No next plant to forward to.");
+    //         return;
+    //     }
+        
+    //     int RETRIES = 3;
+    //     int WAIT_TIME = 5000; // 5 sec
+
+    //     System.out.println("Forwarding greeting to: " + nextPlantAddress + " (after rewiring completion)");
+
+    //     for (int attempt = 0; attempt < RETRIES; attempt++) {
+    //         try {
+    //             String[] parts = nextPlantAddress.split(":");
+    //             ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
+    //                 .usePlaintext()
+    //                 .build();
+                
+    //             PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = 
+    //                 PlantCommunicationGrpc.newBlockingStub(channel)
+    //                 .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
+                
+    //             GreetingsMessage greeting = GreetingsMessage.newBuilder()
+    //                 .setPlantId(originPlantId)  // Keep original sender
+    //                 .setListeningAddress(originAddress)
+    //                 .build();
+                
+    //             GreetingsResponse response = stub.sendGreetingsMessage(greeting);
+    //             System.out.println("Greeting forwarded successfully: " + response.getSuccess());
+                
+    //             channel.shutdown();
+    //             break;
+    //         } catch (Exception e) {
+    //             System.out.println("Attempt " + attempt + " failed");
+    //             System.err.println("Error forwarding greeting: " + e.getMessage());
+                
+    //             if (attempt < RETRIES - 1) {
+    //                 System.out.println("Retrying forwarding greetings in " + WAIT_TIME + "ms...");
+
+    //                 try {
+    //                     Thread.sleep(WAIT_TIME);
+    //                 } catch (InterruptedException ie) {
+    //                     Thread.currentThread().interrupt();
+    //                     break;
+    //                 }
+
+    //             } else {
+    //                 System.out.println("Failed to forward greetings message: " + e.getMessage());
+    //                 e.printStackTrace();
+    //             }
+                
+    //         }
+    //     }
+        
+    // }
+
+    private void forwardGreetingsAsync(String originPlantId, String originAddress) {
+        if (nextPlantAddress == null) {
+            System.out.println("No next plant to forward to.");
+            return;
+        }
+
+        try {
+            String[] parts = nextPlantAddress.split(":");
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
+                .usePlaintext()
+                .build();
+            
+            PlantCommunicationGrpc.PlantCommunicationStub asyncStub = 
+                PlantCommunicationGrpc.newStub(channel)
+                .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
+            
+            GreetingsMessage greeting = GreetingsMessage.newBuilder()
+                .setPlantId(originPlantId)  // Keep original sender
+                .setListeningAddress(originAddress)
+                .build();
+            
+            asyncStub.sendGreetingsMessage(
+                greeting,
+                new StreamObserver<GreetingsResponse>() {
+
+                    @Override
+                    public void onNext(GreetingsResponse response) {
+                        System.out.println("Greetings message forwarded: " + response.getSuccess());
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        System.out.println("Error forwarding greeting: "  + t.getMessage());
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        System.out.println();
+                        channel.shutdown();
+                    };
+
+                }
+            );
+
+
+        } catch (Exception e) {
+            System.err.println("Error forwarding greeting: " + e.getMessage());
+            
+        }
+        
+    }
+
+
+    private void recalculateRingConnections() {
+        int myIndex = sortedPlantIds.indexOf(plantId);
+        int size = sortedPlantIds.size();
+        
+        if (size > 1) {
+            // Calculate next plant
+            int nextIndex = (myIndex + 1) % size;
+            String nextId = sortedPlantIds.get(nextIndex);
+            nextPlantAddress = allPlants.get(nextId);
+            
+            // Calculate previous plant
+            int prevIndex = (myIndex - 1 + size) % size;
+            String prevId = sortedPlantIds.get(prevIndex);
+            prevPlantAddress = allPlants.get(prevId);
+        } else {
+            nextPlantAddress = null;
+            prevPlantAddress = null;
+        }
+    }
+// ###
+
+
+    private void handleIncomingElectionMessage(ElectionMessage proto) {
         synchronized (electionLock) {
             String initiatorId = proto.getInitiatorId();
             String currentHolderId = proto.getCurrentHolderId();
@@ -272,14 +518,29 @@ public class PowerPlant {
                           ", bestBid=" + bestBid + 
                           ", bestCandidate=" + currentWinnerId);
 
+           
+            // TODO THIS SHOULD BE IMPOSSIBLE
+            if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
+                System.out.println("WTF - Received message from myself");
+                return;   
+            }
+
             
             // If my message comes back to me, election is complete
-            if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
-                System.out.println("Election message returned to initiator - election complete!");
+            if (initiatorId.equals(plantId)) {
+                System.out.println("Back to initiator");
 
-                handleElectionComplete(currentWinnerId, requestId, energyAmount);
+                if (currentWinnerId.equals(plantId)) {
+                    System.out.println("Election message returned to initiator - election complete!");
 
-                return;
+                    handleElectionComplete(currentWinnerId, requestId, energyAmount);
+
+                    return;
+                } else {
+                    System.out.println("Election message returned to initiator but I'm not the winner :(");
+                    // sendToNextPlant(proto);
+                    return;
+                }
             }
 
             // If I'm busy, just forward the message
@@ -289,7 +550,7 @@ public class PowerPlant {
                 return;
             }
 
-            // If I'm fre, I join the election
+            // If I'm free, I join the election
             if (!isInElection || !requestId.equals(currentElectionId)) {
                 System.out.println("Joining election for request: " + requestId);
                 isInElection = true;
@@ -303,9 +564,9 @@ public class PowerPlant {
 
             boolean winner = isBetterCandidate(myPrice, plantId, bestBid, currentWinnerId);
 
-            ElectionMessageProto updatedMessage = proto.toBuilder()
-            .setCurrentHolderId(plantId)
-            .build();
+            ElectionMessage updatedMessage = proto.toBuilder()
+                .setCurrentHolderId(plantId)
+                .build();
 
 
             if (winner) {
@@ -315,10 +576,10 @@ public class PowerPlant {
                     .build();
 
                 System.out.println("Plant " + plantId + " is now the best candidate");
-            }
-            
-            sendToNextPlant(proto);
 
+            } else System.out.println("I'm not the best candidate: " + myPrice + " > " + bestBid);
+
+            sendToNextPlant(updatedMessage);
         }
     }
 
@@ -342,27 +603,55 @@ public class PowerPlant {
         if (myPrice == bestBid)
             return plantId.compareTo(currentWinnerId) > 0;
 
-        return myPrice > bestBid;
+        return myPrice < bestBid;
     }
 
-
+// gRPC
     // Service as a subclass to handle synchronization problems easier
     private class PlantCommsService extends PlantCommunicationImplBase {
 
         @Override
-        public void sendElectionMessageProto(ElectionMessageProto request, StreamObserver<ElectionResponseProto> responseObserver) {
-            try{
-                System.out.println("Received election message from: " + request.getCurrentHolderId());
+        public void sendGreetingsMessage(GreetingsMessage request, StreamObserver<GreetingsResponse> responseObserver) {
+            try {
+                System.out.println("New plant introduced: " + request.getPlantId() + "@" + request.getListeningAddress());
 
-                handleIncomingElectionMessage(request);
-
-                ElectionResponseProto response = ElectionResponseProto.newBuilder()
-                .setSuccess(true)
-                .setMessage("Election message processed")
-                .build();
+                GreetingsResponse response = GreetingsResponse.newBuilder()
+                    .setSuccess(true)
+                    .setMessage("Plant introduction processed")
+                    .build();
 
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
+
+                Context.ROOT.run(() -> {
+                    handleNewPlantJoined(request.getPlantId(), request.getListeningAddress());
+                });
+                
+            } catch (Exception e) {
+                System.out.println("Error processing plant introduction: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void sendElectionMessage(ElectionMessage request, StreamObserver<ElectionResponse> responseObserver) {
+            try{
+                System.out.println("Received election message from: " + request.getCurrentHolderId());
+
+
+                ElectionResponse response = ElectionResponse.newBuilder()
+                    .setSuccess(true)
+                    .setMessage("Election message processed")
+                    .build();
+
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+
+
+                Context.ROOT.run(() -> {
+                    handleIncomingElectionMessage(request);
+                });
+
             } catch (Exception e) {
                 System.out.println("Error processing election message: " + e.getMessage());
                 e.printStackTrace();

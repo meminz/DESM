@@ -5,12 +5,24 @@ option java_package = "plant.grpc";
 package plantcomms;
 
 service PlantCommunication {
-    rpc SendElectionMessageProto(ElectionMessageProto) returns (ElectionResponseProto);
+    rpc SendGreetingsMessage(GreetingsMessage) returns (GreetingsResponse);
 
-    // rpc SendWinnerMessageProto(WinnerMessageProto) returns (WinnerResponseProto);
+    rpc SendElectionMessage(ElectionMessage) returns (ElectionResponse);
+
+    // rpc SendWinnerMessage(WinnerMessage) returns (WinnerResponse);
 }
 
-message ElectionMessageProto {
+message GreetingsMessage {
+    string plant_id = 1;
+    string listening_address = 2;
+}
+
+message GreetingsResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message ElectionMessage {
     string initiator_id = 1;
     string current_holder_id = 2;
     double best_bid = 3;
@@ -19,17 +31,17 @@ message ElectionMessageProto {
     int32 energy_request = 6;
 }
 
-message ElectionResponseProto {
+message ElectionResponse {
     bool success = 1;
     string message = 2;   
 }
 
-// message WinnerMessageProto {
+// message WinnerMessage {
 //     string winner_id = 1;
 //     string request_id = 2;
 // }
 // 
-// message WinnerResponseProto {
+// message WinnerResponse {
 //     bool success = 1;
 //     string message = 2;
 // }

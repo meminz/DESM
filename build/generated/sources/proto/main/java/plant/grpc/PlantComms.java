@@ -26,8 +26,1249 @@ public final class PlantComms {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface ElectionMessageProtoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:plantcomms.ElectionMessageProto)
+  public interface GreetingsMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:plantcomms.GreetingsMessage)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The plantId.
+     */
+    java.lang.String getPlantId();
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The bytes for plantId.
+     */
+    com.google.protobuf.ByteString
+        getPlantIdBytes();
+
+    /**
+     * <code>string listening_address = 2;</code>
+     * @return The listeningAddress.
+     */
+    java.lang.String getListeningAddress();
+    /**
+     * <code>string listening_address = 2;</code>
+     * @return The bytes for listeningAddress.
+     */
+    com.google.protobuf.ByteString
+        getListeningAddressBytes();
+  }
+  /**
+   * Protobuf type {@code plantcomms.GreetingsMessage}
+   */
+  public static final class GreetingsMessage extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:plantcomms.GreetingsMessage)
+      GreetingsMessageOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 31,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        GreetingsMessage.class.getName());
+    }
+    // Use GreetingsMessage.newBuilder() to construct.
+    private GreetingsMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private GreetingsMessage() {
+      plantId_ = "";
+      listeningAddress_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsMessage_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsMessage_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              plant.grpc.PlantComms.GreetingsMessage.class, plant.grpc.PlantComms.GreetingsMessage.Builder.class);
+    }
+
+    public static final int PLANT_ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object plantId_ = "";
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The plantId.
+     */
+    @java.lang.Override
+    public java.lang.String getPlantId() {
+      java.lang.Object ref = plantId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        plantId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The bytes for plantId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlantIdBytes() {
+      java.lang.Object ref = plantId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        plantId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LISTENING_ADDRESS_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object listeningAddress_ = "";
+    /**
+     * <code>string listening_address = 2;</code>
+     * @return The listeningAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getListeningAddress() {
+      java.lang.Object ref = listeningAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        listeningAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string listening_address = 2;</code>
+     * @return The bytes for listeningAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getListeningAddressBytes() {
+      java.lang.Object ref = listeningAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        listeningAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(plantId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, plantId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(listeningAddress_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, listeningAddress_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(plantId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, plantId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(listeningAddress_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, listeningAddress_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof plant.grpc.PlantComms.GreetingsMessage)) {
+        return super.equals(obj);
+      }
+      plant.grpc.PlantComms.GreetingsMessage other = (plant.grpc.PlantComms.GreetingsMessage) obj;
+
+      if (!getPlantId()
+          .equals(other.getPlantId())) return false;
+      if (!getListeningAddress()
+          .equals(other.getListeningAddress())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPlantId().hashCode();
+      hash = (37 * hash) + LISTENING_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getListeningAddress().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static plant.grpc.PlantComms.GreetingsMessage parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static plant.grpc.PlantComms.GreetingsMessage parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.GreetingsMessage parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(plant.grpc.PlantComms.GreetingsMessage prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code plantcomms.GreetingsMessage}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:plantcomms.GreetingsMessage)
+        plant.grpc.PlantComms.GreetingsMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsMessage_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsMessage_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                plant.grpc.PlantComms.GreetingsMessage.class, plant.grpc.PlantComms.GreetingsMessage.Builder.class);
+      }
+
+      // Construct using plant.grpc.PlantComms.GreetingsMessage.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        plantId_ = "";
+        listeningAddress_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsMessage_descriptor;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.GreetingsMessage getDefaultInstanceForType() {
+        return plant.grpc.PlantComms.GreetingsMessage.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.GreetingsMessage build() {
+        plant.grpc.PlantComms.GreetingsMessage result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.GreetingsMessage buildPartial() {
+        plant.grpc.PlantComms.GreetingsMessage result = new plant.grpc.PlantComms.GreetingsMessage(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(plant.grpc.PlantComms.GreetingsMessage result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.plantId_ = plantId_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.listeningAddress_ = listeningAddress_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof plant.grpc.PlantComms.GreetingsMessage) {
+          return mergeFrom((plant.grpc.PlantComms.GreetingsMessage)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(plant.grpc.PlantComms.GreetingsMessage other) {
+        if (other == plant.grpc.PlantComms.GreetingsMessage.getDefaultInstance()) return this;
+        if (!other.getPlantId().isEmpty()) {
+          plantId_ = other.plantId_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getListeningAddress().isEmpty()) {
+          listeningAddress_ = other.listeningAddress_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                plantId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                listeningAddress_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object plantId_ = "";
+      /**
+       * <code>string plant_id = 1;</code>
+       * @return The plantId.
+       */
+      public java.lang.String getPlantId() {
+        java.lang.Object ref = plantId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          plantId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @return The bytes for plantId.
+       */
+      public com.google.protobuf.ByteString
+          getPlantIdBytes() {
+        java.lang.Object ref = plantId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          plantId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @param value The plantId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlantId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        plantId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlantId() {
+        plantId_ = getDefaultInstance().getPlantId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @param value The bytes for plantId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlantIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        plantId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object listeningAddress_ = "";
+      /**
+       * <code>string listening_address = 2;</code>
+       * @return The listeningAddress.
+       */
+      public java.lang.String getListeningAddress() {
+        java.lang.Object ref = listeningAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          listeningAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string listening_address = 2;</code>
+       * @return The bytes for listeningAddress.
+       */
+      public com.google.protobuf.ByteString
+          getListeningAddressBytes() {
+        java.lang.Object ref = listeningAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          listeningAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string listening_address = 2;</code>
+       * @param value The listeningAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setListeningAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        listeningAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string listening_address = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearListeningAddress() {
+        listeningAddress_ = getDefaultInstance().getListeningAddress();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string listening_address = 2;</code>
+       * @param value The bytes for listeningAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setListeningAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        listeningAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:plantcomms.GreetingsMessage)
+    }
+
+    // @@protoc_insertion_point(class_scope:plantcomms.GreetingsMessage)
+    private static final plant.grpc.PlantComms.GreetingsMessage DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new plant.grpc.PlantComms.GreetingsMessage();
+    }
+
+    public static plant.grpc.PlantComms.GreetingsMessage getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GreetingsMessage>
+        PARSER = new com.google.protobuf.AbstractParser<GreetingsMessage>() {
+      @java.lang.Override
+      public GreetingsMessage parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<GreetingsMessage> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GreetingsMessage> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public plant.grpc.PlantComms.GreetingsMessage getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GreetingsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:plantcomms.GreetingsResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+  }
+  /**
+   * Protobuf type {@code plantcomms.GreetingsResponse}
+   */
+  public static final class GreetingsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:plantcomms.GreetingsResponse)
+      GreetingsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 31,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        GreetingsResponse.class.getName());
+    }
+    // Use GreetingsResponse.newBuilder() to construct.
+    private GreetingsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private GreetingsResponse() {
+      message_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              plant.grpc.PlantComms.GreetingsResponse.class, plant.grpc.PlantComms.GreetingsResponse.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object message_ = "";
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    @java.lang.Override
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, message_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, message_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof plant.grpc.PlantComms.GreetingsResponse)) {
+        return super.equals(obj);
+      }
+      plant.grpc.PlantComms.GreetingsResponse other = (plant.grpc.PlantComms.GreetingsResponse) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!getMessage()
+          .equals(other.getMessage())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static plant.grpc.PlantComms.GreetingsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static plant.grpc.PlantComms.GreetingsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.GreetingsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(plant.grpc.PlantComms.GreetingsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code plantcomms.GreetingsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:plantcomms.GreetingsResponse)
+        plant.grpc.PlantComms.GreetingsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                plant.grpc.PlantComms.GreetingsResponse.class, plant.grpc.PlantComms.GreetingsResponse.Builder.class);
+      }
+
+      // Construct using plant.grpc.PlantComms.GreetingsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        success_ = false;
+        message_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_GreetingsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.GreetingsResponse getDefaultInstanceForType() {
+        return plant.grpc.PlantComms.GreetingsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.GreetingsResponse build() {
+        plant.grpc.PlantComms.GreetingsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.GreetingsResponse buildPartial() {
+        plant.grpc.PlantComms.GreetingsResponse result = new plant.grpc.PlantComms.GreetingsResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(plant.grpc.PlantComms.GreetingsResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.success_ = success_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.message_ = message_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof plant.grpc.PlantComms.GreetingsResponse) {
+          return mergeFrom((plant.grpc.PlantComms.GreetingsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(plant.grpc.PlantComms.GreetingsResponse other) {
+        if (other == plant.grpc.PlantComms.GreetingsResponse.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                message_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 1;</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       * @return The message.
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return The bytes for message.
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        message_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessage() {
+        message_ = getDefaultInstance().getMessage();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The bytes for message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        message_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:plantcomms.GreetingsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:plantcomms.GreetingsResponse)
+    private static final plant.grpc.PlantComms.GreetingsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new plant.grpc.PlantComms.GreetingsResponse();
+    }
+
+    public static plant.grpc.PlantComms.GreetingsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GreetingsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<GreetingsResponse>() {
+      @java.lang.Override
+      public GreetingsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<GreetingsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GreetingsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public plant.grpc.PlantComms.GreetingsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ElectionMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:plantcomms.ElectionMessage)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -91,12 +1332,12 @@ public final class PlantComms {
     int getEnergyRequest();
   }
   /**
-   * Protobuf type {@code plantcomms.ElectionMessageProto}
+   * Protobuf type {@code plantcomms.ElectionMessage}
    */
-  public static final class ElectionMessageProto extends
+  public static final class ElectionMessage extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:plantcomms.ElectionMessageProto)
-      ElectionMessageProtoOrBuilder {
+      // @@protoc_insertion_point(message_implements:plantcomms.ElectionMessage)
+      ElectionMessageOrBuilder {
   private static final long serialVersionUID = 0L;
     static {
       com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -105,13 +1346,13 @@ public final class PlantComms {
         /* minor= */ 31,
         /* patch= */ 0,
         /* suffix= */ "",
-        ElectionMessageProto.class.getName());
+        ElectionMessage.class.getName());
     }
-    // Use ElectionMessageProto.newBuilder() to construct.
-    private ElectionMessageProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    // Use ElectionMessage.newBuilder() to construct.
+    private ElectionMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
-    private ElectionMessageProto() {
+    private ElectionMessage() {
       initiatorId_ = "";
       currentHolderId_ = "";
       currentWinnerId_ = "";
@@ -120,15 +1361,15 @@ public final class PlantComms {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessageProto_descriptor;
+      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessage_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessageProto_fieldAccessorTable
+      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              plant.grpc.PlantComms.ElectionMessageProto.class, plant.grpc.PlantComms.ElectionMessageProto.Builder.class);
+              plant.grpc.PlantComms.ElectionMessage.class, plant.grpc.PlantComms.ElectionMessage.Builder.class);
     }
 
     public static final int INITIATOR_ID_FIELD_NUMBER = 1;
@@ -380,10 +1621,10 @@ public final class PlantComms {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof plant.grpc.PlantComms.ElectionMessageProto)) {
+      if (!(obj instanceof plant.grpc.PlantComms.ElectionMessage)) {
         return super.equals(obj);
       }
-      plant.grpc.PlantComms.ElectionMessageProto other = (plant.grpc.PlantComms.ElectionMessageProto) obj;
+      plant.grpc.PlantComms.ElectionMessage other = (plant.grpc.PlantComms.ElectionMessage) obj;
 
       if (!getInitiatorId()
           .equals(other.getInitiatorId())) return false;
@@ -427,44 +1668,44 @@ public final class PlantComms {
       return hash;
     }
 
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(byte[] data)
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(java.io.InputStream input)
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -472,26 +1713,26 @@ public final class PlantComms {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static plant.grpc.PlantComms.ElectionMessageProto parseDelimitedFrom(java.io.InputStream input)
+    public static plant.grpc.PlantComms.ElectionMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static plant.grpc.PlantComms.ElectionMessageProto parseDelimitedFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static plant.grpc.PlantComms.ElectionMessageProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -504,7 +1745,7 @@ public final class PlantComms {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(plant.grpc.PlantComms.ElectionMessageProto prototype) {
+    public static Builder newBuilder(plant.grpc.PlantComms.ElectionMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -520,26 +1761,26 @@ public final class PlantComms {
       return builder;
     }
     /**
-     * Protobuf type {@code plantcomms.ElectionMessageProto}
+     * Protobuf type {@code plantcomms.ElectionMessage}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:plantcomms.ElectionMessageProto)
-        plant.grpc.PlantComms.ElectionMessageProtoOrBuilder {
+        // @@protoc_insertion_point(builder_implements:plantcomms.ElectionMessage)
+        plant.grpc.PlantComms.ElectionMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessageProto_descriptor;
+        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessage_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessageProto_fieldAccessorTable
+        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                plant.grpc.PlantComms.ElectionMessageProto.class, plant.grpc.PlantComms.ElectionMessageProto.Builder.class);
+                plant.grpc.PlantComms.ElectionMessage.class, plant.grpc.PlantComms.ElectionMessage.Builder.class);
       }
 
-      // Construct using plant.grpc.PlantComms.ElectionMessageProto.newBuilder()
+      // Construct using plant.grpc.PlantComms.ElectionMessage.newBuilder()
       private Builder() {
 
       }
@@ -565,17 +1806,17 @@ public final class PlantComms {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessageProto_descriptor;
+        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionMessage_descriptor;
       }
 
       @java.lang.Override
-      public plant.grpc.PlantComms.ElectionMessageProto getDefaultInstanceForType() {
-        return plant.grpc.PlantComms.ElectionMessageProto.getDefaultInstance();
+      public plant.grpc.PlantComms.ElectionMessage getDefaultInstanceForType() {
+        return plant.grpc.PlantComms.ElectionMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public plant.grpc.PlantComms.ElectionMessageProto build() {
-        plant.grpc.PlantComms.ElectionMessageProto result = buildPartial();
+      public plant.grpc.PlantComms.ElectionMessage build() {
+        plant.grpc.PlantComms.ElectionMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -583,14 +1824,14 @@ public final class PlantComms {
       }
 
       @java.lang.Override
-      public plant.grpc.PlantComms.ElectionMessageProto buildPartial() {
-        plant.grpc.PlantComms.ElectionMessageProto result = new plant.grpc.PlantComms.ElectionMessageProto(this);
+      public plant.grpc.PlantComms.ElectionMessage buildPartial() {
+        plant.grpc.PlantComms.ElectionMessage result = new plant.grpc.PlantComms.ElectionMessage(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(plant.grpc.PlantComms.ElectionMessageProto result) {
+      private void buildPartial0(plant.grpc.PlantComms.ElectionMessage result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.initiatorId_ = initiatorId_;
@@ -614,16 +1855,16 @@ public final class PlantComms {
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof plant.grpc.PlantComms.ElectionMessageProto) {
-          return mergeFrom((plant.grpc.PlantComms.ElectionMessageProto)other);
+        if (other instanceof plant.grpc.PlantComms.ElectionMessage) {
+          return mergeFrom((plant.grpc.PlantComms.ElectionMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(plant.grpc.PlantComms.ElectionMessageProto other) {
-        if (other == plant.grpc.PlantComms.ElectionMessageProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(plant.grpc.PlantComms.ElectionMessage other) {
+        if (other == plant.grpc.PlantComms.ElectionMessage.getDefaultInstance()) return this;
         if (!other.getInitiatorId().isEmpty()) {
           initiatorId_ = other.initiatorId_;
           bitField0_ |= 0x00000001;
@@ -1075,23 +2316,23 @@ public final class PlantComms {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:plantcomms.ElectionMessageProto)
+      // @@protoc_insertion_point(builder_scope:plantcomms.ElectionMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:plantcomms.ElectionMessageProto)
-    private static final plant.grpc.PlantComms.ElectionMessageProto DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:plantcomms.ElectionMessage)
+    private static final plant.grpc.PlantComms.ElectionMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new plant.grpc.PlantComms.ElectionMessageProto();
+      DEFAULT_INSTANCE = new plant.grpc.PlantComms.ElectionMessage();
     }
 
-    public static plant.grpc.PlantComms.ElectionMessageProto getDefaultInstance() {
+    public static plant.grpc.PlantComms.ElectionMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<ElectionMessageProto>
-        PARSER = new com.google.protobuf.AbstractParser<ElectionMessageProto>() {
+    private static final com.google.protobuf.Parser<ElectionMessage>
+        PARSER = new com.google.protobuf.AbstractParser<ElectionMessage>() {
       @java.lang.Override
-      public ElectionMessageProto parsePartialFrom(
+      public ElectionMessage parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1110,24 +2351,24 @@ public final class PlantComms {
       }
     };
 
-    public static com.google.protobuf.Parser<ElectionMessageProto> parser() {
+    public static com.google.protobuf.Parser<ElectionMessage> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ElectionMessageProto> getParserForType() {
+    public com.google.protobuf.Parser<ElectionMessage> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public plant.grpc.PlantComms.ElectionMessageProto getDefaultInstanceForType() {
+    public plant.grpc.PlantComms.ElectionMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface ElectionResponseProtoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:plantcomms.ElectionResponseProto)
+  public interface ElectionResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:plantcomms.ElectionResponse)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1149,12 +2390,12 @@ public final class PlantComms {
         getMessageBytes();
   }
   /**
-   * Protobuf type {@code plantcomms.ElectionResponseProto}
+   * Protobuf type {@code plantcomms.ElectionResponse}
    */
-  public static final class ElectionResponseProto extends
+  public static final class ElectionResponse extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:plantcomms.ElectionResponseProto)
-      ElectionResponseProtoOrBuilder {
+      // @@protoc_insertion_point(message_implements:plantcomms.ElectionResponse)
+      ElectionResponseOrBuilder {
   private static final long serialVersionUID = 0L;
     static {
       com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -1163,27 +2404,27 @@ public final class PlantComms {
         /* minor= */ 31,
         /* patch= */ 0,
         /* suffix= */ "",
-        ElectionResponseProto.class.getName());
+        ElectionResponse.class.getName());
     }
-    // Use ElectionResponseProto.newBuilder() to construct.
-    private ElectionResponseProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    // Use ElectionResponse.newBuilder() to construct.
+    private ElectionResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
-    private ElectionResponseProto() {
+    private ElectionResponse() {
       message_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponseProto_descriptor;
+      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponseProto_fieldAccessorTable
+      return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              plant.grpc.PlantComms.ElectionResponseProto.class, plant.grpc.PlantComms.ElectionResponseProto.Builder.class);
+              plant.grpc.PlantComms.ElectionResponse.class, plant.grpc.PlantComms.ElectionResponse.Builder.class);
     }
 
     public static final int SUCCESS_FIELD_NUMBER = 1;
@@ -1282,10 +2523,10 @@ public final class PlantComms {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof plant.grpc.PlantComms.ElectionResponseProto)) {
+      if (!(obj instanceof plant.grpc.PlantComms.ElectionResponse)) {
         return super.equals(obj);
       }
-      plant.grpc.PlantComms.ElectionResponseProto other = (plant.grpc.PlantComms.ElectionResponseProto) obj;
+      plant.grpc.PlantComms.ElectionResponse other = (plant.grpc.PlantComms.ElectionResponse) obj;
 
       if (getSuccess()
           != other.getSuccess()) return false;
@@ -1312,44 +2553,44 @@ public final class PlantComms {
       return hash;
     }
 
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(byte[] data)
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(java.io.InputStream input)
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1357,26 +2598,26 @@ public final class PlantComms {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static plant.grpc.PlantComms.ElectionResponseProto parseDelimitedFrom(java.io.InputStream input)
+    public static plant.grpc.PlantComms.ElectionResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static plant.grpc.PlantComms.ElectionResponseProto parseDelimitedFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static plant.grpc.PlantComms.ElectionResponseProto parseFrom(
+    public static plant.grpc.PlantComms.ElectionResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1389,7 +2630,7 @@ public final class PlantComms {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(plant.grpc.PlantComms.ElectionResponseProto prototype) {
+    public static Builder newBuilder(plant.grpc.PlantComms.ElectionResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1405,26 +2646,26 @@ public final class PlantComms {
       return builder;
     }
     /**
-     * Protobuf type {@code plantcomms.ElectionResponseProto}
+     * Protobuf type {@code plantcomms.ElectionResponse}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:plantcomms.ElectionResponseProto)
-        plant.grpc.PlantComms.ElectionResponseProtoOrBuilder {
+        // @@protoc_insertion_point(builder_implements:plantcomms.ElectionResponse)
+        plant.grpc.PlantComms.ElectionResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponseProto_descriptor;
+        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponse_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponseProto_fieldAccessorTable
+        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                plant.grpc.PlantComms.ElectionResponseProto.class, plant.grpc.PlantComms.ElectionResponseProto.Builder.class);
+                plant.grpc.PlantComms.ElectionResponse.class, plant.grpc.PlantComms.ElectionResponse.Builder.class);
       }
 
-      // Construct using plant.grpc.PlantComms.ElectionResponseProto.newBuilder()
+      // Construct using plant.grpc.PlantComms.ElectionResponse.newBuilder()
       private Builder() {
 
       }
@@ -1446,17 +2687,17 @@ public final class PlantComms {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponseProto_descriptor;
+        return plant.grpc.PlantComms.internal_static_plantcomms_ElectionResponse_descriptor;
       }
 
       @java.lang.Override
-      public plant.grpc.PlantComms.ElectionResponseProto getDefaultInstanceForType() {
-        return plant.grpc.PlantComms.ElectionResponseProto.getDefaultInstance();
+      public plant.grpc.PlantComms.ElectionResponse getDefaultInstanceForType() {
+        return plant.grpc.PlantComms.ElectionResponse.getDefaultInstance();
       }
 
       @java.lang.Override
-      public plant.grpc.PlantComms.ElectionResponseProto build() {
-        plant.grpc.PlantComms.ElectionResponseProto result = buildPartial();
+      public plant.grpc.PlantComms.ElectionResponse build() {
+        plant.grpc.PlantComms.ElectionResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1464,14 +2705,14 @@ public final class PlantComms {
       }
 
       @java.lang.Override
-      public plant.grpc.PlantComms.ElectionResponseProto buildPartial() {
-        plant.grpc.PlantComms.ElectionResponseProto result = new plant.grpc.PlantComms.ElectionResponseProto(this);
+      public plant.grpc.PlantComms.ElectionResponse buildPartial() {
+        plant.grpc.PlantComms.ElectionResponse result = new plant.grpc.PlantComms.ElectionResponse(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(plant.grpc.PlantComms.ElectionResponseProto result) {
+      private void buildPartial0(plant.grpc.PlantComms.ElectionResponse result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.success_ = success_;
@@ -1483,16 +2724,16 @@ public final class PlantComms {
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof plant.grpc.PlantComms.ElectionResponseProto) {
-          return mergeFrom((plant.grpc.PlantComms.ElectionResponseProto)other);
+        if (other instanceof plant.grpc.PlantComms.ElectionResponse) {
+          return mergeFrom((plant.grpc.PlantComms.ElectionResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(plant.grpc.PlantComms.ElectionResponseProto other) {
-        if (other == plant.grpc.PlantComms.ElectionResponseProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(plant.grpc.PlantComms.ElectionResponse other) {
+        if (other == plant.grpc.PlantComms.ElectionResponse.getDefaultInstance()) return this;
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
         }
@@ -1658,23 +2899,23 @@ public final class PlantComms {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:plantcomms.ElectionResponseProto)
+      // @@protoc_insertion_point(builder_scope:plantcomms.ElectionResponse)
     }
 
-    // @@protoc_insertion_point(class_scope:plantcomms.ElectionResponseProto)
-    private static final plant.grpc.PlantComms.ElectionResponseProto DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:plantcomms.ElectionResponse)
+    private static final plant.grpc.PlantComms.ElectionResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new plant.grpc.PlantComms.ElectionResponseProto();
+      DEFAULT_INSTANCE = new plant.grpc.PlantComms.ElectionResponse();
     }
 
-    public static plant.grpc.PlantComms.ElectionResponseProto getDefaultInstance() {
+    public static plant.grpc.PlantComms.ElectionResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<ElectionResponseProto>
-        PARSER = new com.google.protobuf.AbstractParser<ElectionResponseProto>() {
+    private static final com.google.protobuf.Parser<ElectionResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ElectionResponse>() {
       @java.lang.Override
-      public ElectionResponseProto parsePartialFrom(
+      public ElectionResponse parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1693,32 +2934,42 @@ public final class PlantComms {
       }
     };
 
-    public static com.google.protobuf.Parser<ElectionResponseProto> parser() {
+    public static com.google.protobuf.Parser<ElectionResponse> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ElectionResponseProto> getParserForType() {
+    public com.google.protobuf.Parser<ElectionResponse> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public plant.grpc.PlantComms.ElectionResponseProto getDefaultInstanceForType() {
+    public plant.grpc.PlantComms.ElectionResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_plantcomms_ElectionMessageProto_descriptor;
+    internal_static_plantcomms_GreetingsMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_plantcomms_ElectionMessageProto_fieldAccessorTable;
+      internal_static_plantcomms_GreetingsMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_plantcomms_ElectionResponseProto_descriptor;
+    internal_static_plantcomms_GreetingsResponse_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_plantcomms_ElectionResponseProto_fieldAccessorTable;
+      internal_static_plantcomms_GreetingsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_plantcomms_ElectionMessage_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_plantcomms_ElectionMessage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_plantcomms_ElectionResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_plantcomms_ElectionResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1728,32 +2979,49 @@ public final class PlantComms {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\021plant_comms.proto\022\nplantcomms\"\240\001\n\024Elec" +
-      "tionMessageProto\022\024\n\014initiator_id\030\001 \001(\t\022\031" +
-      "\n\021current_holder_id\030\002 \001(\t\022\020\n\010best_bid\030\003 " +
-      "\001(\001\022\031\n\021current_winner_id\030\004 \001(\t\022\022\n\nreques" +
-      "t_id\030\005 \001(\t\022\026\n\016energy_request\030\006 \001(\005\"9\n\025El" +
-      "ectionResponseProto\022\017\n\007success\030\001 \001(\010\022\017\n\007" +
-      "message\030\002 \001(\t2u\n\022PlantCommunication\022_\n\030S" +
-      "endElectionMessageProto\022 .plantcomms.Ele" +
-      "ctionMessageProto\032!.plantcomms.ElectionR" +
-      "esponseProtoB\014\n\nplant.grpcb\006proto3"
+      "\n\021plant_comms.proto\022\nplantcomms\"?\n\020Greet" +
+      "ingsMessage\022\020\n\010plant_id\030\001 \001(\t\022\031\n\021listeni" +
+      "ng_address\030\002 \001(\t\"5\n\021GreetingsResponse\022\017\n" +
+      "\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"\233\001\n\017Elec" +
+      "tionMessage\022\024\n\014initiator_id\030\001 \001(\t\022\031\n\021cur" +
+      "rent_holder_id\030\002 \001(\t\022\020\n\010best_bid\030\003 \001(\001\022\031" +
+      "\n\021current_winner_id\030\004 \001(\t\022\022\n\nrequest_id\030" +
+      "\005 \001(\t\022\026\n\016energy_request\030\006 \001(\005\"4\n\020Electio" +
+      "nResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 " +
+      "\001(\t2\273\001\n\022PlantCommunication\022S\n\024SendGreeti" +
+      "ngsMessage\022\034.plantcomms.GreetingsMessage" +
+      "\032\035.plantcomms.GreetingsResponse\022P\n\023SendE" +
+      "lectionMessage\022\033.plantcomms.ElectionMess" +
+      "age\032\034.plantcomms.ElectionResponseB\014\n\npla" +
+      "nt.grpcb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_plantcomms_ElectionMessageProto_descriptor =
+    internal_static_plantcomms_GreetingsMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_plantcomms_ElectionMessageProto_fieldAccessorTable = new
+    internal_static_plantcomms_GreetingsMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_plantcomms_ElectionMessageProto_descriptor,
-        new java.lang.String[] { "InitiatorId", "CurrentHolderId", "BestBid", "CurrentWinnerId", "RequestId", "EnergyRequest", });
-    internal_static_plantcomms_ElectionResponseProto_descriptor =
+        internal_static_plantcomms_GreetingsMessage_descriptor,
+        new java.lang.String[] { "PlantId", "ListeningAddress", });
+    internal_static_plantcomms_GreetingsResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_plantcomms_ElectionResponseProto_fieldAccessorTable = new
+    internal_static_plantcomms_GreetingsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_plantcomms_ElectionResponseProto_descriptor,
+        internal_static_plantcomms_GreetingsResponse_descriptor,
+        new java.lang.String[] { "Success", "Message", });
+    internal_static_plantcomms_ElectionMessage_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_plantcomms_ElectionMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_plantcomms_ElectionMessage_descriptor,
+        new java.lang.String[] { "InitiatorId", "CurrentHolderId", "BestBid", "CurrentWinnerId", "RequestId", "EnergyRequest", });
+    internal_static_plantcomms_ElectionResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_plantcomms_ElectionResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_plantcomms_ElectionResponse_descriptor,
         new java.lang.String[] { "Success", "Message", });
     descriptor.resolveAllFeaturesImmutable();
   }

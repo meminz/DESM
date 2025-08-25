@@ -15,35 +15,66 @@ public final class PlantCommunicationGrpc {
   public static final java.lang.String SERVICE_NAME = "plantcomms.PlantCommunication";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<plant.grpc.PlantComms.ElectionMessageProto,
-      plant.grpc.PlantComms.ElectionResponseProto> getSendElectionMessageProtoMethod;
+  private static volatile io.grpc.MethodDescriptor<plant.grpc.PlantComms.GreetingsMessage,
+      plant.grpc.PlantComms.GreetingsResponse> getSendGreetingsMessageMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "SendElectionMessageProto",
-      requestType = plant.grpc.PlantComms.ElectionMessageProto.class,
-      responseType = plant.grpc.PlantComms.ElectionResponseProto.class,
+      fullMethodName = SERVICE_NAME + '/' + "SendGreetingsMessage",
+      requestType = plant.grpc.PlantComms.GreetingsMessage.class,
+      responseType = plant.grpc.PlantComms.GreetingsResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<plant.grpc.PlantComms.ElectionMessageProto,
-      plant.grpc.PlantComms.ElectionResponseProto> getSendElectionMessageProtoMethod() {
-    io.grpc.MethodDescriptor<plant.grpc.PlantComms.ElectionMessageProto, plant.grpc.PlantComms.ElectionResponseProto> getSendElectionMessageProtoMethod;
-    if ((getSendElectionMessageProtoMethod = PlantCommunicationGrpc.getSendElectionMessageProtoMethod) == null) {
+  public static io.grpc.MethodDescriptor<plant.grpc.PlantComms.GreetingsMessage,
+      plant.grpc.PlantComms.GreetingsResponse> getSendGreetingsMessageMethod() {
+    io.grpc.MethodDescriptor<plant.grpc.PlantComms.GreetingsMessage, plant.grpc.PlantComms.GreetingsResponse> getSendGreetingsMessageMethod;
+    if ((getSendGreetingsMessageMethod = PlantCommunicationGrpc.getSendGreetingsMessageMethod) == null) {
       synchronized (PlantCommunicationGrpc.class) {
-        if ((getSendElectionMessageProtoMethod = PlantCommunicationGrpc.getSendElectionMessageProtoMethod) == null) {
-          PlantCommunicationGrpc.getSendElectionMessageProtoMethod = getSendElectionMessageProtoMethod =
-              io.grpc.MethodDescriptor.<plant.grpc.PlantComms.ElectionMessageProto, plant.grpc.PlantComms.ElectionResponseProto>newBuilder()
+        if ((getSendGreetingsMessageMethod = PlantCommunicationGrpc.getSendGreetingsMessageMethod) == null) {
+          PlantCommunicationGrpc.getSendGreetingsMessageMethod = getSendGreetingsMessageMethod =
+              io.grpc.MethodDescriptor.<plant.grpc.PlantComms.GreetingsMessage, plant.grpc.PlantComms.GreetingsResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendElectionMessageProto"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendGreetingsMessage"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  plant.grpc.PlantComms.ElectionMessageProto.getDefaultInstance()))
+                  plant.grpc.PlantComms.GreetingsMessage.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  plant.grpc.PlantComms.ElectionResponseProto.getDefaultInstance()))
-              .setSchemaDescriptor(new PlantCommunicationMethodDescriptorSupplier("SendElectionMessageProto"))
+                  plant.grpc.PlantComms.GreetingsResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new PlantCommunicationMethodDescriptorSupplier("SendGreetingsMessage"))
               .build();
         }
       }
     }
-    return getSendElectionMessageProtoMethod;
+    return getSendGreetingsMessageMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<plant.grpc.PlantComms.ElectionMessage,
+      plant.grpc.PlantComms.ElectionResponse> getSendElectionMessageMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SendElectionMessage",
+      requestType = plant.grpc.PlantComms.ElectionMessage.class,
+      responseType = plant.grpc.PlantComms.ElectionResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<plant.grpc.PlantComms.ElectionMessage,
+      plant.grpc.PlantComms.ElectionResponse> getSendElectionMessageMethod() {
+    io.grpc.MethodDescriptor<plant.grpc.PlantComms.ElectionMessage, plant.grpc.PlantComms.ElectionResponse> getSendElectionMessageMethod;
+    if ((getSendElectionMessageMethod = PlantCommunicationGrpc.getSendElectionMessageMethod) == null) {
+      synchronized (PlantCommunicationGrpc.class) {
+        if ((getSendElectionMessageMethod = PlantCommunicationGrpc.getSendElectionMessageMethod) == null) {
+          PlantCommunicationGrpc.getSendElectionMessageMethod = getSendElectionMessageMethod =
+              io.grpc.MethodDescriptor.<plant.grpc.PlantComms.ElectionMessage, plant.grpc.PlantComms.ElectionResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendElectionMessage"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  plant.grpc.PlantComms.ElectionMessage.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  plant.grpc.PlantComms.ElectionResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new PlantCommunicationMethodDescriptorSupplier("SendElectionMessage"))
+              .build();
+        }
+      }
+    }
+    return getSendElectionMessageMethod;
   }
 
   /**
@@ -111,9 +142,16 @@ public final class PlantCommunicationGrpc {
 
     /**
      */
-    default void sendElectionMessageProto(plant.grpc.PlantComms.ElectionMessageProto request,
-        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponseProto> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSendElectionMessageProtoMethod(), responseObserver);
+    default void sendGreetingsMessage(plant.grpc.PlantComms.GreetingsMessage request,
+        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.GreetingsResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSendGreetingsMessageMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void sendElectionMessage(plant.grpc.PlantComms.ElectionMessage request,
+        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSendElectionMessageMethod(), responseObserver);
     }
   }
 
@@ -146,10 +184,18 @@ public final class PlantCommunicationGrpc {
 
     /**
      */
-    public void sendElectionMessageProto(plant.grpc.PlantComms.ElectionMessageProto request,
-        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponseProto> responseObserver) {
+    public void sendGreetingsMessage(plant.grpc.PlantComms.GreetingsMessage request,
+        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.GreetingsResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getSendElectionMessageProtoMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getSendGreetingsMessageMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void sendElectionMessage(plant.grpc.PlantComms.ElectionMessage request,
+        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSendElectionMessageMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -171,9 +217,16 @@ public final class PlantCommunicationGrpc {
 
     /**
      */
-    public plant.grpc.PlantComms.ElectionResponseProto sendElectionMessageProto(plant.grpc.PlantComms.ElectionMessageProto request) {
+    public plant.grpc.PlantComms.GreetingsResponse sendGreetingsMessage(plant.grpc.PlantComms.GreetingsMessage request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getSendElectionMessageProtoMethod(), getCallOptions(), request);
+          getChannel(), getSendGreetingsMessageMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public plant.grpc.PlantComms.ElectionResponse sendElectionMessage(plant.grpc.PlantComms.ElectionMessage request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSendElectionMessageMethod(), getCallOptions(), request);
     }
   }
 
@@ -195,9 +248,16 @@ public final class PlantCommunicationGrpc {
 
     /**
      */
-    public plant.grpc.PlantComms.ElectionResponseProto sendElectionMessageProto(plant.grpc.PlantComms.ElectionMessageProto request) {
+    public plant.grpc.PlantComms.GreetingsResponse sendGreetingsMessage(plant.grpc.PlantComms.GreetingsMessage request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getSendElectionMessageProtoMethod(), getCallOptions(), request);
+          getChannel(), getSendGreetingsMessageMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public plant.grpc.PlantComms.ElectionResponse sendElectionMessage(plant.grpc.PlantComms.ElectionMessage request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSendElectionMessageMethod(), getCallOptions(), request);
     }
   }
 
@@ -219,14 +279,23 @@ public final class PlantCommunicationGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<plant.grpc.PlantComms.ElectionResponseProto> sendElectionMessageProto(
-        plant.grpc.PlantComms.ElectionMessageProto request) {
+    public com.google.common.util.concurrent.ListenableFuture<plant.grpc.PlantComms.GreetingsResponse> sendGreetingsMessage(
+        plant.grpc.PlantComms.GreetingsMessage request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getSendElectionMessageProtoMethod(), getCallOptions()), request);
+          getChannel().newCall(getSendGreetingsMessageMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<plant.grpc.PlantComms.ElectionResponse> sendElectionMessage(
+        plant.grpc.PlantComms.ElectionMessage request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSendElectionMessageMethod(), getCallOptions()), request);
     }
   }
 
-  private static final int METHODID_SEND_ELECTION_MESSAGE_PROTO = 0;
+  private static final int METHODID_SEND_GREETINGS_MESSAGE = 0;
+  private static final int METHODID_SEND_ELECTION_MESSAGE = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -245,9 +314,13 @@ public final class PlantCommunicationGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_SEND_ELECTION_MESSAGE_PROTO:
-          serviceImpl.sendElectionMessageProto((plant.grpc.PlantComms.ElectionMessageProto) request,
-              (io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponseProto>) responseObserver);
+        case METHODID_SEND_GREETINGS_MESSAGE:
+          serviceImpl.sendGreetingsMessage((plant.grpc.PlantComms.GreetingsMessage) request,
+              (io.grpc.stub.StreamObserver<plant.grpc.PlantComms.GreetingsResponse>) responseObserver);
+          break;
+        case METHODID_SEND_ELECTION_MESSAGE:
+          serviceImpl.sendElectionMessage((plant.grpc.PlantComms.ElectionMessage) request,
+              (io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -268,12 +341,19 @@ public final class PlantCommunicationGrpc {
   public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
     return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
         .addMethod(
-          getSendElectionMessageProtoMethod(),
+          getSendGreetingsMessageMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              plant.grpc.PlantComms.ElectionMessageProto,
-              plant.grpc.PlantComms.ElectionResponseProto>(
-                service, METHODID_SEND_ELECTION_MESSAGE_PROTO)))
+              plant.grpc.PlantComms.GreetingsMessage,
+              plant.grpc.PlantComms.GreetingsResponse>(
+                service, METHODID_SEND_GREETINGS_MESSAGE)))
+        .addMethod(
+          getSendElectionMessageMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              plant.grpc.PlantComms.ElectionMessage,
+              plant.grpc.PlantComms.ElectionResponse>(
+                service, METHODID_SEND_ELECTION_MESSAGE)))
         .build();
   }
 
@@ -322,7 +402,8 @@ public final class PlantCommunicationGrpc {
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new PlantCommunicationFileDescriptorSupplier())
-              .addMethod(getSendElectionMessageProtoMethod())
+              .addMethod(getSendGreetingsMessageMethod())
+              .addMethod(getSendElectionMessageMethod())
               .build();
         }
       }
