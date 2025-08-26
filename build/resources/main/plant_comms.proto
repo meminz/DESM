@@ -19,7 +19,8 @@ message GreetingsMessage {
 
 message GreetingsResponse {
     bool success = 1;
-    string message = 2;
+    // bool isInElection = 2;
+    string message = 3;
 }
 
 message ElectionMessage {

@@ -695,12 +695,20 @@ public final class PlantComms {
     boolean getSuccess();
 
     /**
-     * <code>string message = 2;</code>
+     * <pre>
+     * bool isInElection = 2;
+     * </pre>
+     *
+     * <code>string message = 3;</code>
      * @return The message.
      */
     java.lang.String getMessage();
     /**
-     * <code>string message = 2;</code>
+     * <pre>
+     * bool isInElection = 2;
+     * </pre>
+     *
+     * <code>string message = 3;</code>
      * @return The bytes for message.
      */
     com.google.protobuf.ByteString
@@ -755,11 +763,15 @@ public final class PlantComms {
       return success_;
     }
 
-    public static final int MESSAGE_FIELD_NUMBER = 2;
+    public static final int MESSAGE_FIELD_NUMBER = 3;
     @SuppressWarnings("serial")
     private volatile java.lang.Object message_ = "";
     /**
-     * <code>string message = 2;</code>
+     * <pre>
+     * bool isInElection = 2;
+     * </pre>
+     *
+     * <code>string message = 3;</code>
      * @return The message.
      */
     @java.lang.Override
@@ -776,7 +788,11 @@ public final class PlantComms {
       }
     }
     /**
-     * <code>string message = 2;</code>
+     * <pre>
+     * bool isInElection = 2;
+     * </pre>
+     *
+     * <code>string message = 3;</code>
      * @return The bytes for message.
      */
     @java.lang.Override
@@ -812,7 +828,7 @@ public final class PlantComms {
         output.writeBool(1, success_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, message_);
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, message_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -828,7 +844,7 @@ public final class PlantComms {
           .computeBoolSize(1, success_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, message_);
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, message_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1090,11 +1106,11 @@ public final class PlantComms {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 8
-              case 18: {
+              case 26: {
                 message_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000002;
                 break;
-              } // case 18
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1146,7 +1162,11 @@ public final class PlantComms {
 
       private java.lang.Object message_ = "";
       /**
-       * <code>string message = 2;</code>
+       * <pre>
+       * bool isInElection = 2;
+       * </pre>
+       *
+       * <code>string message = 3;</code>
        * @return The message.
        */
       public java.lang.String getMessage() {
@@ -1162,7 +1182,11 @@ public final class PlantComms {
         }
       }
       /**
-       * <code>string message = 2;</code>
+       * <pre>
+       * bool isInElection = 2;
+       * </pre>
+       *
+       * <code>string message = 3;</code>
        * @return The bytes for message.
        */
       public com.google.protobuf.ByteString
@@ -1179,7 +1203,11 @@ public final class PlantComms {
         }
       }
       /**
-       * <code>string message = 2;</code>
+       * <pre>
+       * bool isInElection = 2;
+       * </pre>
+       *
+       * <code>string message = 3;</code>
        * @param value The message to set.
        * @return This builder for chaining.
        */
@@ -1192,7 +1220,11 @@ public final class PlantComms {
         return this;
       }
       /**
-       * <code>string message = 2;</code>
+       * <pre>
+       * bool isInElection = 2;
+       * </pre>
+       *
+       * <code>string message = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearMessage() {
@@ -1202,7 +1234,11 @@ public final class PlantComms {
         return this;
       }
       /**
-       * <code>string message = 2;</code>
+       * <pre>
+       * bool isInElection = 2;
+       * </pre>
+       *
+       * <code>string message = 3;</code>
        * @param value The bytes for message to set.
        * @return This builder for chaining.
        */
@@ -2982,7 +3018,7 @@ public final class PlantComms {
       "\n\021plant_comms.proto\022\nplantcomms\"?\n\020Greet" +
       "ingsMessage\022\020\n\010plant_id\030\001 \001(\t\022\031\n\021listeni" +
       "ng_address\030\002 \001(\t\"5\n\021GreetingsResponse\022\017\n" +
-      "\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"\233\001\n\017Elec" +
+      "\007success\030\001 \001(\010\022\017\n\007message\030\003 \001(\t\"\233\001\n\017Elec" +
       "tionMessage\022\024\n\014initiator_id\030\001 \001(\t\022\031\n\021cur" +
       "rent_holder_id\030\002 \001(\t\022\020\n\010best_bid\030\003 \001(\001\022\031" +
       "\n\021current_winner_id\030\004 \001(\t\022\022\n\nrequest_id\030" +
