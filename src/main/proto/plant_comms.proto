@@ -8,11 +8,7 @@ option java_outer_classname = "PlantComms";
 
 service PlantCommunication {
     rpc SendGreetingsMessage(GreetingsMessage) returns (GreetingsResponse);
-
     rpc SendElectionMessage(ElectionMessage) returns (ElectionResponse);
-
-    // rpc SendWinnerMessage(WinnerMessage) returns (WinnerResponse);
-
     rpc SendFarewellMessage(FarewellMessage) returns (FarewellResponse);
 }
 
@@ -23,7 +19,6 @@ message GreetingsMessage {
 
 message GreetingsResponse {
     bool success = 1;
-    // string message = 2;
 }
 
 message ElectionMessage {
@@ -37,18 +32,7 @@ message ElectionMessage {
 
 message ElectionResponse {
     bool success = 1;
-    // string message = 2;   
 }
-
-// message WinnerMessage {
-//     string winner_id = 1;
-//     string request_id = 2;
-// }
-// 
-// message WinnerResponse {
-//     bool success = 1;
-//     string message = 2;
-// }
 
 message FarewellMessage {
     string plant_id = 1;

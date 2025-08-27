@@ -318,7 +318,7 @@ public class PowerPlant {
         synchronized (ringLock) {
             // If this greeting is from myself, the message completed the ring
             if (newPlantId.equals(this.plantId)) {
-                System.out.println("Greeting message completed the ring. Topology update finished.");
+                System.out.println("Greeting message completed the ring. Topology update finished.\n");
                 return;
             }
 
@@ -338,7 +338,7 @@ public class PowerPlant {
             recalculateRingConnections();
 
             
-            System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress);
+            System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress + "\n");
             forwardGreetings(newPlantId, newListeningAddress);
        }
         
@@ -403,57 +403,57 @@ public class PowerPlant {
         
     }
 
-    private void forwardGreetingsAsync(String originPlantId, String originAddress) {
-        if (nextPlantAddress == null) {
-            System.out.println("No next plant to forward to.");
-            return;
-        }
+    // private void forwardGreetingsAsync(String originPlantId, String originAddress) {
+    //     if (nextPlantAddress == null) {
+    //         System.out.println("No next plant to forward to.");
+    //         return;
+    //     }
 
-        try {
-            String[] parts = nextPlantAddress.split(":");
-            ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-                .usePlaintext()
-                .build();
+    //     try {
+    //         String[] parts = nextPlantAddress.split(":");
+    //         ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
+    //             .usePlaintext()
+    //             .build();
             
-            PlantCommunicationGrpc.PlantCommunicationStub asyncStub = 
-                PlantCommunicationGrpc.newStub(channel)
-                .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
+    //         PlantCommunicationGrpc.PlantCommunicationStub asyncStub = 
+    //             PlantCommunicationGrpc.newStub(channel)
+    //             .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
             
-            GreetingsMessage greeting = GreetingsMessage.newBuilder()
-                .setPlantId(originPlantId)  // Keep original sender
-                .setListeningAddress(originAddress)
-                .build();
+    //         GreetingsMessage greeting = GreetingsMessage.newBuilder()
+    //             .setPlantId(originPlantId)  // Keep original sender
+    //             .setListeningAddress(originAddress)
+    //             .build();
             
-            asyncStub.sendGreetingsMessage(
-                greeting,
-                new StreamObserver<GreetingsResponse>() {
+    //         asyncStub.sendGreetingsMessage(
+    //             greeting,
+    //             new StreamObserver<GreetingsResponse>() {
 
-                    @Override
-                    public void onNext(GreetingsResponse response) {
-                        System.out.println("Greetings message forwarded: " + response.getSuccess());
-                    }
+    //                 @Override
+    //                 public void onNext(GreetingsResponse response) {
+    //                     System.out.println("Greetings message forwarded: " + response.getSuccess());
+    //                 }
 
-                    @Override
-                    public void onError(Throwable t) {
-                        System.out.println("Error forwarding greeting: "  + t.getMessage());
-                    }
+    //                 @Override
+    //                 public void onError(Throwable t) {
+    //                     System.out.println("Error forwarding greeting: "  + t.getMessage());
+    //                 }
 
-                    @Override
-                    public void onCompleted() {
-                        System.out.println();
-                        channel.shutdown();
-                    };
+    //                 @Override
+    //                 public void onCompleted() {
+    //                     System.out.println();
+    //                     channel.shutdown();
+    //                 };
 
-                }
-            );
+    //             }
+    //         );
 
 
-        } catch (Exception e) {
-            System.err.println("Error forwarding greeting: " + e.getMessage());
+    //     } catch (Exception e) {
+    //         System.err.println("Error forwarding greeting: " + e.getMessage());
             
-        }
+    //     }
         
-    }
+    // }
 
 
     private void recalculateRingConnections() {
@@ -503,7 +503,7 @@ public class PowerPlant {
             try {
                 Thread.sleep(5000);
             } catch (Exception e) {
-                // TODO: handle exception
+                e.printStackTrace();
             }
 
             
@@ -564,7 +564,7 @@ public class PowerPlant {
     private void handleElectionComplete(String winnerId, String requestId, int energyAmount) {
         synchronized (electionLock) {
             System.out.println("\n--- Election Complete ---" +
-            "\nWinner: " + winnerId + " for request " + requestId);
+                "\nWinner: " + winnerId + " for request " + requestId);
 
             if (winnerId.equals(plantId))
                 handleElectionWin(requestId, energyAmount);
@@ -598,7 +598,7 @@ public class PowerPlant {
         recalculateRingConnections();
 
         if (prevPlantId.equals(plantId)) {
-            System.out.println("All plants notified of plant " + leavingPlantId + " shutdown.");
+            System.out.println("All plants notified of plant " + leavingPlantId + " shutdown.\n");
             return;
         }
 

@@ -689,10 +689,6 @@ public final class PlantComms {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * string message = 2;
-     * </pre>
-     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
@@ -738,10 +734,6 @@ public final class PlantComms {
     public static final int SUCCESS_FIELD_NUMBER = 1;
     private boolean success_ = false;
     /**
-     * <pre>
-     * string message = 2;
-     * </pre>
-     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
@@ -1046,10 +1038,6 @@ public final class PlantComms {
 
       private boolean success_ ;
       /**
-       * <pre>
-       * string message = 2;
-       * </pre>
-       *
        * <code>bool success = 1;</code>
        * @return The success.
        */
@@ -1058,10 +1046,6 @@ public final class PlantComms {
         return success_;
       }
       /**
-       * <pre>
-       * string message = 2;
-       * </pre>
-       *
        * <code>bool success = 1;</code>
        * @param value The success to set.
        * @return This builder for chaining.
@@ -1074,10 +1058,6 @@ public final class PlantComms {
         return this;
       }
       /**
-       * <pre>
-       * string message = 2;
-       * </pre>
-       *
        * <code>bool success = 1;</code>
        * @return This builder for chaining.
        */
@@ -2244,10 +2224,6 @@ public final class PlantComms {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * string message = 2;   
-     * </pre>
-     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
@@ -2293,10 +2269,6 @@ public final class PlantComms {
     public static final int SUCCESS_FIELD_NUMBER = 1;
     private boolean success_ = false;
     /**
-     * <pre>
-     * string message = 2;   
-     * </pre>
-     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
@@ -2601,10 +2573,6 @@ public final class PlantComms {
 
       private boolean success_ ;
       /**
-       * <pre>
-       * string message = 2;   
-       * </pre>
-       *
        * <code>bool success = 1;</code>
        * @return The success.
        */
@@ -2613,10 +2581,6 @@ public final class PlantComms {
         return success_;
       }
       /**
-       * <pre>
-       * string message = 2;   
-       * </pre>
-       *
        * <code>bool success = 1;</code>
        * @param value The success to set.
        * @return This builder for chaining.
@@ -2629,10 +2593,6 @@ public final class PlantComms {
         return this;
       }
       /**
-       * <pre>
-       * string message = 2;   
-       * </pre>
-       *
        * <code>bool success = 1;</code>
        * @return This builder for chaining.
        */

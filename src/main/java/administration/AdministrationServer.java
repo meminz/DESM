@@ -28,12 +28,8 @@ public class AdministrationServer {
         startMqttSubscriber();
     }
 
-
-
     // in-memory storage for pollution data
     private static TreeMap<Long, List<PollutionReading>> pollutionByTimestamp = new TreeMap<>();
-
-
 
 
 //### MADE BY CLAUDE SONNET 4
