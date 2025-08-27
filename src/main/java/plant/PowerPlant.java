@@ -56,7 +56,8 @@ public class PowerPlant {
     /*
      * INIT
      */
-    public PowerPlant() {}
+    public PowerPlant() {
+    }
 
     public PowerPlant(String id, String listeningAddress, String adminServer) {
         this.plantId = id;
@@ -74,7 +75,7 @@ public class PowerPlant {
 
             // Start gRPC server for plant2plant communication
             startGrpcServer();
-            
+
             // Set up ring connections
             joinRingNetwork(plants);
 
@@ -85,7 +86,7 @@ public class PowerPlant {
             // startSensor();
 
             // Thread to handle stdin (only checks for exit command)
-            startShutdownListener();
+            startStdinListener();
 
             System.out.println("Plant correctly initialized.\n");
         } catch (Exception e) {
@@ -103,7 +104,7 @@ public class PowerPlant {
 
         int myIndex = findMyIndex(tmpList);
         int size = tmpList.size();
-        
+
         // ### MADE BY CLAUDE SONNET 4
         if (size > 1) {
             int nextIndex = (myIndex + 1) % size;
@@ -123,30 +124,28 @@ public class PowerPlant {
 
     }
 
-    
     private void sendGreetings() {
         if (nextPlantAddress == null) {
             System.out.println("No next plant - single node ring");
             return;
         }
-        
+
         try {
             System.out.println("Sending initial greeting to next plant: " + nextPlantAddress);
-            
+
             String[] parts = nextPlantAddress.split(":");
             ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-                .usePlaintext()
-                .build();
-            
-            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = 
-                PlantCommunicationGrpc.newBlockingStub(channel)
-                .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
-            
+                    .usePlaintext()
+                    .build();
+
+            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = PlantCommunicationGrpc.newBlockingStub(channel)
+                    .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
+
             GreetingsMessage greeting = GreetingsMessage.newBuilder()
-                .setPlantId(this.plantId)
-                .setListeningAddress(this.listeningAddress)
-                .build();
-            
+                    .setPlantId(this.plantId)
+                    .setListeningAddress(this.listeningAddress)
+                    .build();
+
             stub.sendGreetingsMessage(greeting);
 
         } catch (Exception e) {
@@ -155,7 +154,6 @@ public class PowerPlant {
         }
     }
 
-        
     private int findMyIndex(List<PlantInfo> plants) {
         for (int i = 0; i < plants.size(); i++)
             if (plants.get(i).getId().equals(plantId))
@@ -164,32 +162,32 @@ public class PowerPlant {
         return -1; // This can't happen
     }
 
-
     private void buildLocalTopology(PlantInfo[] plants) {
         synchronized (ringLock) {
             allPlants.clear();
             sortedPlantIds.clear();
-            
+
             // Local topology
             for (PlantInfo plant : plants)
                 allPlants.put(plant.getId(), plant.getListeningAddress());
-
 
             // Ring order
             for (String plantId : allPlants.keySet())
                 sortedPlantIds.add(plantId);
 
             sortedPlantIds.sort(String::compareTo);
-            
+
             System.out.println("Local topology built with " + allPlants.size() + " plants: " + sortedPlantIds);
         }
     }
 
     private void startElection(String requestId, int energyAmount) {
-        synchronized(electionLock) {
-            if (isProvidingEnergy) return;
+        synchronized (electionLock) {
+            if (isProvidingEnergy)
+                return;
 
-            if (isInElection && requestId.equals(currentElectionId)) return;
+            if (isInElection && requestId.equals(currentElectionId))
+                return;
 
             System.out.println("Starting election for request " + requestId);
 
@@ -200,20 +198,17 @@ public class PowerPlant {
             System.out.println("Current price: " + myPrice);
 
             ElectionMessage msg = ElectionMessage.newBuilder()
-                .setInitiatorId(plantId)
-                .setCurrentHolderId(plantId)
-                .setBestBid(myPrice)
-                .setCurrentWinnerId(plantId)
-                .setRequestId(requestId)
-                .setEnergyRequest(energyAmount)
-                .build();
-
+                    .setInitiatorId(plantId)
+                    .setCurrentHolderId(plantId)
+                    .setBestBid(myPrice)
+                    .setCurrentWinnerId(plantId)
+                    .setRequestId(requestId)
+                    .setEnergyRequest(energyAmount)
+                    .build();
 
             sendToNextPlant(msg);
         }
     }
-
-
 
     private void sendToNextPlant(ElectionMessage msg) {
         if (nextPlantAddress == null) {
@@ -223,25 +218,24 @@ public class PowerPlant {
 
         System.out.println("Sending election message to the next plant at " + nextPlantAddress);
 
-
         ManagedChannel channel = null;
 
         try {
-            // channel = ManagedChannelBuilder.forAddress(listeningAddress.split(":")[0], grpcPort)
+            // channel = ManagedChannelBuilder.forAddress(listeningAddress.split(":")[0],
+            // grpcPort)
             String[] parts = nextPlantAddress.split(":");
             channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-            .usePlaintext()
-            .build();
+                    .usePlaintext()
+                    .build();
 
-            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub =
-                PlantCommunicationGrpc.newBlockingStub(channel)
-                .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
+            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = PlantCommunicationGrpc.newBlockingStub(channel)
+                    .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
 
             System.out.println("Sending gRPC election message to: " + nextPlantAddress);
-            
+
             ElectionResponse response = stub.sendElectionMessage(msg);
 
-            if (response.getSuccess()) 
+            if (response.getSuccess())
                 System.out.println("Successfully sent election message");
             else
                 System.out.println("Error sending election message");
@@ -285,20 +279,19 @@ public class PowerPlant {
                     plantShutdown();
             }
         });
-        
+
         provideEnergy.start();
 
     }
 
-
     private void startGrpcServer() {
-        try{
+        try {
             grpcPort = Integer.parseInt(listeningAddress.split(":")[1]);
 
             grpcServer = ServerBuilder.forPort(grpcPort)
-            .addService(new PlantCommsService())
-            .build()
-            .start();
+                    .addService(new PlantCommsService())
+                    .build()
+                    .start();
 
             System.out.println("gRPC server started on port: " + grpcPort);
 
@@ -313,7 +306,7 @@ public class PowerPlant {
         }
     }
 
-// ### MADE BY CLAUDE 4
+    // ### MADE BY CLAUDE 4
     private void handleNewPlantJoined(String newPlantId, String newListeningAddress) {
         synchronized (ringLock) {
             // If this greeting is from myself, the message completed the ring
@@ -323,10 +316,10 @@ public class PowerPlant {
             }
 
             System.out.println("Adding plant " + newPlantId + " to local topology");
-            
+
             // Add new plant to local topology
             allPlants.put(newPlantId, newListeningAddress);
-            
+
             // Rebuild sorted list
             sortedPlantIds.clear();
             for (String plantId : allPlants.keySet())
@@ -337,21 +330,19 @@ public class PowerPlant {
             // Recalculate my ring connections based on new topology
             recalculateRingConnections();
 
-            
             System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress + "\n");
             forwardGreetings(newPlantId, newListeningAddress);
-       }
-        
-    }
-// ###
+        }
 
+    }
+    // ###
 
     private void forwardGreetings(String originPlantId, String originAddress) {
         if (nextPlantAddress == null) {
             System.out.println("No next plant to forward to.");
             return;
         }
-        
+
         int RETRIES = 3;
         int WAIT_TIME = 5000; // 5 sec
 
@@ -361,27 +352,27 @@ public class PowerPlant {
             try {
                 String[] parts = nextPlantAddress.split(":");
                 ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-                    .usePlaintext()
-                    .build();
-                
-                PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = 
-                    PlantCommunicationGrpc.newBlockingStub(channel)
-                    .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
-                
+                        .usePlaintext()
+                        .build();
+
+                PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = PlantCommunicationGrpc
+                        .newBlockingStub(channel)
+                        .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
+
                 GreetingsMessage greeting = GreetingsMessage.newBuilder()
-                    .setPlantId(originPlantId)  // Keep original sender
-                    .setListeningAddress(originAddress)
-                    .build();
-                
+                        .setPlantId(originPlantId) // Keep original sender
+                        .setListeningAddress(originAddress)
+                        .build();
+
                 GreetingsResponse response = stub.sendGreetingsMessage(greeting);
                 System.out.println("Greeting forwarded successfully: " + response.getSuccess());
-                
+
                 channel.shutdown();
                 break;
             } catch (Exception e) {
                 System.out.println("Attempt " + attempt + " failed");
                 System.err.println("Error forwarding greeting: " + e.getMessage());
-                
+
                 if (attempt < RETRIES - 1) {
                     System.out.println("Retrying forwarding greetings in " + WAIT_TIME + "ms...");
 
@@ -397,77 +388,77 @@ public class PowerPlant {
                     e.printStackTrace();
                     recalculateRingConnections();
                 }
-                
+
             }
         }
-        
+
     }
 
-    // private void forwardGreetingsAsync(String originPlantId, String originAddress) {
-    //     if (nextPlantAddress == null) {
-    //         System.out.println("No next plant to forward to.");
-    //         return;
-    //     }
-
-    //     try {
-    //         String[] parts = nextPlantAddress.split(":");
-    //         ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-    //             .usePlaintext()
-    //             .build();
-            
-    //         PlantCommunicationGrpc.PlantCommunicationStub asyncStub = 
-    //             PlantCommunicationGrpc.newStub(channel)
-    //             .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
-            
-    //         GreetingsMessage greeting = GreetingsMessage.newBuilder()
-    //             .setPlantId(originPlantId)  // Keep original sender
-    //             .setListeningAddress(originAddress)
-    //             .build();
-            
-    //         asyncStub.sendGreetingsMessage(
-    //             greeting,
-    //             new StreamObserver<GreetingsResponse>() {
-
-    //                 @Override
-    //                 public void onNext(GreetingsResponse response) {
-    //                     System.out.println("Greetings message forwarded: " + response.getSuccess());
-    //                 }
-
-    //                 @Override
-    //                 public void onError(Throwable t) {
-    //                     System.out.println("Error forwarding greeting: "  + t.getMessage());
-    //                 }
-
-    //                 @Override
-    //                 public void onCompleted() {
-    //                     System.out.println();
-    //                     channel.shutdown();
-    //                 };
-
-    //             }
-    //         );
-
-
-    //     } catch (Exception e) {
-    //         System.err.println("Error forwarding greeting: " + e.getMessage());
-            
-    //     }
-        
+    // private void forwardGreetingsAsync(String originPlantId, String
+    // originAddress) {
+    // if (nextPlantAddress == null) {
+    // System.out.println("No next plant to forward to.");
+    // return;
     // }
 
+    // try {
+    // String[] parts = nextPlantAddress.split(":");
+    // ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0],
+    // Integer.parseInt(parts[1]))
+    // .usePlaintext()
+    // .build();
+
+    // PlantCommunicationGrpc.PlantCommunicationStub asyncStub =
+    // PlantCommunicationGrpc.newStub(channel)
+    // .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
+
+    // GreetingsMessage greeting = GreetingsMessage.newBuilder()
+    // .setPlantId(originPlantId) // Keep original sender
+    // .setListeningAddress(originAddress)
+    // .build();
+
+    // asyncStub.sendGreetingsMessage(
+    // greeting,
+    // new StreamObserver<GreetingsResponse>() {
+
+    // @Override
+    // public void onNext(GreetingsResponse response) {
+    // System.out.println("Greetings message forwarded: " + response.getSuccess());
+    // }
+
+    // @Override
+    // public void onError(Throwable t) {
+    // System.out.println("Error forwarding greeting: " + t.getMessage());
+    // }
+
+    // @Override
+    // public void onCompleted() {
+    // System.out.println();
+    // channel.shutdown();
+    // };
+
+    // }
+    // );
+
+    // } catch (Exception e) {
+    // System.err.println("Error forwarding greeting: " + e.getMessage());
+
+    // }
+
+    // }
 
     private void recalculateRingConnections() {
         isUpdatingRing = true;
 
         int myIndex = sortedPlantIds.indexOf(plantId);
         int size = sortedPlantIds.size();
-        
+
         if (size > 1) {
             // Calculate next plant
             int nextIndex = (myIndex + 1) % size;
             String nextId = sortedPlantIds.get(nextIndex);
             nextPlantAddress = allPlants.get(nextId);
-            
+
             // Calculate previous plant
             int prevIndex = (myIndex - 1 + size) % size;
             String prevId = sortedPlantIds.get(prevIndex);
@@ -483,8 +474,7 @@ public class PowerPlant {
         System.out.println("My connections: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
 
     }
-// ###
-
+    // ###
 
     private void handleIncomingElectionMessage(ElectionMessage proto) {
 
@@ -496,9 +486,9 @@ public class PowerPlant {
             String requestId = proto.getRequestId();
             int energyAmount = proto.getEnergyRequest();
 
-            System.out.println(requestId + " |==> Processing election message: initiator=" + initiatorId + 
-                          ", bestBid=" + bestBid + 
-                          ", bestCandidate=" + currentWinnerId);
+            System.out.println(requestId + " |==> Processing election message: initiator=" + initiatorId +
+                    ", bestBid=" + bestBid +
+                    ", bestCandidate=" + currentWinnerId);
 
             try {
                 Thread.sleep(5000);
@@ -506,13 +496,11 @@ public class PowerPlant {
                 e.printStackTrace();
             }
 
-            
             // This should never happen
             if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
                 System.out.println("WTF - Received message from myself");
-                return;   
+                return;
             }
-
 
             // If my message comes back to me, election is complete
             if (initiatorId.equals(plantId)) {
@@ -523,11 +511,9 @@ public class PowerPlant {
                 return;
             }
 
-
             ElectionMessage updatedMessage = proto.toBuilder()
-                .setCurrentHolderId(plantId)
-                .build();
-
+                    .setCurrentHolderId(plantId)
+                    .build();
 
             // If I'm busy, just forward the message
             if (isProvidingEnergy) {
@@ -543,13 +529,12 @@ public class PowerPlant {
                 return;
             }
 
-
             if (ImBetterCandidate(myPrice, plantId, bestBid, currentWinnerId)) {
                 System.out.println("I'm a better candidate: " + myPrice + " < " + bestBid + "\tNot forwarding.");
                 updatedMessage = updatedMessage.toBuilder()
-                    .setBestBid(myPrice)
-                    .setCurrentWinnerId(plantId)
-                    .build();
+                        .setBestBid(myPrice)
+                        .setCurrentWinnerId(plantId)
+                        .build();
 
                 System.out.println("Plant " + plantId + " is now the best candidate");
 
@@ -560,11 +545,10 @@ public class PowerPlant {
         }
     }
 
-    
     private void handleElectionComplete(String winnerId, String requestId, int energyAmount) {
         synchronized (electionLock) {
             System.out.println("\n--- Election Complete ---" +
-                "\nWinner: " + winnerId + " for request " + requestId);
+                    "\nWinner: " + winnerId + " for request " + requestId);
 
             if (winnerId.equals(plantId))
                 handleElectionWin(requestId, energyAmount);
@@ -577,7 +561,7 @@ public class PowerPlant {
             if (pendingShutdown)
                 plantShutdown();
         }
-        
+
     }
 
     private boolean ImBetterCandidate(double myPrice, String plantId, double bestBid, String currentWinnerId) {
@@ -590,7 +574,6 @@ public class PowerPlant {
     private void handlePlantLeaving(FarewellMessage farewell) {
         String leavingPlantId = farewell.getPlantId();
         String prevPlantId = farewell.getPrevPlantId();
-
 
         allPlants.remove(leavingPlantId);
         sortedPlantIds.removeIf(i -> i.equals(leavingPlantId));
@@ -605,12 +588,11 @@ public class PowerPlant {
         String[] parts = nextPlantAddress.split(":");
 
         ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-            .usePlaintext()
-            .build();
-        
-        PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = 
-            PlantCommunicationGrpc.newBlockingStub(channel)
-            .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
+                .usePlaintext()
+                .build();
+
+        PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = PlantCommunicationGrpc.newBlockingStub(channel)
+                .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
 
         FarewellResponse response = stub.sendFarewellMessage(farewell);
 
@@ -618,23 +600,24 @@ public class PowerPlant {
             System.out.println("Farewell message successfully forwarded.");
 
     }
-    
+
     /*
      * gRPC
      */
     private class PlantCommsService extends PlantCommunicationImplBase {
-    // Service as a subclass to handle synchronization problems easier
+        // Service as a subclass to handle synchronization problems easier
 
         @Override
         public void sendGreetingsMessage(GreetingsMessage request, StreamObserver<GreetingsResponse> responseObserver) {
             try {
-                System.out.println("New plant introduced: " + request.getPlantId() + "@" + request.getListeningAddress());
+                System.out
+                        .println("New plant introduced: " + request.getPlantId() + "@" + request.getListeningAddress());
 
                 GreetingsResponse response = GreetingsResponse.newBuilder()
-                    .setSuccess(true)
-                    // .setIsInElection(isInElection)
-                    // .setMessage("Plant introduction processed")
-                    .build();
+                        .setSuccess(true)
+                        // .setIsInElection(isInElection)
+                        // .setMessage("Plant introduction processed")
+                        .build();
 
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
@@ -643,7 +626,7 @@ public class PowerPlant {
                 Context.ROOT.run(() -> {
                     handleNewPlantJoined(request.getPlantId(), request.getListeningAddress());
                 });
-                
+
             } catch (Exception e) {
                 System.out.println("Error processing plant introduction: " + e.getMessage());
                 e.printStackTrace();
@@ -652,18 +635,16 @@ public class PowerPlant {
 
         @Override
         public void sendElectionMessage(ElectionMessage request, StreamObserver<ElectionResponse> responseObserver) {
-            try{
+            try {
                 System.out.println("Received election message from: " + request.getCurrentHolderId());
 
-
                 ElectionResponse response = ElectionResponse.newBuilder()
-                    .setSuccess(true)
-                    // .setMessage("Election message processed")
-                    .build();
+                        .setSuccess(true)
+                        // .setMessage("Election message processed")
+                        .build();
 
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
-
 
                 Context.ROOT.run(() -> {
                     handleIncomingElectionMessage(request);
@@ -683,8 +664,8 @@ public class PowerPlant {
                 System.out.println("Received farewell from plant " + request.getPlantId());
 
                 FarewellResponse response = FarewellResponse.newBuilder()
-                    .setSuccess(true)
-                    .build();
+                        .setSuccess(true)
+                        .build();
 
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
@@ -779,7 +760,6 @@ public class PowerPlant {
     }
     // ###
 
-
     /*
      * MQTT
      */
@@ -793,22 +773,21 @@ public class PowerPlant {
         mqttClient.setCallback(new MqttCallback() {
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-            try{
-                if (ENERGY_TOPIC.equals(topic)){
-                    String jsonMessage = new String(message.getPayload());
-                    JSONObject json = new JSONObject(jsonMessage);
-                    String requestId = json.getString("requestId");
-                    int energyAmount = json.getInt("energyAmount");
+                try {
+                    if (ENERGY_TOPIC.equals(topic)) {
+                        String jsonMessage = new String(message.getPayload());
+                        JSONObject json = new JSONObject(jsonMessage);
+                        String requestId = json.getString("requestId");
+                        int energyAmount = json.getInt("energyAmount");
 
-                    System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
+                        System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
 
-                    
-                    // Handle energy request (start election)
-                    startElection(requestId, energyAmount);
+                        // Handle energy request (start election)
+                        startElection(requestId, energyAmount);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             }
 
@@ -850,8 +829,6 @@ public class PowerPlant {
         }
     }
 
-
-
     private void disconnectMqttClients() {
         try {
             // Disconnect pollution MQTT client
@@ -862,7 +839,7 @@ public class PowerPlant {
 
             // Disconnect energy request MQTT client
             if (mqttClient != null && mqttClient.isConnected()) { // energyMqttClient.disconnect();
-            mqttClient.close();
+                mqttClient.close();
             }
 
             System.out.println("MQTT clients disconnected.");
@@ -875,9 +852,10 @@ public class PowerPlant {
     /*
      * SHUTDOWN
      */
-    private void startShutdownListener() {
-    // Actually a stdin listener, but for now there is just the exit command
-        Thread shutdownThread = new Thread(() -> {
+    private void startStdinListener() {
+        // For now there is just the exit command
+        Thread StdinThread = new Thread(() -> {
+            @SuppressWarnings("resource")
             Scanner scanner = new Scanner(System.in);
 
             while (!isShuttingDown) {
@@ -891,8 +869,8 @@ public class PowerPlant {
             }
         });
 
-        shutdownThread.setDaemon(true); // Allows JVM to exit
-        shutdownThread.start();
+        StdinThread.setDaemon(true); // Allows JVM to exit
+        StdinThread.start();
     }
 
     public void plantShutdown() {
@@ -900,23 +878,22 @@ public class PowerPlant {
 
         if (isInElection || isProvidingEnergy) {
             System.out.println(
-                isInElection ? "Currently in election, shutting down later..." : "Currently providing energy, shutting down late"
-            );
+                    isInElection ? "Currently in election, shutting down later..."
+                            : "Currently providing energy, shutting down late");
             pendingShutdown = true;
             return;
         }
 
         try {
-            // 1. Notify other plants 
+            // 1. Notify other plants
             if (nextPlantAddress != null)
                 notifyOtherPlants();
 
             // 2. Notify administration server
             notifyAdminServerLeaving();
 
-            // 3. Disconnect MQTT clients
-            disconnectMqttClients();
-            
+
+
             // 4. Stop sensor and processing
             stopSensorAndProcessing();
 
@@ -935,22 +912,21 @@ public class PowerPlant {
             String[] parts = nextPlantAddress.split(":");
 
             ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1]))
-                .usePlaintext()
-                .build();
-            
-            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = 
-                PlantCommunicationGrpc.newBlockingStub(channel)
-                .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
-            
+                    .usePlaintext()
+                    .build();
+
+            PlantCommunicationGrpc.PlantCommunicationBlockingStub stub = PlantCommunicationGrpc.newBlockingStub(channel)
+                    .withDeadlineAfter(5, java.util.concurrent.TimeUnit.SECONDS);
+
             int prevPlantIndex = sortedPlantIds.indexOf(plantId) - 1;
             if (prevPlantIndex < 0)
                 prevPlantIndex += sortedPlantIds.size();
 
             FarewellMessage farewell = FarewellMessage.newBuilder()
-                .setPlantId(this.plantId)
-                .setPrevPlantId(sortedPlantIds.get(prevPlantIndex))
-                .build();
-            
+                    .setPlantId(this.plantId)
+                    .setPrevPlantId(sortedPlantIds.get(prevPlantIndex))
+                    .build();
+
             FarewellResponse response = stub.sendFarewellMessage(farewell);
 
             if (response.getSuccess()) {
@@ -963,24 +939,20 @@ public class PowerPlant {
         }
     }
 
-    
-
     private void notifyAdminServerLeaving() {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String url = "http://" + adminServer + "/plants/delete/" + plantId;
-            
+
             restTemplate.delete(url);
             System.out.println("Successfully notified admin server of shutdown.");
-            
+
         } catch (Exception e) {
             System.err.println("Error notifying admin server: " + e.getMessage());
         }
     }
     // ###
 
-
-    
     /*
      * GETTERS and SETTERS
      */
