@@ -17,18 +17,35 @@ public class PlantClient {
         String postPath = "/plants/add";
 
         String listening = "localhost:";
-        String port = "-1";
+        int port = -1;
         String administration = "localhost:8080";
         String id = "-1";
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Insert port number: ");
-        try {
-            port = inFromUser.readLine();
-            listening += port;
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        while (true) {
+            System.out.print("Insert port number: ");
+            
+            try {
+                port = Integer.parseInt(inFromUser.readLine());
+
+                // In my case I should also check if the port is already being used by another plant
+                // but in a real scenario this is not needed
+                // each plant would have same port and different address
+                if ((int)Math.log10(port) + 1 == 4)
+                    break;
+                else throw new NumberFormatException();
+                
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NumberFormatException ne) {
+                System.out.println("You must insert a 4 digit integer number. Try again.");
+            }
+
         }
+
+        listening += port;
 
         PowerPlant plant = null;
         while (true){

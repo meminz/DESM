@@ -48,6 +48,6 @@ public class PlantService {
 
     public synchronized void removePlantById(String id){
         plantsList.removeIf(p -> p.getId().equals(id));
-        idsList.removeIf(p -> p.equals(id));
+        idsList.removeIf(i -> i.equals(id));
     }
 }

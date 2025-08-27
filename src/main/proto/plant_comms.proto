@@ -1,8 +1,10 @@
 syntax = "proto3";
 
-option java_package = "plant.grpc";
-
 package plantcomms;
+
+option java_package = "plant.grpc";
+option java_outer_classname = "PlantComms";
+
 
 service PlantCommunication {
     rpc SendGreetingsMessage(GreetingsMessage) returns (GreetingsResponse);
@@ -10,6 +12,8 @@ service PlantCommunication {
     rpc SendElectionMessage(ElectionMessage) returns (ElectionResponse);
 
     // rpc SendWinnerMessage(WinnerMessage) returns (WinnerResponse);
+
+    rpc SendFarewellMessage(FarewellMessage) returns (FarewellResponse);
 }
 
 message GreetingsMessage {
@@ -19,8 +23,7 @@ message GreetingsMessage {
 
 message GreetingsResponse {
     bool success = 1;
-    // bool isInElection = 2;
-    string message = 3;
+    // string message = 2;
 }
 
 message ElectionMessage {
@@ -34,7 +37,7 @@ message ElectionMessage {
 
 message ElectionResponse {
     bool success = 1;
-    string message = 2;   
+    // string message = 2;   
 }
 
 // message WinnerMessage {
@@ -46,3 +49,12 @@ message ElectionResponse {
 //     bool success = 1;
 //     string message = 2;
 // }
+
+message FarewellMessage {
+    string plant_id = 1;
+    string prev_plant_id = 2;
+}
+
+message FarewellResponse {
+    bool success = 1;
+}

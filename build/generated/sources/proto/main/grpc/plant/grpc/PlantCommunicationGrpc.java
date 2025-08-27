@@ -77,6 +77,37 @@ public final class PlantCommunicationGrpc {
     return getSendElectionMessageMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<plant.grpc.PlantComms.FarewellMessage,
+      plant.grpc.PlantComms.FarewellResponse> getSendFarewellMessageMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SendFarewellMessage",
+      requestType = plant.grpc.PlantComms.FarewellMessage.class,
+      responseType = plant.grpc.PlantComms.FarewellResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<plant.grpc.PlantComms.FarewellMessage,
+      plant.grpc.PlantComms.FarewellResponse> getSendFarewellMessageMethod() {
+    io.grpc.MethodDescriptor<plant.grpc.PlantComms.FarewellMessage, plant.grpc.PlantComms.FarewellResponse> getSendFarewellMessageMethod;
+    if ((getSendFarewellMessageMethod = PlantCommunicationGrpc.getSendFarewellMessageMethod) == null) {
+      synchronized (PlantCommunicationGrpc.class) {
+        if ((getSendFarewellMessageMethod = PlantCommunicationGrpc.getSendFarewellMessageMethod) == null) {
+          PlantCommunicationGrpc.getSendFarewellMessageMethod = getSendFarewellMessageMethod =
+              io.grpc.MethodDescriptor.<plant.grpc.PlantComms.FarewellMessage, plant.grpc.PlantComms.FarewellResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendFarewellMessage"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  plant.grpc.PlantComms.FarewellMessage.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  plant.grpc.PlantComms.FarewellResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new PlantCommunicationMethodDescriptorSupplier("SendFarewellMessage"))
+              .build();
+        }
+      }
+    }
+    return getSendFarewellMessageMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -153,6 +184,13 @@ public final class PlantCommunicationGrpc {
         io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSendElectionMessageMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void sendFarewellMessage(plant.grpc.PlantComms.FarewellMessage request,
+        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.FarewellResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSendFarewellMessageMethod(), responseObserver);
+    }
   }
 
   /**
@@ -197,6 +235,14 @@ public final class PlantCommunicationGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSendElectionMessageMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void sendFarewellMessage(plant.grpc.PlantComms.FarewellMessage request,
+        io.grpc.stub.StreamObserver<plant.grpc.PlantComms.FarewellResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSendFarewellMessageMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -228,6 +274,13 @@ public final class PlantCommunicationGrpc {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSendElectionMessageMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public plant.grpc.PlantComms.FarewellResponse sendFarewellMessage(plant.grpc.PlantComms.FarewellMessage request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSendFarewellMessageMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -258,6 +311,13 @@ public final class PlantCommunicationGrpc {
     public plant.grpc.PlantComms.ElectionResponse sendElectionMessage(plant.grpc.PlantComms.ElectionMessage request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSendElectionMessageMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public plant.grpc.PlantComms.FarewellResponse sendFarewellMessage(plant.grpc.PlantComms.FarewellMessage request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSendFarewellMessageMethod(), getCallOptions(), request);
     }
   }
 
@@ -292,10 +352,19 @@ public final class PlantCommunicationGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSendElectionMessageMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<plant.grpc.PlantComms.FarewellResponse> sendFarewellMessage(
+        plant.grpc.PlantComms.FarewellMessage request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSendFarewellMessageMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SEND_GREETINGS_MESSAGE = 0;
   private static final int METHODID_SEND_ELECTION_MESSAGE = 1;
+  private static final int METHODID_SEND_FAREWELL_MESSAGE = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -321,6 +390,10 @@ public final class PlantCommunicationGrpc {
         case METHODID_SEND_ELECTION_MESSAGE:
           serviceImpl.sendElectionMessage((plant.grpc.PlantComms.ElectionMessage) request,
               (io.grpc.stub.StreamObserver<plant.grpc.PlantComms.ElectionResponse>) responseObserver);
+          break;
+        case METHODID_SEND_FAREWELL_MESSAGE:
+          serviceImpl.sendFarewellMessage((plant.grpc.PlantComms.FarewellMessage) request,
+              (io.grpc.stub.StreamObserver<plant.grpc.PlantComms.FarewellResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -354,6 +427,13 @@ public final class PlantCommunicationGrpc {
               plant.grpc.PlantComms.ElectionMessage,
               plant.grpc.PlantComms.ElectionResponse>(
                 service, METHODID_SEND_ELECTION_MESSAGE)))
+        .addMethod(
+          getSendFarewellMessageMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              plant.grpc.PlantComms.FarewellMessage,
+              plant.grpc.PlantComms.FarewellResponse>(
+                service, METHODID_SEND_FAREWELL_MESSAGE)))
         .build();
   }
 
@@ -404,6 +484,7 @@ public final class PlantCommunicationGrpc {
               .setSchemaDescriptor(new PlantCommunicationFileDescriptorSupplier())
               .addMethod(getSendGreetingsMessageMethod())
               .addMethod(getSendElectionMessageMethod())
+              .addMethod(getSendFarewellMessageMethod())
               .build();
         }
       }

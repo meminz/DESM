@@ -1,5 +1,4 @@
 package administration;
-import administration.model.PollutionReading;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import administration.model.PollutionReading;
 
 @SpringBootApplication
 public class AdministrationServer {

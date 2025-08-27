@@ -689,30 +689,14 @@ public final class PlantComms {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * string message = 2;
+     * </pre>
+     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
     boolean getSuccess();
-
-    /**
-     * <pre>
-     * bool isInElection = 2;
-     * </pre>
-     *
-     * <code>string message = 3;</code>
-     * @return The message.
-     */
-    java.lang.String getMessage();
-    /**
-     * <pre>
-     * bool isInElection = 2;
-     * </pre>
-     *
-     * <code>string message = 3;</code>
-     * @return The bytes for message.
-     */
-    com.google.protobuf.ByteString
-        getMessageBytes();
   }
   /**
    * Protobuf type {@code plantcomms.GreetingsResponse}
@@ -736,7 +720,6 @@ public final class PlantComms {
       super(builder);
     }
     private GreetingsResponse() {
-      message_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -755,59 +738,16 @@ public final class PlantComms {
     public static final int SUCCESS_FIELD_NUMBER = 1;
     private boolean success_ = false;
     /**
+     * <pre>
+     * string message = 2;
+     * </pre>
+     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
     @java.lang.Override
     public boolean getSuccess() {
       return success_;
-    }
-
-    public static final int MESSAGE_FIELD_NUMBER = 3;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object message_ = "";
-    /**
-     * <pre>
-     * bool isInElection = 2;
-     * </pre>
-     *
-     * <code>string message = 3;</code>
-     * @return The message.
-     */
-    @java.lang.Override
-    public java.lang.String getMessage() {
-      java.lang.Object ref = message_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        message_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * bool isInElection = 2;
-     * </pre>
-     *
-     * <code>string message = 3;</code>
-     * @return The bytes for message.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getMessageBytes() {
-      java.lang.Object ref = message_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        message_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -827,9 +767,6 @@ public final class PlantComms {
       if (success_ != false) {
         output.writeBool(1, success_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 3, message_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -842,9 +779,6 @@ public final class PlantComms {
       if (success_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(1, success_);
-      }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, message_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -863,8 +797,6 @@ public final class PlantComms {
 
       if (getSuccess()
           != other.getSuccess()) return false;
-      if (!getMessage()
-          .equals(other.getMessage())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -879,8 +811,6 @@ public final class PlantComms {
       hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getSuccess());
-      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getMessage().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1013,7 +943,6 @@ public final class PlantComms {
         super.clear();
         bitField0_ = 0;
         success_ = false;
-        message_ = "";
         return this;
       }
 
@@ -1050,9 +979,6 @@ public final class PlantComms {
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.success_ = success_;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.message_ = message_;
-        }
       }
 
       @java.lang.Override
@@ -1069,11 +995,6 @@ public final class PlantComms {
         if (other == plant.grpc.PlantComms.GreetingsResponse.getDefaultInstance()) return this;
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
-        }
-        if (!other.getMessage().isEmpty()) {
-          message_ = other.message_;
-          bitField0_ |= 0x00000002;
-          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1106,11 +1027,6 @@ public final class PlantComms {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 8
-              case 26: {
-                message_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1130,6 +1046,10 @@ public final class PlantComms {
 
       private boolean success_ ;
       /**
+       * <pre>
+       * string message = 2;
+       * </pre>
+       *
        * <code>bool success = 1;</code>
        * @return The success.
        */
@@ -1138,6 +1058,10 @@ public final class PlantComms {
         return success_;
       }
       /**
+       * <pre>
+       * string message = 2;
+       * </pre>
+       *
        * <code>bool success = 1;</code>
        * @param value The success to set.
        * @return This builder for chaining.
@@ -1150,104 +1074,16 @@ public final class PlantComms {
         return this;
       }
       /**
+       * <pre>
+       * string message = 2;
+       * </pre>
+       *
        * <code>bool success = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearSuccess() {
         bitField0_ = (bitField0_ & ~0x00000001);
         success_ = false;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object message_ = "";
-      /**
-       * <pre>
-       * bool isInElection = 2;
-       * </pre>
-       *
-       * <code>string message = 3;</code>
-       * @return The message.
-       */
-      public java.lang.String getMessage() {
-        java.lang.Object ref = message_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          message_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * bool isInElection = 2;
-       * </pre>
-       *
-       * <code>string message = 3;</code>
-       * @return The bytes for message.
-       */
-      public com.google.protobuf.ByteString
-          getMessageBytes() {
-        java.lang.Object ref = message_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          message_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * bool isInElection = 2;
-       * </pre>
-       *
-       * <code>string message = 3;</code>
-       * @param value The message to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMessage(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        message_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * bool isInElection = 2;
-       * </pre>
-       *
-       * <code>string message = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMessage() {
-        message_ = getDefaultInstance().getMessage();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * bool isInElection = 2;
-       * </pre>
-       *
-       * <code>string message = 3;</code>
-       * @param value The bytes for message to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMessageBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        message_ = value;
-        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -2408,22 +2244,14 @@ public final class PlantComms {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * string message = 2;   
+     * </pre>
+     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
     boolean getSuccess();
-
-    /**
-     * <code>string message = 2;</code>
-     * @return The message.
-     */
-    java.lang.String getMessage();
-    /**
-     * <code>string message = 2;</code>
-     * @return The bytes for message.
-     */
-    com.google.protobuf.ByteString
-        getMessageBytes();
   }
   /**
    * Protobuf type {@code plantcomms.ElectionResponse}
@@ -2447,7 +2275,6 @@ public final class PlantComms {
       super(builder);
     }
     private ElectionResponse() {
-      message_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -2466,51 +2293,16 @@ public final class PlantComms {
     public static final int SUCCESS_FIELD_NUMBER = 1;
     private boolean success_ = false;
     /**
+     * <pre>
+     * string message = 2;   
+     * </pre>
+     *
      * <code>bool success = 1;</code>
      * @return The success.
      */
     @java.lang.Override
     public boolean getSuccess() {
       return success_;
-    }
-
-    public static final int MESSAGE_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object message_ = "";
-    /**
-     * <code>string message = 2;</code>
-     * @return The message.
-     */
-    @java.lang.Override
-    public java.lang.String getMessage() {
-      java.lang.Object ref = message_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        message_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string message = 2;</code>
-     * @return The bytes for message.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getMessageBytes() {
-      java.lang.Object ref = message_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        message_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2530,9 +2322,6 @@ public final class PlantComms {
       if (success_ != false) {
         output.writeBool(1, success_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, message_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2545,9 +2334,6 @@ public final class PlantComms {
       if (success_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(1, success_);
-      }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(message_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, message_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -2566,8 +2352,6 @@ public final class PlantComms {
 
       if (getSuccess()
           != other.getSuccess()) return false;
-      if (!getMessage()
-          .equals(other.getMessage())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2582,8 +2366,6 @@ public final class PlantComms {
       hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getSuccess());
-      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getMessage().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2716,7 +2498,6 @@ public final class PlantComms {
         super.clear();
         bitField0_ = 0;
         success_ = false;
-        message_ = "";
         return this;
       }
 
@@ -2753,9 +2534,6 @@ public final class PlantComms {
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.success_ = success_;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.message_ = message_;
-        }
       }
 
       @java.lang.Override
@@ -2772,11 +2550,6 @@ public final class PlantComms {
         if (other == plant.grpc.PlantComms.ElectionResponse.getDefaultInstance()) return this;
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
-        }
-        if (!other.getMessage().isEmpty()) {
-          message_ = other.message_;
-          bitField0_ |= 0x00000002;
-          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2809,11 +2582,6 @@ public final class PlantComms {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 8
-              case 18: {
-                message_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2833,6 +2601,10 @@ public final class PlantComms {
 
       private boolean success_ ;
       /**
+       * <pre>
+       * string message = 2;   
+       * </pre>
+       *
        * <code>bool success = 1;</code>
        * @return The success.
        */
@@ -2841,6 +2613,10 @@ public final class PlantComms {
         return success_;
       }
       /**
+       * <pre>
+       * string message = 2;   
+       * </pre>
+       *
        * <code>bool success = 1;</code>
        * @param value The success to set.
        * @return This builder for chaining.
@@ -2853,84 +2629,16 @@ public final class PlantComms {
         return this;
       }
       /**
+       * <pre>
+       * string message = 2;   
+       * </pre>
+       *
        * <code>bool success = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearSuccess() {
         bitField0_ = (bitField0_ & ~0x00000001);
         success_ = false;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object message_ = "";
-      /**
-       * <code>string message = 2;</code>
-       * @return The message.
-       */
-      public java.lang.String getMessage() {
-        java.lang.Object ref = message_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          message_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string message = 2;</code>
-       * @return The bytes for message.
-       */
-      public com.google.protobuf.ByteString
-          getMessageBytes() {
-        java.lang.Object ref = message_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          message_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string message = 2;</code>
-       * @param value The message to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMessage(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        message_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string message = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMessage() {
-        message_ = getDefaultInstance().getMessage();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string message = 2;</code>
-       * @param value The bytes for message to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMessageBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        message_ = value;
-        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -2986,6 +2694,1099 @@ public final class PlantComms {
 
   }
 
+  public interface FarewellMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:plantcomms.FarewellMessage)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The plantId.
+     */
+    java.lang.String getPlantId();
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The bytes for plantId.
+     */
+    com.google.protobuf.ByteString
+        getPlantIdBytes();
+
+    /**
+     * <code>string prev_plant_id = 2;</code>
+     * @return The prevPlantId.
+     */
+    java.lang.String getPrevPlantId();
+    /**
+     * <code>string prev_plant_id = 2;</code>
+     * @return The bytes for prevPlantId.
+     */
+    com.google.protobuf.ByteString
+        getPrevPlantIdBytes();
+  }
+  /**
+   * Protobuf type {@code plantcomms.FarewellMessage}
+   */
+  public static final class FarewellMessage extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:plantcomms.FarewellMessage)
+      FarewellMessageOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 31,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        FarewellMessage.class.getName());
+    }
+    // Use FarewellMessage.newBuilder() to construct.
+    private FarewellMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private FarewellMessage() {
+      plantId_ = "";
+      prevPlantId_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_FarewellMessage_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_FarewellMessage_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              plant.grpc.PlantComms.FarewellMessage.class, plant.grpc.PlantComms.FarewellMessage.Builder.class);
+    }
+
+    public static final int PLANT_ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object plantId_ = "";
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The plantId.
+     */
+    @java.lang.Override
+    public java.lang.String getPlantId() {
+      java.lang.Object ref = plantId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        plantId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string plant_id = 1;</code>
+     * @return The bytes for plantId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlantIdBytes() {
+      java.lang.Object ref = plantId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        plantId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PREV_PLANT_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object prevPlantId_ = "";
+    /**
+     * <code>string prev_plant_id = 2;</code>
+     * @return The prevPlantId.
+     */
+    @java.lang.Override
+    public java.lang.String getPrevPlantId() {
+      java.lang.Object ref = prevPlantId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        prevPlantId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string prev_plant_id = 2;</code>
+     * @return The bytes for prevPlantId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPrevPlantIdBytes() {
+      java.lang.Object ref = prevPlantId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        prevPlantId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(plantId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, plantId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(prevPlantId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, prevPlantId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(plantId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, plantId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(prevPlantId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, prevPlantId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof plant.grpc.PlantComms.FarewellMessage)) {
+        return super.equals(obj);
+      }
+      plant.grpc.PlantComms.FarewellMessage other = (plant.grpc.PlantComms.FarewellMessage) obj;
+
+      if (!getPlantId()
+          .equals(other.getPlantId())) return false;
+      if (!getPrevPlantId()
+          .equals(other.getPrevPlantId())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPlantId().hashCode();
+      hash = (37 * hash) + PREV_PLANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPrevPlantId().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static plant.grpc.PlantComms.FarewellMessage parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static plant.grpc.PlantComms.FarewellMessage parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.FarewellMessage parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(plant.grpc.PlantComms.FarewellMessage prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code plantcomms.FarewellMessage}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:plantcomms.FarewellMessage)
+        plant.grpc.PlantComms.FarewellMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_FarewellMessage_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_FarewellMessage_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                plant.grpc.PlantComms.FarewellMessage.class, plant.grpc.PlantComms.FarewellMessage.Builder.class);
+      }
+
+      // Construct using plant.grpc.PlantComms.FarewellMessage.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        plantId_ = "";
+        prevPlantId_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_FarewellMessage_descriptor;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.FarewellMessage getDefaultInstanceForType() {
+        return plant.grpc.PlantComms.FarewellMessage.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.FarewellMessage build() {
+        plant.grpc.PlantComms.FarewellMessage result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.FarewellMessage buildPartial() {
+        plant.grpc.PlantComms.FarewellMessage result = new plant.grpc.PlantComms.FarewellMessage(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(plant.grpc.PlantComms.FarewellMessage result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.plantId_ = plantId_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.prevPlantId_ = prevPlantId_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof plant.grpc.PlantComms.FarewellMessage) {
+          return mergeFrom((plant.grpc.PlantComms.FarewellMessage)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(plant.grpc.PlantComms.FarewellMessage other) {
+        if (other == plant.grpc.PlantComms.FarewellMessage.getDefaultInstance()) return this;
+        if (!other.getPlantId().isEmpty()) {
+          plantId_ = other.plantId_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getPrevPlantId().isEmpty()) {
+          prevPlantId_ = other.prevPlantId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                plantId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                prevPlantId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object plantId_ = "";
+      /**
+       * <code>string plant_id = 1;</code>
+       * @return The plantId.
+       */
+      public java.lang.String getPlantId() {
+        java.lang.Object ref = plantId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          plantId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @return The bytes for plantId.
+       */
+      public com.google.protobuf.ByteString
+          getPlantIdBytes() {
+        java.lang.Object ref = plantId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          plantId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @param value The plantId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlantId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        plantId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlantId() {
+        plantId_ = getDefaultInstance().getPlantId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string plant_id = 1;</code>
+       * @param value The bytes for plantId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlantIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        plantId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object prevPlantId_ = "";
+      /**
+       * <code>string prev_plant_id = 2;</code>
+       * @return The prevPlantId.
+       */
+      public java.lang.String getPrevPlantId() {
+        java.lang.Object ref = prevPlantId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          prevPlantId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string prev_plant_id = 2;</code>
+       * @return The bytes for prevPlantId.
+       */
+      public com.google.protobuf.ByteString
+          getPrevPlantIdBytes() {
+        java.lang.Object ref = prevPlantId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          prevPlantId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string prev_plant_id = 2;</code>
+       * @param value The prevPlantId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPrevPlantId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        prevPlantId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string prev_plant_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPrevPlantId() {
+        prevPlantId_ = getDefaultInstance().getPrevPlantId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string prev_plant_id = 2;</code>
+       * @param value The bytes for prevPlantId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPrevPlantIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        prevPlantId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:plantcomms.FarewellMessage)
+    }
+
+    // @@protoc_insertion_point(class_scope:plantcomms.FarewellMessage)
+    private static final plant.grpc.PlantComms.FarewellMessage DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new plant.grpc.PlantComms.FarewellMessage();
+    }
+
+    public static plant.grpc.PlantComms.FarewellMessage getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<FarewellMessage>
+        PARSER = new com.google.protobuf.AbstractParser<FarewellMessage>() {
+      @java.lang.Override
+      public FarewellMessage parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<FarewellMessage> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<FarewellMessage> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public plant.grpc.PlantComms.FarewellMessage getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface FarewellResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:plantcomms.FarewellResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+  }
+  /**
+   * Protobuf type {@code plantcomms.FarewellResponse}
+   */
+  public static final class FarewellResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:plantcomms.FarewellResponse)
+      FarewellResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 31,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        FarewellResponse.class.getName());
+    }
+    // Use FarewellResponse.newBuilder() to construct.
+    private FarewellResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private FarewellResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_FarewellResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return plant.grpc.PlantComms.internal_static_plantcomms_FarewellResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              plant.grpc.PlantComms.FarewellResponse.class, plant.grpc.PlantComms.FarewellResponse.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof plant.grpc.PlantComms.FarewellResponse)) {
+        return super.equals(obj);
+      }
+      plant.grpc.PlantComms.FarewellResponse other = (plant.grpc.PlantComms.FarewellResponse) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static plant.grpc.PlantComms.FarewellResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static plant.grpc.PlantComms.FarewellResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static plant.grpc.PlantComms.FarewellResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(plant.grpc.PlantComms.FarewellResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code plantcomms.FarewellResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:plantcomms.FarewellResponse)
+        plant.grpc.PlantComms.FarewellResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_FarewellResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_FarewellResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                plant.grpc.PlantComms.FarewellResponse.class, plant.grpc.PlantComms.FarewellResponse.Builder.class);
+      }
+
+      // Construct using plant.grpc.PlantComms.FarewellResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        success_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return plant.grpc.PlantComms.internal_static_plantcomms_FarewellResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.FarewellResponse getDefaultInstanceForType() {
+        return plant.grpc.PlantComms.FarewellResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.FarewellResponse build() {
+        plant.grpc.PlantComms.FarewellResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public plant.grpc.PlantComms.FarewellResponse buildPartial() {
+        plant.grpc.PlantComms.FarewellResponse result = new plant.grpc.PlantComms.FarewellResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(plant.grpc.PlantComms.FarewellResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.success_ = success_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof plant.grpc.PlantComms.FarewellResponse) {
+          return mergeFrom((plant.grpc.PlantComms.FarewellResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(plant.grpc.PlantComms.FarewellResponse other) {
+        if (other == plant.grpc.PlantComms.FarewellResponse.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 1;</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:plantcomms.FarewellResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:plantcomms.FarewellResponse)
+    private static final plant.grpc.PlantComms.FarewellResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new plant.grpc.PlantComms.FarewellResponse();
+    }
+
+    public static plant.grpc.PlantComms.FarewellResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<FarewellResponse>
+        PARSER = new com.google.protobuf.AbstractParser<FarewellResponse>() {
+      @java.lang.Override
+      public FarewellResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<FarewellResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<FarewellResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public plant.grpc.PlantComms.FarewellResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_plantcomms_GreetingsMessage_descriptor;
   private static final 
@@ -3006,6 +3807,16 @@ public final class PlantComms {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_plantcomms_ElectionResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_plantcomms_FarewellMessage_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_plantcomms_FarewellMessage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_plantcomms_FarewellResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_plantcomms_FarewellResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3017,19 +3828,23 @@ public final class PlantComms {
     java.lang.String[] descriptorData = {
       "\n\021plant_comms.proto\022\nplantcomms\"?\n\020Greet" +
       "ingsMessage\022\020\n\010plant_id\030\001 \001(\t\022\031\n\021listeni" +
-      "ng_address\030\002 \001(\t\"5\n\021GreetingsResponse\022\017\n" +
-      "\007success\030\001 \001(\010\022\017\n\007message\030\003 \001(\t\"\233\001\n\017Elec" +
-      "tionMessage\022\024\n\014initiator_id\030\001 \001(\t\022\031\n\021cur" +
-      "rent_holder_id\030\002 \001(\t\022\020\n\010best_bid\030\003 \001(\001\022\031" +
-      "\n\021current_winner_id\030\004 \001(\t\022\022\n\nrequest_id\030" +
-      "\005 \001(\t\022\026\n\016energy_request\030\006 \001(\005\"4\n\020Electio" +
-      "nResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 " +
-      "\001(\t2\273\001\n\022PlantCommunication\022S\n\024SendGreeti" +
-      "ngsMessage\022\034.plantcomms.GreetingsMessage" +
-      "\032\035.plantcomms.GreetingsResponse\022P\n\023SendE" +
-      "lectionMessage\022\033.plantcomms.ElectionMess" +
-      "age\032\034.plantcomms.ElectionResponseB\014\n\npla" +
-      "nt.grpcb\006proto3"
+      "ng_address\030\002 \001(\t\"$\n\021GreetingsResponse\022\017\n" +
+      "\007success\030\001 \001(\010\"\233\001\n\017ElectionMessage\022\024\n\014in" +
+      "itiator_id\030\001 \001(\t\022\031\n\021current_holder_id\030\002 " +
+      "\001(\t\022\020\n\010best_bid\030\003 \001(\001\022\031\n\021current_winner_" +
+      "id\030\004 \001(\t\022\022\n\nrequest_id\030\005 \001(\t\022\026\n\016energy_r" +
+      "equest\030\006 \001(\005\"#\n\020ElectionResponse\022\017\n\007succ" +
+      "ess\030\001 \001(\010\":\n\017FarewellMessage\022\020\n\010plant_id" +
+      "\030\001 \001(\t\022\025\n\rprev_plant_id\030\002 \001(\t\"#\n\020Farewel" +
+      "lResponse\022\017\n\007success\030\001 \001(\0102\215\002\n\022PlantComm" +
+      "unication\022S\n\024SendGreetingsMessage\022\034.plan" +
+      "tcomms.GreetingsMessage\032\035.plantcomms.Gre" +
+      "etingsResponse\022P\n\023SendElectionMessage\022\033." +
+      "plantcomms.ElectionMessage\032\034.plantcomms." +
+      "ElectionResponse\022P\n\023SendFarewellMessage\022" +
+      "\033.plantcomms.FarewellMessage\032\034.plantcomm" +
+      "s.FarewellResponseB\030\n\nplant.grpcB\nPlantC" +
+      "ommsb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3046,7 +3861,7 @@ public final class PlantComms {
     internal_static_plantcomms_GreetingsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_plantcomms_GreetingsResponse_descriptor,
-        new java.lang.String[] { "Success", "Message", });
+        new java.lang.String[] { "Success", });
     internal_static_plantcomms_ElectionMessage_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_plantcomms_ElectionMessage_fieldAccessorTable = new
@@ -3058,7 +3873,19 @@ public final class PlantComms {
     internal_static_plantcomms_ElectionResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_plantcomms_ElectionResponse_descriptor,
-        new java.lang.String[] { "Success", "Message", });
+        new java.lang.String[] { "Success", });
+    internal_static_plantcomms_FarewellMessage_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_plantcomms_FarewellMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_plantcomms_FarewellMessage_descriptor,
+        new java.lang.String[] { "PlantId", "PrevPlantId", });
+    internal_static_plantcomms_FarewellResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_plantcomms_FarewellResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_plantcomms_FarewellResponse_descriptor,
+        new java.lang.String[] { "Success", });
     descriptor.resolveAllFeaturesImmutable();
   }
 
