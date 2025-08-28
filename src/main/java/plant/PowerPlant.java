@@ -30,7 +30,6 @@ public class PowerPlant {
     private String currentElectionId;
     private volatile boolean isProvidingEnergy = false;
     private volatile boolean isInElection = false;
-    private volatile boolean isUpdatingRing = false;
     private final Object ringLock = new Object();
     private final Object electionLock = new Object();
     private final Random rnd = new Random();
@@ -50,7 +49,7 @@ public class PowerPlant {
     // mqtt
     private MqttClient mqttClient;
     private static final String POLLUTION_TOPIC = "pollution/data";
-    private static final String ENERGY_TOPIC = "energy/requests";
+    private static final String ENERGY_TOPIC = "energy/requests/";
     private static final String MQTT_BROKER = "tcp://localhost:1883";
 
     /*
@@ -83,7 +82,7 @@ public class PowerPlant {
             initializeMqtt();
 
             // Start pollution data sensor and publish it on pollution data topic
-            // startSensor();
+            startSensor();
 
             // Thread to handle stdin (only checks for exit command)
             startStdinListener();
@@ -265,7 +264,7 @@ public class PowerPlant {
 
                 Thread.sleep(energyAmount);
 
-                System.out.println("Energy production completed for request " + requestId + "\n============\n");
+                System.out.println("Energy production completed for request " + requestId);
 
             } catch (InterruptedException e) {
                 System.out.println("Energy production interrupted: " + e.getMessage());
@@ -274,10 +273,38 @@ public class PowerPlant {
             } finally {
                 isProvidingEnergy = false;
                 isInElection = false;
-
-                if (pendingShutdown)
-                    plantShutdown();
             }
+
+            // Remove retained request
+            try {
+                System.out.print("Removing retained request " + requestId + "...");
+                mqttClient.publish(ENERGY_TOPIC + requestId, new byte[0], 1, true);
+                System.out.println(" completed.\n============\n");
+
+            } catch (MqttPersistenceException pe) {
+                System.out.println("Failed to publish persistent request: " + pe.getMessage());
+                pe.printStackTrace();
+
+            } catch (MqttException e) {
+                System.err.println("Failed to publish energy request: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            if (pendingShutdown)
+                plantShutdown();
+            
+            // TODO
+            // Subscribe again to see retained messages
+            try {
+                mqttClient.unsubscribe(ENERGY_TOPIC + "+");
+                Thread.sleep(500);
+                mqttClient.subscribe(ENERGY_TOPIC + "+"); 
+            } catch (MqttException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
         });
 
         provideEnergy.start();
@@ -448,8 +475,6 @@ public class PowerPlant {
     // }
 
     private void recalculateRingConnections() {
-        isUpdatingRing = true;
-
         int myIndex = sortedPlantIds.indexOf(plantId);
         int size = sortedPlantIds.size();
 
@@ -468,8 +493,6 @@ public class PowerPlant {
             prevPlantAddress = null;
         }
 
-        isUpdatingRing = false;
-
         System.out.println("Updated topology: " + sortedPlantIds);
         System.out.println("My connections: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
 
@@ -480,11 +503,12 @@ public class PowerPlant {
 
         synchronized (electionLock) {
             String initiatorId = proto.getInitiatorId();
-            String currentHolderId = proto.getCurrentHolderId();
+            // String currentHolderId = proto.getCurrentHolderId();
             double bestBid = proto.getBestBid();
             String currentWinnerId = proto.getCurrentWinnerId();
             String requestId = proto.getRequestId();
             int energyAmount = proto.getEnergyRequest();
+            boolean alreadyJoined = true;
 
             System.out.println(requestId + " |==> Processing election message: initiator=" + initiatorId +
                     ", bestBid=" + bestBid +
@@ -496,11 +520,11 @@ public class PowerPlant {
                 e.printStackTrace();
             }
 
-            // This should never happen
-            if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
-                System.out.println("WTF - Received message from myself");
-                return;
-            }
+            // Debug ~ This should never happen
+            // if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
+            //     System.out.println("Received message from myself");
+            //     return;
+            // }
 
             // If my message comes back to me, election is complete
             if (initiatorId.equals(plantId)) {
@@ -522,15 +546,27 @@ public class PowerPlant {
                 return;
             }
 
-            // If I joined mid election, just forward the original message
+            // If I joined mid election, restart election
             if (!isInElection && currentElectionId == null) {
-                System.out.println("Joined during election..., forwarding election message");
-                sendToNextPlant(proto);
-                return;
+                System.out.println("Joining election, sending message...");
+
+                isInElection = true;
+                currentElectionId = requestId;
+
+                myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
+                System.out.println("Current price: " + myPrice);
+
+                alreadyJoined = false;
             }
 
             if (ImBetterCandidate(myPrice, plantId, bestBid, currentWinnerId)) {
                 System.out.println("I'm a better candidate: " + myPrice + " < " + bestBid + "\tNot forwarding.");
+
+                if (!alreadyJoined) {
+                    startElection(requestId, energyAmount);
+                    return;
+                }
+
                 updatedMessage = updatedMessage.toBuilder()
                         .setBestBid(myPrice)
                         .setCurrentWinnerId(plantId)
@@ -565,10 +601,7 @@ public class PowerPlant {
     }
 
     private boolean ImBetterCandidate(double myPrice, String plantId, double bestBid, String currentWinnerId) {
-        if (myPrice == bestBid)
-            return plantId.compareTo(currentWinnerId) > 0;
-
-        return myPrice < bestBid;
+        return myPrice == bestBid ? myPrice < bestBid : plantId.compareTo(currentWinnerId) > 0;
     }
 
     private void handlePlantLeaving(FarewellMessage farewell) {
@@ -768,23 +801,28 @@ public class PowerPlant {
         mqttClient = new MqttClient(MQTT_BROKER, clientId);
 
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setCleanSession(true);
+        options.setCleanSession(false);
 
         mqttClient.setCallback(new MqttCallback() {
             @Override
             public void messageArrived(String topic, MqttMessage message) {
+
+                if (
+                    !topic.startsWith(ENERGY_TOPIC) ||
+                    message.getPayload().length == 0 // This happens when a plant sends a clearing message for a request
+                ) return;
+
                 try {
-                    if (ENERGY_TOPIC.equals(topic)) {
-                        String jsonMessage = new String(message.getPayload());
-                        JSONObject json = new JSONObject(jsonMessage);
-                        String requestId = json.getString("requestId");
-                        int energyAmount = json.getInt("energyAmount");
+                    String jsonMessage = new String(message.getPayload());
+                    JSONObject json = new JSONObject(jsonMessage);
+                    String requestId = json.getString("requestId");
+                    int energyAmount = json.getInt("energyAmount");
 
-                        System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
+                    System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
 
-                        // Handle energy request (start election)
-                        startElection(requestId, energyAmount);
-                    }
+                    // Handle energy request (start election)
+                    startElection(requestId, energyAmount);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -802,7 +840,7 @@ public class PowerPlant {
         });
 
         mqttClient.connect(options);
-        mqttClient.subscribe(ENERGY_TOPIC);
+        mqttClient.subscribe(ENERGY_TOPIC + "+", 1); // + wildcard for unique requests (for dealing with retained messages)
     }
 
     private void publishPollutionData() {
@@ -877,22 +915,24 @@ public class PowerPlant {
         isShuttingDown = true;
 
         if (isInElection || isProvidingEnergy) {
-            System.out.println(
-                    isInElection ? "Currently in election, shutting down later..."
-                            : "Currently providing energy, shutting down late");
+            System.out.println("Currently " + 
+                (isInElection ? "in election" : "providing energy") +
+                ", shutting down later...");
+
             pendingShutdown = true;
             return;
         }
 
         try {
-            // 1. Notify other plants
+            // 1. Notify other plants (if any)
             if (nextPlantAddress != null)
                 notifyOtherPlants();
 
             // 2. Notify administration server
             notifyAdminServerLeaving();
 
-
+            // 3. Disconnect MQTT
+            disconnectMqttClients();
 
             // 4. Stop sensor and processing
             stopSensorAndProcessing();
@@ -930,7 +970,7 @@ public class PowerPlant {
             FarewellResponse response = stub.sendFarewellMessage(farewell);
 
             if (response.getSuccess()) {
-                System.out.println("Farewell message sent.");
+                System.out.println("Farewell message sent successfully.");
             }
 
         } catch (Exception e) {

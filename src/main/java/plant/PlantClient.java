@@ -29,13 +29,14 @@ public class PlantClient {
             try {
                 port = Integer.parseInt(inFromUser.readLine());
 
+                // TODO ?
                 // In my case I should also check if the port is already being used by another plant
-                // but in a real scenario this is not needed
+                // but in a real case scenario this is not needed
                 // each plant would have same port and different address
                 if ((int)Math.log10(port) + 1 == 4)
                     break;
                 else throw new NumberFormatException();
-                
+
 
             } catch (IOException e) {
                 e.printStackTrace();

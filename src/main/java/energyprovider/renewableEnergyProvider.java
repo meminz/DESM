@@ -8,7 +8,7 @@ import org.json.JSONObject;
 public class renewableEnergyProvider {
     
     private static final String MQTT_BROKER = "tcp://localhost:1883";
-    private static final String ENERGY_TOPIC = "energy/requests";
+    private static final String ENERGY_TOPIC = "energy/requests/"; // ID will be added for each request
     private static final int REQUEST_INTERVAL = 10000; // milliseconds
     private static int ID = 0;
     private static Random rnd = new Random();
@@ -80,16 +80,23 @@ public class renewableEnergyProvider {
 
             // Publish to MQTT
             MqttMessage mqttMessage = new MqttMessage(message.toString().getBytes());
-            mqttMessage.setQos(1);
+            mqttMessage.setQos(1); //QoS would be more reliable but less efficient
 
-            energyMqttClient.publish(ENERGY_TOPIC, mqttMessage);
+            // energyMqttClient.publish(ENERGY_TOPIC, mqttMessage);
+            // Topic with ID to handle retained messages and avoid overwriting a request
+            energyMqttClient.publish(ENERGY_TOPIC + ID, message.toString().getBytes(), 1, true);
 
-            System.out.println("Published energy request of " + requestedEnergy + " kWh");
+            System.out.println("Published energy request of " + requestedEnergy + " kWh at " + ENERGY_TOPIC + ID);
+
+        } catch (MqttPersistenceException pe) {
+            System.out.println("Failed to publish persistent request: " + pe.getMessage());
+            pe.printStackTrace();
 
         } catch (MqttException e) {
             System.err.println("Failed to publish energy request: " + e.getMessage());
             e.printStackTrace();
         }
+
     }
 
 }

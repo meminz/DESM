@@ -13,6 +13,7 @@ public class PlantService {
 
     private final List<PlantInfo> plantsList = new ArrayList<>();
     private final Set<String> idsList = new HashSet<>();
+    private final Set<Integer> portsList = new HashSet<>();
 
     public synchronized List<PlantInfo> getPlantsList() {
         return new ArrayList<>(plantsList);
@@ -23,12 +24,13 @@ public class PlantService {
         plantsList.addAll(plants);
     }
 
-    private synchronized boolean idAlreadyExists(String id){
+    private synchronized boolean idAlreadyExists(String id) {
         return idsList.contains(id);
     }
 
+
     public boolean add(PlantInfo plant){
-        if (idAlreadyExists(plant.getId())){
+        if (idAlreadyExists(plant.getId())) {
             return false;
         } else {
             plantsList.add(plant);
@@ -37,6 +39,23 @@ public class PlantService {
         }
     }
 
+
+    // TODO fix or remove
+    // private synchronized boolean portAlreadyExists(int port) {
+    //     return portsList.contains(port);
+    // }
+    // public int addIfOk(PlantInfo plant) {
+    //     if (idAlreadyExists(plant.getId()))
+    //         return 1;
+    //     else if (portAlreadyExists(plant.getPort()))
+    //         return 2;
+    //     else {
+    //         plantsList.add(plant);
+    //         idsList.add(plant.getId());
+    //         portsList.add(plant.getPort());
+    //         return 0;
+    //     }
+    // }
 
     public synchronized PlantInfo getById(String id) {
         for (PlantInfo plant : plantsList) {
