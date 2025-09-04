@@ -41,7 +41,8 @@ sourceSets {
 
 protobuf {
     protoc {
-        path = '/usr/local/bin/protoc'
+        artifact = "com.google.protobuf:protoc:4.31.0"
+        // path = '/usr/local/bin/protoc'
     }
 
     plugins {

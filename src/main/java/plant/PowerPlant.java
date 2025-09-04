@@ -1,18 +1,44 @@
 package plant;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
 
-import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
 
 import Simulators.Measurement;
 import Simulators.PollutionSensor;
-import io.grpc.*;
+import io.grpc.Context;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import plant.grpc.PlantComms.*;
+import plant.grpc.PlantComms.ElectionMessage;
+import plant.grpc.PlantComms.ElectionResponse;
+import plant.grpc.PlantComms.FarewellMessage;
+import plant.grpc.PlantComms.FarewellResponse;
+import plant.grpc.PlantComms.GreetingsMessage;
+import plant.grpc.PlantComms.GreetingsResponse;
 import plant.grpc.PlantCommunicationGrpc;
 import plant.grpc.PlantCommunicationGrpc.PlantCommunicationImplBase;
 
@@ -28,22 +54,29 @@ public class PowerPlant {
     private String nextPlantAddress;
     private String prevPlantAddress;
     private String currentElectionId;
+    private Server grpcServer;
+    private int grpcPort;
+    private final Map<String, String> allPlants = new HashMap<>(); // plantId -> address
+    private List<String> sortedPlantIds = new ArrayList<>(); // maintains ring order
+    //election
     private volatile boolean isProvidingEnergy = false;
     private volatile boolean isInElection = false;
     private final Object ringLock = new Object();
     private final Object electionLock = new Object();
-    private final Random rnd = new Random();
-    private Server grpcServer;
-    private int grpcPort;
+    private final Random rnd = new Random();    
     private double myPrice;
-    private final Map<String, String> allPlants = new HashMap<>(); // plantId -> address
-    private List<String> sortedPlantIds = new ArrayList<>(); // maintains ring order
+    private final Queue<EnergyRequestInfo> pendingRequests = new LinkedList<>();
+    private final Object requestQueueLock = new Object();
+    private final Set<String> seenRequests = new HashSet<>();
+    private final Set<String> completedRequests = new HashSet<>();
+    private final Map<String, Long> electionStartTimes = new HashMap<>();
+    private static final long ELECTION_TIMEOUT = 30000; // 30 seconds
+    
 
     // sensing
     private PollutionSensor pollutionSensor;
     private List<Measurement> slidingWindow = new ArrayList<>();
     private List<Double> pendingAverages = new ArrayList<>();
-    private Thread sensorThread;
     private Thread dataProcessingThread;
 
     // mqtt
@@ -81,8 +114,9 @@ public class PowerPlant {
             // Initialize MQTT client and subscribe to energy request topic
             initializeMqtt();
 
+            // TODO enable
             // Start pollution data sensor and publish it on pollution data topic
-            startSensor();
+            // startSensor();
 
             // Thread to handle stdin (only checks for exit command)
             startStdinListener();
@@ -179,22 +213,47 @@ public class PowerPlant {
             System.out.println("Local topology built with " + allPlants.size() + " plants: " + sortedPlantIds);
         }
     }
+    
 
+    /*
+     * ELECTION
+     */
+
+    // Sequential request handling - only one election at a time
+    private void handleEnergyRequest(String requestId, int energyAmount) {
+        synchronized (requestQueueLock) {
+            // Deduplicate requests
+            if (seenRequests.contains(requestId) || completedRequests.contains(requestId)) {
+                System.out.println("Ignoring duplicate/completed request: " + requestId);
+                return;
+            }
+
+            seenRequests.add(requestId);
+            EnergyRequestInfo request = new EnergyRequestInfo(requestId, energyAmount);
+            pendingRequests.offer(request);
+
+            System.out.println("Queued request " + requestId + " (queue size: " + pendingRequests.size() + ")");
+
+            // Only start election if completely free
+            tryProcessNextRequest();
+        }
+    }
+    
     private void startElection(String requestId, int energyAmount) {
-        synchronized (electionLock) {
-            if (isProvidingEnergy)
-                return;
-
-            if (isInElection && requestId.equals(currentElectionId))
-                return;
-
-            System.out.println("Starting election for request " + requestId);
+        // synchronized (electionLock) {    // this shouldn't be necessary
+        // when I start a new election I MUST BE FREE
+            // TODO this should not be necessary
+            // if (
+            //     isProvidingEnergy ||
+            //     (isInElection && requestId.equals(currentElectionId))
+            // ) return;
 
             isInElection = true;
             currentElectionId = requestId;
-
+            electionStartTimes.put(requestId, System.currentTimeMillis());
             myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
-            System.out.println("Current price: " + myPrice);
+
+            System.out.println("Starting election for request " + requestId + ", current price: " + myPrice);
 
             ElectionMessage msg = ElectionMessage.newBuilder()
                     .setInitiatorId(plantId)
@@ -206,11 +265,12 @@ public class PowerPlant {
                     .build();
 
             sendToNextPlant(msg);
-        }
+        // }
     }
 
     private void sendToNextPlant(ElectionMessage msg) {
         if (nextPlantAddress == null) {
+            System.out.println("Election won!");
             handleElectionWin(msg.getRequestId(), msg.getEnergyRequest());
             return;
         }
@@ -256,6 +316,18 @@ public class PowerPlant {
     }
 
     public void handleElectionWin(String requestId, int energyAmount) {
+        // Remove retained request
+        try {
+            System.out.print("Removing retained request " + requestId + "...");
+            mqttClient.publish(ENERGY_TOPIC + requestId, new byte[0], 1, true);
+            System.out.println(" completed.");
+
+        } catch (Exception e) {
+            System.out.println("Failed to remove retained request: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        resetElectionState();
         isProvidingEnergy = true;
 
         Thread provideEnergy = new Thread(() -> {
@@ -264,7 +336,7 @@ public class PowerPlant {
 
                 Thread.sleep(energyAmount);
 
-                System.out.println("Energy production completed for request " + requestId);
+                System.out.println("Energy production completed for request " + requestId + "\n============\n");
 
             } catch (InterruptedException e) {
                 System.out.println("Energy production interrupted: " + e.getMessage());
@@ -272,66 +344,18 @@ public class PowerPlant {
 
             } finally {
                 isProvidingEnergy = false;
-                isInElection = false;
+                tryProcessNextRequest();
             }
-
-            // Remove retained request
-            try {
-                System.out.print("Removing retained request " + requestId + "...");
-                mqttClient.publish(ENERGY_TOPIC + requestId, new byte[0], 1, true);
-                System.out.println(" completed.\n============\n");
-
-            } catch (MqttPersistenceException pe) {
-                System.out.println("Failed to publish persistent request: " + pe.getMessage());
-                pe.printStackTrace();
-
-            } catch (MqttException e) {
-                System.err.println("Failed to publish energy request: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            if (pendingShutdown)
-                plantShutdown();
             
-            // TODO
-            // Subscribe again to see retained messages
-            try {
-                mqttClient.unsubscribe(ENERGY_TOPIC + "+");
-                Thread.sleep(500);
-                mqttClient.subscribe(ENERGY_TOPIC + "+"); 
-            } catch (MqttException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-
         });
 
         provideEnergy.start();
 
+        if (pendingShutdown)
+            plantShutdown();
     }
 
-    private void startGrpcServer() {
-        try {
-            grpcPort = Integer.parseInt(listeningAddress.split(":")[1]);
-
-            grpcServer = ServerBuilder.forPort(grpcPort)
-                    .addService(new PlantCommsService())
-                    .build()
-                    .start();
-
-            System.out.println("gRPC server started on port: " + grpcPort);
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                if (grpcServer != null)
-                    grpcServer.shutdown();
-            }));
-
-        } catch (IOException e) {
-            System.out.println("Failed to start gRPC server: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    
 
     // ### MADE BY CLAUDE 4
     private void handleNewPlantJoined(String newPlantId, String newListeningAddress) {
@@ -421,58 +445,6 @@ public class PowerPlant {
 
     }
 
-    // private void forwardGreetingsAsync(String originPlantId, String
-    // originAddress) {
-    // if (nextPlantAddress == null) {
-    // System.out.println("No next plant to forward to.");
-    // return;
-    // }
-
-    // try {
-    // String[] parts = nextPlantAddress.split(":");
-    // ManagedChannel channel = ManagedChannelBuilder.forAddress(parts[0],
-    // Integer.parseInt(parts[1]))
-    // .usePlaintext()
-    // .build();
-
-    // PlantCommunicationGrpc.PlantCommunicationStub asyncStub =
-    // PlantCommunicationGrpc.newStub(channel)
-    // .withDeadlineAfter(10, java.util.concurrent.TimeUnit.SECONDS);
-
-    // GreetingsMessage greeting = GreetingsMessage.newBuilder()
-    // .setPlantId(originPlantId) // Keep original sender
-    // .setListeningAddress(originAddress)
-    // .build();
-
-    // asyncStub.sendGreetingsMessage(
-    // greeting,
-    // new StreamObserver<GreetingsResponse>() {
-
-    // @Override
-    // public void onNext(GreetingsResponse response) {
-    // System.out.println("Greetings message forwarded: " + response.getSuccess());
-    // }
-
-    // @Override
-    // public void onError(Throwable t) {
-    // System.out.println("Error forwarding greeting: " + t.getMessage());
-    // }
-
-    // @Override
-    // public void onCompleted() {
-    // System.out.println();
-    // channel.shutdown();
-    // };
-
-    // }
-    // );
-
-    // } catch (Exception e) {
-    // System.err.println("Error forwarding greeting: " + e.getMessage());
-
-    // }
-
-    // }
 
     private void recalculateRingConnections() {
         int myIndex = sortedPlantIds.indexOf(plantId);
@@ -503,19 +475,27 @@ public class PowerPlant {
 
         synchronized (electionLock) {
             String initiatorId = proto.getInitiatorId();
-            // String currentHolderId = proto.getCurrentHolderId();
+            String requestId = proto.getRequestId();
             double bestBid = proto.getBestBid();
             String currentWinnerId = proto.getCurrentWinnerId();
-            String requestId = proto.getRequestId();
             int energyAmount = proto.getEnergyRequest();
-            boolean alreadyJoined = true;
 
+            synchronized (requestQueueLock) {
+                if (!seenRequests.contains(requestId)) {// Joining an active election
+                    seenRequests.add(requestId);
+
+                    if (!isInElection && !isInElection)
+                        pendingRequests.offer(new EnergyRequestInfo(requestId, energyAmount));
+                }
+            }
+
+            
             System.out.println(requestId + " |==> Processing election message: initiator=" + initiatorId +
                     ", bestBid=" + bestBid +
                     ", bestCandidate=" + currentWinnerId);
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(8000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -528,10 +508,8 @@ public class PowerPlant {
 
             // If my message comes back to me, election is complete
             if (initiatorId.equals(plantId)) {
-
                 System.out.println("Election message returned to initiator - election complete!\n");
-                handleElectionComplete(currentWinnerId, requestId, energyAmount);
-
+                handleElectionComplete(proto.getCurrentWinnerId(), requestId, energyAmount);
                 return;
             }
 
@@ -541,31 +519,29 @@ public class PowerPlant {
 
             // If I'm busy, just forward the message
             if (isProvidingEnergy) {
-                System.out.println("Busy..., forwarding election message");
+                System.out.println("Busy providing energy..., forwarding election message");
                 sendToNextPlant(updatedMessage);
                 return;
             }
 
-            // If I joined mid election, restart election
-            if (!isInElection && currentElectionId == null) {
-                System.out.println("Joining election, sending message...");
-
-                isInElection = true;
-                currentElectionId = requestId;
-
-                myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
-                System.out.println("Current price: " + myPrice);
-
-                alreadyJoined = false;
+            // If I'm in another election, queue the new request
+            if (isInElection && !currentElectionId.equals(requestId)) {
+                System.out.println("Busy in another election..., queueing election message and forwarding");
+                sendToNextPlant(updatedMessage);
+                return;
             }
 
-            if (ImBetterCandidate(myPrice, plantId, bestBid, currentWinnerId)) {
-                System.out.println("I'm a better candidate: " + myPrice + " < " + bestBid + "\tNot forwarding.");
+            // TODO this seems very wrong
+            // If I'm free or this is a different request, join the election
+            // if (!isInElection || !currentElectionId.equals(requestId)) {
+            //     System.out.println("Joining an ongoing election...");
+            //     joinMidElection(requestId, energyAmount);
+            //     return;
+            // }
 
-                if (!alreadyJoined) {
-                    startElection(requestId, energyAmount);
-                    return;
-                }
+            // Actual election participation
+            if (isBetterCandidate(myPrice, plantId, bestBid, currentWinnerId)) {
+                System.out.println("I'm a better candidate: " + myPrice + " < " + bestBid);
 
                 updatedMessage = updatedMessage.toBuilder()
                         .setBestBid(myPrice)
@@ -581,27 +557,73 @@ public class PowerPlant {
         }
     }
 
+    private void tryProcessNextRequest() {
+        synchronized (electionLock) {
+            synchronized (requestQueueLock) {
+                // Can only start new election if completely idle
+                if (isProvidingEnergy || isInElection || pendingRequests.isEmpty())
+                    return;
+
+                EnergyRequestInfo request = pendingRequests.poll();
+                if (request != null) {
+                    System.out.println("Starting election for queued request: " + request.getId());
+                    startElection(request.getId(), request.getEnergyAmount());
+                }
+            }
+        }
+    }
+
     private void handleElectionComplete(String winnerId, String requestId, int energyAmount) {
         synchronized (electionLock) {
             System.out.println("\n--- Election Complete ---" +
                     "\nWinner: " + winnerId + " for request " + requestId);
 
+            synchronized(requestQueueLock) {
+                completedRequests.add(requestId);
+                pendingRequests.removeIf(r -> r.getId().equals(requestId));
+            }
+
+            electionStartTimes.remove(requestId);
+
             if (winnerId.equals(plantId))
                 handleElectionWin(requestId, energyAmount);
-
-            isInElection = false;
-            currentElectionId = null;
+            else {
+                resetElectionState();
+                tryProcessNextRequest();
+            }
 
             System.out.println("Election finished - ready for next request\n");
 
-            if (pendingShutdown)
+            if (pendingShutdown && !isInElection && !isProvidingEnergy)
                 plantShutdown();
         }
 
     }
 
-    private boolean ImBetterCandidate(double myPrice, String plantId, double bestBid, String currentWinnerId) {
-        return myPrice == bestBid ? myPrice < bestBid : plantId.compareTo(currentWinnerId) > 0;
+    private boolean isBetterCandidate(double myPrice, String plantId, double bestBid, String currentWinnerId) {
+        return myPrice == bestBid ? plantId.compareTo(currentWinnerId) > 0 : myPrice < bestBid;
+    }
+
+    private void resetElectionState() {
+        isInElection = false;
+        currentElectionId = null;
+        myPrice = 10;
+    }
+
+    private void joinMidElection(String requestId, int energyAmount) {
+        System.out.println("Joining mid-election for request: " + requestId);
+
+        // Remove from queue if present (we're now actively processing it)
+        synchronized (requestQueueLock) {
+            pendingRequests.removeIf(r -> r.getId().equals(requestId));
+        }
+
+        isInElection = true;
+        currentElectionId = requestId;
+        electionStartTimes.put(requestId, System.currentTimeMillis());
+        myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble();
+
+        System.out.println("Mid-election price: " + myPrice);
     }
 
     private void handlePlantLeaving(FarewellMessage farewell) {
@@ -634,9 +656,67 @@ public class PowerPlant {
 
     }
 
+    // Add timeout checker thread (call this from your initialization)
+    private void startTimeoutChecker() {
+        Thread timeoutThread = new Thread(() -> {
+            while (!isShuttingDown) {
+                try {
+                    Thread.sleep(5000); // Check every 5 seconds
+                    checkForTimeouts();
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        });
+        timeoutThread.setDaemon(true);
+        timeoutThread.start();
+    }
+
+    private void checkForTimeouts() {
+        synchronized (electionLock) {
+            if (currentElectionId != null) {
+                Long startTime = electionStartTimes.get(currentElectionId);
+                if (startTime != null && System.currentTimeMillis() - startTime > ELECTION_TIMEOUT) {
+                    System.out.println("Election timeout for " + currentElectionId + ", resetting...");
+
+                    // Reset election state
+                    String timedOutElection = currentElectionId;
+                    resetElectionState();
+                    electionStartTimes.remove(timedOutElection);
+
+                    // Try to process next request
+                    tryProcessNextRequest();
+                }
+            }
+        }
+    }
+
     /*
      * gRPC
      */
+    private void startGrpcServer() {
+        try {
+            grpcPort = Integer.parseInt(listeningAddress.split(":")[1]);
+
+            grpcServer = ServerBuilder.forPort(grpcPort)
+                    .addService(new PlantCommsService())
+                    .build()
+                    .start();
+
+            System.out.println("gRPC server started on port: " + grpcPort);
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (grpcServer != null)
+                    grpcServer.shutdown();
+            }));
+
+        } catch (IOException e) {
+            System.out.println("Failed to start gRPC server: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
     private class PlantCommsService extends PlantCommunicationImplBase {
         // Service as a subclass to handle synchronization problems easier
 
@@ -747,13 +827,12 @@ public class PowerPlant {
     public void startSensor() {
         SensorBuffer sensorBuffer = new SensorBuffer();
         pollutionSensor = new PollutionSensor(sensorBuffer);
+        pollutionSensor.start();
 
-        sensorThread = new Thread(pollutionSensor);
-        sensorThread.start();
         System.out.println("Started pollution sensor...");
 
         dataProcessingThread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) { // && !sensor.getStopCondition()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(10000);
                     processAndSendPollutionData();
@@ -770,15 +849,8 @@ public class PowerPlant {
     private void stopSensorAndProcessing() {
         try {
             // Stop the sensor simulator
-            if (pollutionSensor != null) {
+            if (pollutionSensor != null)
                 pollutionSensor.stopMeGently();
-            }
-
-            // Interrupt and wait for threads to finish
-            if (sensorThread != null && sensorThread.isAlive()) {
-                sensorThread.interrupt();
-                sensorThread.join(5000); // Wait up to 5 seconds
-            }
 
             if (dataProcessingThread != null && dataProcessingThread.isAlive()) {
                 dataProcessingThread.interrupt();
@@ -821,7 +893,7 @@ public class PowerPlant {
                     System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
 
                     // Handle energy request (start election)
-                    startElection(requestId, energyAmount);
+                    handleEnergyRequest(requestId, energyAmount);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -860,6 +932,7 @@ public class PowerPlant {
             mqttClient.publish(POLLUTION_TOPIC, mqttMessage);
 
             System.out.println("Sent pollution data: " + pendingAverages.size() + " averages");
+            pendingAverages.clear();
 
         } catch (MqttException e) {
             System.err.println("Failed to send pollution data: " + e.getMessage());

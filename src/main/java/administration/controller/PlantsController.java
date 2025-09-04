@@ -1,9 +1,6 @@
 package administration.controller;
 
 import java.util.List;
-import administration.service.*;
-import administration.AdministrationServer;
-import administration.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import administration.AdministrationServer;
+import administration.model.PlantInfo;
+import administration.service.PlantService;
 
 @RestController
 @RequestMapping("/plants")

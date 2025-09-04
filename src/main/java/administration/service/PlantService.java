@@ -13,7 +13,6 @@ public class PlantService {
 
     private final List<PlantInfo> plantsList = new ArrayList<>();
     private final Set<String> idsList = new HashSet<>();
-    private final Set<Integer> portsList = new HashSet<>();
 
     public synchronized List<PlantInfo> getPlantsList() {
         return new ArrayList<>(plantsList);

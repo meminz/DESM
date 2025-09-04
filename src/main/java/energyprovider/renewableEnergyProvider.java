@@ -70,11 +70,12 @@ public class renewableEnergyProvider {
 
     protected static void publishEnergyRequest() {
         try {
-            int requestedEnergy = 5000 + rnd.nextInt(10001);
+            int requestedEnergy = 5000; //+ rnd.nextInt(10001);
 
             // Create JSON message
             JSONObject message = new JSONObject();
-            message.put("requestId", "req-" + ID++);
+            String thisId = "req-" + ID++;
+            message.put("requestId", thisId);
             message.put("timestamp", System.currentTimeMillis());
             message.put("energyAmount", requestedEnergy);
 
@@ -84,7 +85,7 @@ public class renewableEnergyProvider {
 
             // energyMqttClient.publish(ENERGY_TOPIC, mqttMessage);
             // Topic with ID to handle retained messages and avoid overwriting a request
-            energyMqttClient.publish(ENERGY_TOPIC + ID, message.toString().getBytes(), 1, true);
+            energyMqttClient.publish(ENERGY_TOPIC + thisId, message.toString().getBytes(), 1, true);
 
             System.out.println("Published energy request of " + requestedEnergy + " kWh at " + ENERGY_TOPIC + ID);
 

@@ -93,6 +93,7 @@ public class AdministrationServer {
     // subscriber for pollution data
     private static void startMqttSubscriber() {
         try {
+            @SuppressWarnings("resource")
             MqttClient client = new MqttClient("tcp://localhost:1883", "admin_server");
 
             client.setCallback(new MqttCallback() {
