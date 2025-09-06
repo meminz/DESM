@@ -20,7 +20,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
@@ -234,44 +233,38 @@ public class PowerPlant {
 
             System.out.println("Queued request " + requestId + " (queue size: " + pendingRequests.size() + ")");
 
-            // Only start election if completely free
-            tryProcessNextRequest();
+            
+        }
+        synchronized (electionLock) {
+                tryProcessNextRequest();
         }
     }
     
     private void startElection(String requestId, int energyAmount) {
-        // synchronized (electionLock) {    // this shouldn't be necessary
-        // when I start a new election I MUST BE FREE
-            // TODO this should not be necessary
-            // if (
-            //     isProvidingEnergy ||
-            //     (isInElection && requestId.equals(currentElectionId))
-            // ) return;
+        isInElection = true;
+        currentElectionId = requestId;
+        electionStartTimes.put(requestId, System.currentTimeMillis());
+        myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
 
-            isInElection = true;
-            currentElectionId = requestId;
-            electionStartTimes.put(requestId, System.currentTimeMillis());
-            myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble(); // in range [0.1; 0.9]
+        System.out.println("Starting election for request " + requestId + ", current price: " + myPrice);
 
-            System.out.println("Starting election for request " + requestId + ", current price: " + myPrice);
+        ElectionMessage msg = ElectionMessage.newBuilder()
+                .setInitiatorId(plantId)
+                .setCurrentHolderId(plantId)
+                .setBestBid(myPrice)
+                .setCurrentWinnerId(plantId)
+                .setRequestId(requestId)
+                .setEnergyRequest(energyAmount)
+                .build();
 
-            ElectionMessage msg = ElectionMessage.newBuilder()
-                    .setInitiatorId(plantId)
-                    .setCurrentHolderId(plantId)
-                    .setBestBid(myPrice)
-                    .setCurrentWinnerId(plantId)
-                    .setRequestId(requestId)
-                    .setEnergyRequest(energyAmount)
-                    .build();
-
-            sendToNextPlant(msg);
-        // }
+        sendToNextPlant(msg);
     }
 
     private void sendToNextPlant(ElectionMessage msg) {
         if (nextPlantAddress == null) {
-            System.out.println("Election won!");
-            handleElectionWin(msg.getRequestId(), msg.getEnergyRequest());
+            // System.out.println("Election won!");
+            // handleElectionWin(msg.getRequestId(), msg.getEnergyRequest());
+            handleElectionComplete(msg.getCurrentWinnerId(), msg.getRequestId(), msg.getEnergyRequest());
             return;
         }
 
@@ -484,7 +477,7 @@ public class PowerPlant {
                 if (!seenRequests.contains(requestId)) {// Joining an active election
                     seenRequests.add(requestId);
 
-                    if (!isInElection && !isInElection)
+                    if (!isInElection && !isProvidingEnergy)
                         pendingRequests.offer(new EnergyRequestInfo(requestId, energyAmount));
                 }
             }
@@ -526,18 +519,10 @@ public class PowerPlant {
 
             // If I'm in another election, queue the new request
             if (isInElection && !currentElectionId.equals(requestId)) {
-                System.out.println("Busy in another election..., queueing election message and forwarding");
+                System.out.println("Busy in another election..., getEnergyRequest()queueing election message and forwarding");
                 sendToNextPlant(updatedMessage);
                 return;
             }
-
-            // TODO this seems very wrong
-            // If I'm free or this is a different request, join the election
-            // if (!isInElection || !currentElectionId.equals(requestId)) {
-            //     System.out.println("Joining an ongoing election...");
-            //     joinMidElection(requestId, energyAmount);
-            //     return;
-            // }
 
             // Actual election participation
             if (isBetterCandidate(myPrice, plantId, bestBid, currentWinnerId)) {
@@ -558,23 +543,21 @@ public class PowerPlant {
     }
 
     private void tryProcessNextRequest() {
-        synchronized (electionLock) {
-            synchronized (requestQueueLock) {
-                // Can only start new election if completely idle
-                if (isProvidingEnergy || isInElection || pendingRequests.isEmpty())
-                    return;
+        // Can only start new election if completely idle
+        if (isProvidingEnergy || isInElection || pendingRequests.isEmpty())
+            return;
 
-                EnergyRequestInfo request = pendingRequests.poll();
-                if (request != null) {
-                    System.out.println("Starting election for queued request: " + request.getId());
-                    startElection(request.getId(), request.getEnergyAmount());
-                }
+        synchronized (requestQueueLock) {
+            EnergyRequestInfo request = pendingRequests.poll();
+            if (request != null) {
+                System.out.println("Starting election for queued request: " + request.getId());
+                startElection(request.getId(), request.getEnergyAmount());
             }
         }
     }
 
     private void handleElectionComplete(String winnerId, String requestId, int energyAmount) {
-        synchronized (electionLock) {
+        // synchronized (electionLock) {
             System.out.println("\n--- Election Complete ---" +
                     "\nWinner: " + winnerId + " for request " + requestId);
 
@@ -596,7 +579,7 @@ public class PowerPlant {
 
             if (pendingShutdown && !isInElection && !isProvidingEnergy)
                 plantShutdown();
-        }
+        // }
 
     }
 
@@ -607,24 +590,24 @@ public class PowerPlant {
     private void resetElectionState() {
         isInElection = false;
         currentElectionId = null;
-        myPrice = 10;
+        myPrice = 100;
     }
 
-    private void joinMidElection(String requestId, int energyAmount) {
-        System.out.println("Joining mid-election for request: " + requestId);
+    // private void joinMidElection(String requestId, int energyAmount) {
+    //     System.out.println("Joining mid-election for request: " + requestId);
 
-        // Remove from queue if present (we're now actively processing it)
-        synchronized (requestQueueLock) {
-            pendingRequests.removeIf(r -> r.getId().equals(requestId));
-        }
+    //     // Remove from queue if present (we're now actively processing it)
+    //     synchronized (requestQueueLock) {
+    //         pendingRequests.removeIf(r -> r.getId().equals(requestId));
+    //     }
 
-        isInElection = true;
-        currentElectionId = requestId;
-        electionStartTimes.put(requestId, System.currentTimeMillis());
-        myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble();
+    //     isInElection = true;
+    //     currentElectionId = requestId;
+    //     electionStartTimes.put(requestId, System.currentTimeMillis());
+    //     myPrice = 0.1 + (0.9 - 0.1) * rnd.nextDouble();
 
-        System.out.println("Mid-election price: " + myPrice);
-    }
+    //     System.out.println("Mid-election price: " + myPrice);
+    // }
 
     private void handlePlantLeaving(FarewellMessage farewell) {
         String leavingPlantId = farewell.getPlantId();
@@ -656,7 +639,6 @@ public class PowerPlant {
 
     }
 
-    // Add timeout checker thread (call this from your initialization)
     private void startTimeoutChecker() {
         Thread timeoutThread = new Thread(() -> {
             while (!isShuttingDown) {
@@ -709,6 +691,8 @@ public class PowerPlant {
                 if (grpcServer != null)
                     grpcServer.shutdown();
             }));
+
+            startTimeoutChecker();
 
         } catch (IOException e) {
             System.out.println("Failed to start gRPC server: " + e.getMessage());

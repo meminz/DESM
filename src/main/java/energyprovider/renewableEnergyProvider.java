@@ -10,7 +10,7 @@ public class renewableEnergyProvider {
     private static final String MQTT_BROKER = "tcp://localhost:1883";
     private static final String ENERGY_TOPIC = "energy/requests/"; // ID will be added for each request
     private static final int REQUEST_INTERVAL = 10000; // milliseconds
-    private static int ID = 0;
+    private static int ID = -1;
     private static Random rnd = new Random();
 
     private static MqttClient energyMqttClient;
@@ -74,20 +74,20 @@ public class renewableEnergyProvider {
 
             // Create JSON message
             JSONObject message = new JSONObject();
-            String thisId = "req-" + ID++;
+            String thisId = "req-" + ++ID;
             message.put("requestId", thisId);
             message.put("timestamp", System.currentTimeMillis());
             message.put("energyAmount", requestedEnergy);
 
             // Publish to MQTT
             MqttMessage mqttMessage = new MqttMessage(message.toString().getBytes());
-            mqttMessage.setQos(1); //QoS would be more reliable but less efficient
+            mqttMessage.setQos(1); // QoS 2 would be more reliable but less efficient
 
             // energyMqttClient.publish(ENERGY_TOPIC, mqttMessage);
             // Topic with ID to handle retained messages and avoid overwriting a request
             energyMqttClient.publish(ENERGY_TOPIC + thisId, message.toString().getBytes(), 1, true);
 
-            System.out.println("Published energy request of " + requestedEnergy + " kWh at " + ENERGY_TOPIC + ID);
+            System.out.println("Published energy request of " + requestedEnergy + "kWh at " + ENERGY_TOPIC + thisId);
 
         } catch (MqttPersistenceException pe) {
             System.out.println("Failed to publish persistent request: " + pe.getMessage());
