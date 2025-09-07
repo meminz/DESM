@@ -236,7 +236,7 @@ public class PowerPlant {
             
         }
         synchronized (electionLock) {
-                tryProcessNextRequest();
+            tryProcessNextRequest();
         }
     }
     
@@ -490,16 +490,10 @@ public class PowerPlant {
                     ", bestCandidate=" + currentWinnerId);
 
             try {
-                Thread.sleep(8000);
+                Thread.sleep(5000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            // Debug ~ This should never happen
-            // if (initiatorId.equals(plantId) && currentHolderId.equals(plantId)) {
-            //     System.out.println("Received message from myself");
-            //     return;
-            // }
 
             // If my message comes back to me, election is complete
             if (initiatorId.equals(plantId)) {
@@ -515,13 +509,6 @@ public class PowerPlant {
             // If I'm busy, just forward the message
             if (isProvidingEnergy) {
                 System.out.println("Busy providing energy..., forwarding election message");
-                sendToNextPlant(updatedMessage);
-                return;
-            }
-
-            // If I'm in another election, queue the new request
-            if (isInElection && !currentElectionId.equals(requestId)) {
-                System.out.println("Busy in another election..., getEnergyRequest()queueing election message and forwarding");
                 sendToNextPlant(updatedMessage);
                 return;
             }
@@ -549,12 +536,14 @@ public class PowerPlant {
         if (isProvidingEnergy || isInElection || pendingRequests.isEmpty())
             return;
 
+        EnergyRequestInfo request = null;
         synchronized (requestQueueLock) {
-            EnergyRequestInfo request = pendingRequests.poll();
-            if (request != null) {
-                System.out.println("Starting election for queued request: " + request.getId());
-                startElection(request.getId(), request.getEnergyAmount());
-            }
+            request = pendingRequests.poll();
+        }
+
+        if (request != null) {
+            System.out.println("Starting election for queued request: " + request.getId());
+            startElection(request.getId(), request.getEnergyAmount());
         }
     }
 
@@ -900,7 +889,7 @@ public class PowerPlant {
         });
 
         mqttClient.connect(options);
-        mqttClient.subscribe(ENERGY_TOPIC + "+", 1); // + wildcard for unique requests (for dealing with retained messages)
+        mqttClient.subscribe(ENERGY_TOPIC + "+", 1); // + wildcard for unique requests (to deal with retained messages)
     }
 
     private void publishPollutionData() {
@@ -919,7 +908,7 @@ public class PowerPlant {
 
             mqttClient.publish(POLLUTION_TOPIC, mqttMessage);
 
-            System.out.println("Sent pollution data: " + pendingAverages.size() + " averages");
+            // System.out.println("Sent pollution data: " + pendingAverages.size() + " averages");
             pendingAverages.clear();
 
         } catch (MqttException e) {
