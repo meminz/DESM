@@ -352,15 +352,15 @@ public class PowerPlant {
 
     // ### MADE BY CLAUDE 4
     private void handleNewPlantJoined(String newPlantId, String newListeningAddress) {
+        // If this greeting is from myself, the message completed the ring
+        if (newPlantId.equals(this.plantId)) {
+            System.out.println("Greeting message completed the ring. Topology update finished.\n");
+            return;
+        }
+
+        System.out.println("Adding plant " + newPlantId + " to local topology");
+
         synchronized (ringLock) {
-            // If this greeting is from myself, the message completed the ring
-            if (newPlantId.equals(this.plantId)) {
-                System.out.println("Greeting message completed the ring. Topology update finished.\n");
-                return;
-            }
-
-            System.out.println("Adding plant " + newPlantId + " to local topology");
-
             // Add new plant to local topology
             allPlants.put(newPlantId, newListeningAddress);
 
@@ -370,13 +370,13 @@ public class PowerPlant {
                 sortedPlantIds.add(plantId);
 
             sortedPlantIds.sort(String::compareTo);
-
-            // Recalculate my ring connections based on new topology
-            recalculateRingConnections();
-
-            System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress + "\n");
-            forwardGreetings(newPlantId, newListeningAddress);
         }
+
+        // Recalculate my ring connections based on new topology
+        recalculateRingConnections();
+
+        System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress + "\n");
+        forwardGreetings(newPlantId, newListeningAddress);
 
     }
     // ###
@@ -440,22 +440,24 @@ public class PowerPlant {
 
 
     private void recalculateRingConnections() {
-        int myIndex = sortedPlantIds.indexOf(plantId);
-        int size = sortedPlantIds.size();
+        synchronized (ringLock) {
+            int myIndex = sortedPlantIds.indexOf(plantId);
+            int size = sortedPlantIds.size();
 
-        if (size > 1) {
-            // Calculate next plant
-            int nextIndex = (myIndex + 1) % size;
-            String nextId = sortedPlantIds.get(nextIndex);
-            nextPlantAddress = allPlants.get(nextId);
+            if (size > 1) {
+                // Calculate next plant
+                int nextIndex = (myIndex + 1) % size;
+                String nextId = sortedPlantIds.get(nextIndex);
+                nextPlantAddress = allPlants.get(nextId);
 
-            // Calculate previous plant
-            int prevIndex = (myIndex - 1 + size) % size;
-            String prevId = sortedPlantIds.get(prevIndex);
-            prevPlantAddress = allPlants.get(prevId);
-        } else {
-            nextPlantAddress = null;
-            prevPlantAddress = null;
+                // Calculate previous plant
+                int prevIndex = (myIndex - 1 + size) % size;
+                String prevId = sortedPlantIds.get(prevIndex);
+                prevPlantAddress = allPlants.get(prevId);
+            } else {
+                nextPlantAddress = null;
+                prevPlantAddress = null;
+            }
         }
 
         System.out.println("Updated topology: " + sortedPlantIds);
@@ -613,8 +615,10 @@ public class PowerPlant {
         String leavingPlantId = farewell.getPlantId();
         String prevPlantId = farewell.getPrevPlantId();
 
-        allPlants.remove(leavingPlantId);
-        sortedPlantIds.removeIf(i -> i.equals(leavingPlantId));
+        synchronized (ringLock) {
+            allPlants.remove(leavingPlantId);
+            sortedPlantIds.removeIf(i -> i.equals(leavingPlantId));
+        }
 
         recalculateRingConnections();
 

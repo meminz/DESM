@@ -70,7 +70,7 @@ public class renewableEnergyProvider {
 
     protected static void publishEnergyRequest() {
         try {
-            int requestedEnergy = 5000; //+ rnd.nextInt(10001);
+            int requestedEnergy = 5000 + rnd.nextInt(10001);
 
             // Create JSON message
             JSONObject message = new JSONObject();
