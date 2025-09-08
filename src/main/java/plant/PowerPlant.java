@@ -113,9 +113,8 @@ public class PowerPlant {
             // Initialize MQTT client and subscribe to energy request topic
             initializeMqtt();
 
-            // TODO enable
             // Start pollution data sensor and publish it on pollution data topic
-            // startSensor();
+            startSensor();
 
             // Thread to handle stdin (only checks for exit command)
             startStdinListener();
@@ -869,7 +868,6 @@ public class PowerPlant {
 
                     System.out.println("Received energy request: " + energyAmount + "kWh (ID: " + requestId + ")");
 
-                    // Handle energy request (start election)
                     handleEnergyRequest(requestId, energyAmount);
 
                 } catch (Exception e) {
