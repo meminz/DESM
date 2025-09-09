@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# protoc
+# PROTOC_ZIP=protoc-31.0-linux-x86_64.zip
+# curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v31.0/$PROTOC_ZIP
+# sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+# sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+# rm -f $PROTOC_ZIP
+
+# mosquitto
+sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
+sudo apt-get update
+sudo apt-get install mosquitto -y
+sudo apt-get install mosquitto-clients -y
+sudo mkdir /run/mosquitto
+sudo chown mosquitto:mosquitto /run/mosquitto
+mosquitto -d

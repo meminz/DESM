@@ -1,0 +1,6 @@
+.devcontainer
+.vscode
+
+*tcplocalhost*
+locks.txt
+build*
