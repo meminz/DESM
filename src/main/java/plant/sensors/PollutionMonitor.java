@@ -1,5 +1,6 @@
 package plant.sensors;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +20,14 @@ public class PollutionMonitor {
     private List<Measurement> slidingWindow = new ArrayList<>();
     private List<Double> pendingAverages = new ArrayList<>();
     private Thread dataProcessingThread;
+    private final int SEND_INTERVAL;
 
     private static final String POLLUTION_TOPIC = "pollution/data";
 
-    public PollutionMonitor(String plantId, MqttClient mqttClient) {
+    public PollutionMonitor(String plantId, MqttClient mqttClient, int interval) {
         this.plantId = plantId;
         this.mqttClient = mqttClient;
+        this.SEND_INTERVAL=interval;
     }
 
     public void start() {
@@ -46,7 +49,7 @@ public class PollutionMonitor {
     private void processingLoop() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(SEND_INTERVAL);
                 processAndSendPollutionData();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

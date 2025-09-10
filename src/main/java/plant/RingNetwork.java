@@ -26,7 +26,6 @@ public class RingNetwork {
     // Election state
     private volatile boolean isInElection = false;
     private volatile boolean isProvidingEnergy = false;
-    private volatile boolean pendingShutdown = false;
     private String currentElectionId;
     private double myPrice;
     
@@ -44,6 +43,11 @@ public class RingNetwork {
     private static final long ELECTION_TIMEOUT = 30000;
     private GrpcService grpcService; // Will be injected
     private final EnergyProductionCallback energyProductionCallback;
+
+    // Shutdown
+    private volatile boolean isShuttingDown = false;
+    private final Object shutdownLock = new Object();
+    private volatile boolean shutdownReady = false;
 
     public interface EnergyProductionCallback {
         void onEnergyProduction(String requestId, int energyAmount);
@@ -124,7 +128,7 @@ public class RingNetwork {
     
     private void tryProcessNextRequest() {
         // Can only start new election if completely idle
-        if (isProvidingEnergy || isInElection || pendingRequests.isEmpty())
+        if (isShuttingDown || isProvidingEnergy || isInElection || pendingRequests.isEmpty())
             return;
 
         EnergyRequestInfo request = null;
@@ -147,7 +151,9 @@ public class RingNetwork {
         System.out.println("Starting election for request " + requestId + ", current price: " + myPrice);
 
         if (nextPlantAddress == null) {
-            handleElectionComplete(requestId, plantId, energyAmount);
+            synchronized (electionLock) {
+                handleElectionComplete(requestId, plantId, energyAmount);
+            }
             return;
         }
 
@@ -212,6 +218,7 @@ public class RingNetwork {
     }
 
 
+    // UNSAFE, must be called with election lock
     protected void handleElectionComplete(String requestId, String winnerId, int energyAmount) {
         System.out.println("\n--- Election Complete ---" +
                 "\nWinner: " + winnerId + " for request " + requestId);
@@ -227,17 +234,18 @@ public class RingNetwork {
             handleElectionWin(requestId, energyAmount);
         else {
             resetElectionState();
-            tryProcessNextRequest();
+            
+            if (isShuttingDown && !isProvidingEnergy)
+                signalShutdownReady();
+            else if (!isShuttingDown)
+                tryProcessNextRequest();
+
         }
 
         System.out.println("Election finished - ready for next request\n");
-
-        // TODO
-        // if (pendingShutdown)
-        //     Thread.currentThread().notify();
-        //     plantShutdown();
     }
 
+    // UNSAFE, must be called with election lock
     public void handleElectionWin(String requestId, int energyAmount) {
         isProvidingEnergy = true;
 
@@ -258,17 +266,16 @@ public class RingNetwork {
 
             } finally {
                 isProvidingEnergy = false;
-                tryProcessNextRequest();
+                
+                if (isShuttingDown)
+                    signalShutdownReady();
+                else
+                    tryProcessNextRequest();
             }
 
         });
 
         provideEnergy.start();
-
-        // TODO
-        // if (pendingShutdown)
-        //     Thread.currentThread().notify();
-        //     plantShutdown();
     }
 
     private void resetElectionState() {
@@ -277,6 +284,7 @@ public class RingNetwork {
         myPrice = 100;
     }
 
+    // ### MADE BY CLAUDE 4
     protected void handleNewPlantJoined(String newPlantId, String newListeningAddress) {
         // If this greeting is from myself, the message completed the ring
         if (newPlantId.equals(this.plantId)) {
@@ -305,6 +313,7 @@ public class RingNetwork {
         grpcService.forwardGreetingMessage(newPlantId, newListeningAddress, nextPlantAddress);
 
     }
+    // ###
 
     
     // protected void handlePlantLeaving(FarewellMessage farewell) {
@@ -371,7 +380,7 @@ public class RingNetwork {
     // TIMEOUT
     private void startTimeoutChecker() {
         Thread timeoutThread = new Thread(() -> {
-            while (!pendingShutdown) {
+            while (!isShuttingDown) {
                 try {
                     Thread.sleep(5000); // Check every 5 seconds
                     checkForTimeouts();
@@ -388,6 +397,7 @@ public class RingNetwork {
         synchronized (electionLock) {
             if (currentElectionId != null) {
                 Long startTime = electionStartTimes.get(currentElectionId);
+
                 if (startTime != null && System.currentTimeMillis() - startTime > ELECTION_TIMEOUT) {
                     System.out.println("Election timeout for " + currentElectionId + ", resetting...");
 
@@ -397,8 +407,54 @@ public class RingNetwork {
                     electionStartTimes.remove(timedOutElection);
 
                     // Try to process next request
-                    tryProcessNextRequest();
+                    if (isShuttingDown && !isProvidingEnergy)
+                        signalShutdownReady();
+                    else if (!isShuttingDown)
+                        tryProcessNextRequest();
                 }
+            }
+        }
+    }
+
+    public void initiateShutdown() {
+        synchronized (electionLock) {
+            isShuttingDown = true;
+            // pendingShutdown = true;
+            
+            // If we're currently idle, we can shutdown immediately
+            if (!isInElection && !isProvidingEnergy) {
+                signalShutdownReady();
+            }
+        }
+    }
+
+    public boolean waitForShutdownComplete(long timeoutMs) {
+        synchronized (shutdownLock) {
+            if (shutdownReady)
+                return true; // Already ready
+            
+            long startTime = System.currentTimeMillis();
+            long remainingTime = timeoutMs;
+            
+            while (!shutdownReady && remainingTime > 0) {
+                try {
+                    shutdownLock.wait(remainingTime/2);
+                    remainingTime = timeoutMs - (System.currentTimeMillis() - startTime);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+            }
+            
+            return shutdownReady;
+        }
+    }
+
+    private void signalShutdownReady() {
+        synchronized (shutdownLock) {
+            if (!shutdownReady) {
+                shutdownReady = true;
+                shutdownLock.notifyAll();
             }
         }
     }
@@ -438,16 +494,14 @@ public class RingNetwork {
         return prevPlantAddress;
     }
 
-    public void setPendingShutdown(boolean pending) {
-        this.pendingShutdown = pending;
-    }
-    
-    public boolean getPendingShutdown() {
-        return pendingShutdown;
-    }
-
     public boolean isProvidingEnergy() {
         return isProvidingEnergy;
+    }
+
+    public boolean canShutdown() {
+        synchronized (electionLock) {
+            return !isInElection && !isProvidingEnergy;
+        }
     }
 
 }

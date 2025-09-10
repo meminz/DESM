@@ -36,7 +36,7 @@ public class PowerPlant {
             mqttHandler.initialize();
             
             // Initialize pollution monitoring
-            pollutionMonitor = new PollutionMonitor(plantId, mqttHandler.getClient());
+            pollutionMonitor = new PollutionMonitor(plantId, mqttHandler.getClient(), 10000);
             pollutionMonitor.start();
             
             // Initialize ring network and gRPC
@@ -67,14 +67,15 @@ public class PowerPlant {
 
     public void shutdown() {
         try {
-            ringNetwork.setPendingShutdown(true);
+            ringNetwork.initiateShutdown();
+
+            boolean shutdownCompleted = ringNetwork.waitForShutdownComplete(20000);
             
-            // TODO
-            // if (ringNetwork.isProvidingEnergy())
-            //     Thread.currentThread().wait();
-            
-            ringNetwork.leaveRingNetwork();
-            
+            if (shutdownCompleted)
+                System.out.println("Ring Network graceful shutdown completed");
+            else
+                System.out.println("Shutdown timeout - forcing ring network shutdown");
+
             plantClient.notifyLeaving(plantId);
             pollutionMonitor.stop();
             mqttHandler.disconnect();
