@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Scanner;
 
+import plant.models.PlantInfo;
+
 public class PlantApp {
     static PowerPlant plant;
     static final String adminServerAddress = "localhost:8080";
@@ -90,7 +92,10 @@ public class PlantApp {
 
     private static void exit() {
         System.out.println("Shutting down plant " + plant.getId() + "...");
-        plant.shutdown();
+        new Thread(() -> {
+            plant.shutdown();
+        }).run();
+        
         Thread.currentThread().interrupt();
     }
 

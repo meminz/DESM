@@ -1,5 +1,7 @@
 package plant;
 
+import plant.models.PlantInfo;
+import plant.sensors.PollutionMonitor;
 
 public class PowerPlant {
     private String plantId;
@@ -23,7 +25,7 @@ public class PowerPlant {
         
         // Initialize components
         this.plantClient = new PlantClient(adminServerAddress);
-        this.ringNetwork = new RingNetwork(plantId, listeningAddress);
+        this.ringNetwork = new RingNetwork(plantId, listeningAddress, this::handleEnergyProduction);
         this.mqttHandler = new MqttHandler(plantId, this::handleEnergyRequest);
         this.grpcService = new GrpcService(listeningAddress, ringNetwork);
     }
@@ -56,15 +58,22 @@ public class PowerPlant {
         ringNetwork.handleEnergyRequest(requestId, energyAmount);
     }
 
+    private void handleEnergyProduction(String requestId, int energyAmount) {
+        // Delegate to ring network
+        mqttHandler.removeRetainedRequest(requestId);
+        ringNetwork.handleEnergyRequest(requestId, energyAmount);
+    }
+
+
     public void shutdown() {
         try {
             ringNetwork.setPendingShutdown(true);
-
-            // Shutdown sequence
-            if (ringNetwork.hasOtherPlants()) {
-                System.out.println("Notifying other plants of shutdown...");
-                ringNetwork.leaveRingNetwork();
-            }
+            
+            // TODO
+            // if (ringNetwork.isProvidingEnergy())
+            //     Thread.currentThread().wait();
+            
+            ringNetwork.leaveRingNetwork();
             
             plantClient.notifyLeaving(plantId);
             pollutionMonitor.stop();

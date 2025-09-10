@@ -12,6 +12,9 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
+import plant.models.EnergyRequestInfo;
+import plant.models.PlantInfo;
+
 public class RingNetwork {
     private final String plantId;
     private final String listeningAddress;
@@ -40,10 +43,16 @@ public class RingNetwork {
     
     private static final long ELECTION_TIMEOUT = 30000;
     private GrpcService grpcService; // Will be injected
+    private final EnergyProductionCallback energyProductionCallback;
 
-    public RingNetwork(String plantId, String listeningAddress) {
+    public interface EnergyProductionCallback {
+        void onEnergyProduction(String requestId, int energyAmount);
+    }
+
+    public RingNetwork(String plantId, String listeningAddress, EnergyProductionCallback energyProductionCallback) {
         this.plantId = plantId;
         this.listeningAddress=listeningAddress;
+        this.energyProductionCallback = energyProductionCallback;
         startTimeoutChecker();
     }
 
@@ -137,8 +146,10 @@ public class RingNetwork {
 
         System.out.println("Starting election for request " + requestId + ", current price: " + myPrice);
 
-        if (nextPlantAddress == null)
+        if (nextPlantAddress == null) {
             handleElectionComplete(requestId, plantId, energyAmount);
+            return;
+        }
 
         grpcService.forwardElectionMessage(requestId, energyAmount,
             plantId, plantId, myPrice, nextPlantAddress);
@@ -221,15 +232,17 @@ public class RingNetwork {
 
         System.out.println("Election finished - ready for next request\n");
 
-        // if (pendingShutdown && !isInElection && !isProvidingEnergy)
+        // TODO
+        // if (pendingShutdown)
+        //     Thread.currentThread().notify();
         //     plantShutdown();
     }
 
     public void handleElectionWin(String requestId, int energyAmount) {
-        // TODO
-        // mqttHandler.removeRetainedRequest(requestId);
-        resetElectionState();
         isProvidingEnergy = true;
+
+        energyProductionCallback.onEnergyProduction(requestId, energyAmount);
+        resetElectionState();
 
         Thread provideEnergy = new Thread(() -> {
             try {
@@ -252,7 +265,9 @@ public class RingNetwork {
 
         provideEnergy.start();
 
+        // TODO
         // if (pendingShutdown)
+        //     Thread.currentThread().notify();
         //     plantShutdown();
     }
 
@@ -311,11 +326,19 @@ public class RingNetwork {
 
 
     protected void leaveRingNetwork() {
-        int prevPlantIndex = sortedPlantIds.indexOf(plantId) - 1;
-        if (prevPlantIndex < 0)
-            prevPlantIndex += sortedPlantIds.size();
+        if (isInElection || isProvidingEnergy) {
+            System.out.println("Busy, shutting down later");
+            return;
+        }
 
-        grpcService.forwardFarewellMessage(plantId, sortedPlantIds.get(prevPlantIndex), nextPlantAddress);
+        if (nextPlantAddress != null) {
+            int prevPlantIndex = sortedPlantIds.indexOf(plantId) - 1;
+            if (prevPlantIndex < 0)
+                prevPlantIndex += sortedPlantIds.size();
+
+            System.out.println("Notifying other plants of shutdown...");
+            grpcService.forwardFarewellMessage(plantId, sortedPlantIds.get(prevPlantIndex), nextPlantAddress);
+        }
     }
 
 
@@ -421,6 +444,10 @@ public class RingNetwork {
     
     public boolean getPendingShutdown() {
         return pendingShutdown;
+    }
+
+    public boolean isProvidingEnergy() {
+        return isProvidingEnergy;
     }
 
 }

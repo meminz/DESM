@@ -1,4 +1,4 @@
-package plant;
+package plant.models;
 
 import java.util.Objects;
 

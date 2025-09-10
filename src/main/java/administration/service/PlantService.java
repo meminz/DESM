@@ -39,23 +39,6 @@ public class PlantService {
     }
 
 
-    // TODO fix or remove
-    // private synchronized boolean portAlreadyExists(int port) {
-    //     return portsList.contains(port);
-    // }
-    // public int addIfOk(PlantInfo plant) {
-    //     if (idAlreadyExists(plant.getId()))
-    //         return 1;
-    //     else if (portAlreadyExists(plant.getPort()))
-    //         return 2;
-    //     else {
-    //         plantsList.add(plant);
-    //         idsList.add(plant.getId());
-    //         portsList.add(plant.getPort());
-    //         return 0;
-    //     }
-    // }
-
     public synchronized PlantInfo getById(String id) {
         for (PlantInfo plant : plantsList) {
             if (plant.getId().equals(id))

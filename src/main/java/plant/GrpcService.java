@@ -83,7 +83,7 @@ public class GrpcService {
         @Override
         public void sendElectionMessage(ElectionMessage request, StreamObserver<ElectionResponse> responseObserver) {
             try {
-                System.out.println("Received election message from: " + request.getCurrentHolderId());
+                // System.out.println"Received election message from: " + request.getCurrentHolderId());
 
                 ElectionResponse response = ElectionResponse.newBuilder()
                         .setSuccess(true)
@@ -92,15 +92,13 @@ public class GrpcService {
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
 
-                // ? TODO unmarshall directly into function call
-                String requestId = request.getRequestId();
-                int energyAmount = request.getEnergyRequest();
-                String initiatorId = request.getInitiatorId();
-                String currentWinnerId = request.getCurrentWinnerId();
-                double bestBid = request.getBestBid();
-
                 Context.ROOT.run(() -> {
-                    ringNetwork.handleIncomingElectionMessage(requestId, energyAmount, initiatorId, currentWinnerId, bestBid);
+                    ringNetwork.handleIncomingElectionMessage(
+                        request.getRequestId(),
+                        request.getEnergyRequest(),
+                        request.getInitiatorId(),
+                        request.getCurrentWinnerId(),
+                        request.getBestBid());
                 });
 
             } catch (Exception e) {

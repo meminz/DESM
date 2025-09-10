@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import plant.models.PlantInfo;
+
 public class PlantClient {
     private final String adminServerAddress;
     private final RestTemplate restTemplate = new RestTemplate();

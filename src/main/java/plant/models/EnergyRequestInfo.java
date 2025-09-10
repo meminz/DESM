@@ -1,4 +1,4 @@
-package plant;
+package plant.models;
 
 public class EnergyRequestInfo {
     private final String id;

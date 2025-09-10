@@ -64,6 +64,7 @@ public class MqttHandler {
     }
 
     public void removeRetainedRequest(String requestId) {
+        System.out.println("Removing retained request " + requestId);
         try {
             mqttClient.publish(ENERGY_TOPIC + requestId, new byte[0], 1, true);
         } catch (Exception e) {
