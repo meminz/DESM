@@ -35,7 +35,6 @@ message ElectionResponse {
 
 message FarewellMessage {
     string plant_id = 1;
-    string prev_plant_id = 2;
 }
 
 message FarewellResponse {

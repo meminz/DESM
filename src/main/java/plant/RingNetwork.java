@@ -46,6 +46,7 @@ public class RingNetwork {
     private volatile boolean isShuttingDown = false;
     private final Object shutdownLock = new Object();
     private volatile boolean shutdownReady = false;
+    private volatile boolean isWaitingFarewell = false;
 
     public interface EnergyProductionCallback {
         void onEnergyProduction(String requestId, int energyAmount);
@@ -170,16 +171,16 @@ public class RingNetwork {
             // If my message comes back to me, election is complete
             if (initiatorId.equals(plantId)) {
                 System.out.println("Election message returned to initiator - election complete!\n");
-                handleElectionComplete(currentWinnerId, requestId, energyAmount);
+                handleElectionComplete(requestId, currentWinnerId, energyAmount);
                 return;
             }
 
             // If I'm busy, just forward the message
-            // if (isProvidingEnergy) {
-            //     System.out.println("Busy providing energy..., forwarding election message");
-            //     grpcService.forwardElectionMessage(updatedMessage, nextPlantAddress);
-            //     return;
-            // }
+            if (isShuttingDown) {
+                System.out.println("Waiting for shutdown, forwarding election message");
+                grpcService.forwardElectionMessage(requestId, energyAmount, initiatorId, currentWinnerId, bestBid, nextPlantAddress);
+                return;
+            }
 
             // Actual election participation
             if (isBetterCandidate(myPrice, plantId, bestBid, currentWinnerId)) {
@@ -219,7 +220,7 @@ public class RingNetwork {
         else {
             resetElectionState();
             
-            if (isShuttingDown && !isProvidingEnergy)
+            if (isShuttingDown && !isProvidingEnergy && !isWaitingFarewell)
                 signalShutdownReady();
             else if (!isShuttingDown)
                 tryProcessNextRequest();
@@ -251,7 +252,7 @@ public class RingNetwork {
             } finally {
                 isProvidingEnergy = false;
                 
-                if (isShuttingDown)
+                if (isShuttingDown && !isWaitingFarewell)
                     signalShutdownReady();
                 else
                     tryProcessNextRequest();
@@ -302,36 +303,35 @@ public class RingNetwork {
 
     
     // protected void handlePlantLeaving(FarewellMessage farewell) {
-    protected void handlePlantLeaving(String leavingPlantId, String prevPlantId) {
+    protected void handlePlantLeaving(String leavingPlantId) {
+        if (leavingPlantId.equals(plantId)) {
+            System.out.println("All plants notified of shutdown.\n");
+            isWaitingFarewell = false;
+            signalShutdownReady();
+            return;
+        }
+
+        grpcService.forwardFarewellMessage(leavingPlantId, nextPlantAddress);
+
         synchronized (ringLock) {
             allPlants.remove(leavingPlantId);
             sortedPlantIds.removeIf(i -> i.equals(leavingPlantId));
         }
 
         calculateRingConnections();
-
-        if (prevPlantId.equals(plantId)) {
-            System.out.println("All plants notified of plant " + leavingPlantId + " shutdown.\n");
-            return;
-        }
-
-        grpcService.forwardFarewellMessage(leavingPlantId, prevPlantId, nextPlantAddress);
     }
 
 
     protected void leaveRingNetwork() {
-        if (isInElection || isProvidingEnergy) {
-            System.out.println("Busy, shutting down later");
-            return;
-        }
+        // if (isInElection || isProvidingEnergy) {
+        //     System.out.println("Busy, shutting down later");
+        //     return;
+        // }
 
         if (nextPlantAddress != null) {
-            int prevPlantIndex = sortedPlantIds.indexOf(plantId) - 1;
-            if (prevPlantIndex < 0)
-                prevPlantIndex += sortedPlantIds.size();
-
+            isWaitingFarewell = true;
             System.out.println("Notifying other plants of shutdown...");
-            grpcService.forwardFarewellMessage(plantId, sortedPlantIds.get(prevPlantIndex), nextPlantAddress);
+            grpcService.forwardFarewellMessage(plantId, nextPlantAddress);
         }
     }
 
@@ -406,12 +406,14 @@ public class RingNetwork {
     }
 
     public void initiateShutdown() {
+        leaveRingNetwork();
+        
         synchronized (electionLock) {
             isShuttingDown = true;
             // pendingShutdown = true;
             
             // If we're currently idle, we can shutdown immediately
-            if (!isInElection && !isProvidingEnergy) {
+            if (!isInElection && !isProvidingEnergy && !isWaitingFarewell) {
                 signalShutdownReady();
             }
         }

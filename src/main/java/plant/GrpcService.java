@@ -120,7 +120,7 @@ public class GrpcService {
                 responseObserver.onCompleted();
 
                 Context.ROOT.run(() -> {
-                    ringNetwork.handlePlantLeaving(request.getPlantId(), request.getPrevPlantId());
+                    ringNetwork.handlePlantLeaving(request.getPlantId());
                 });
 
             } catch (Exception e) {
@@ -246,10 +246,9 @@ public class GrpcService {
 
     }
 
-    protected void forwardFarewellMessage(String leavingPlantId, String prevPlantId, String nextPlantAddress) {
+    protected void forwardFarewellMessage(String leavingPlantId, String nextPlantAddress) {
         FarewellMessage msg = FarewellMessage.newBuilder()
             .setPlantId(leavingPlantId)
-            .setPrevPlantId(prevPlantId)
             .build();
 
         String[] parts = nextPlantAddress.split(":");

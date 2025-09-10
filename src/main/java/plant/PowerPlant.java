@@ -68,7 +68,7 @@ public class PowerPlant {
         try {
             ringNetwork.initiateShutdown();
 
-            boolean shutdownCompleted = ringNetwork.waitForShutdownComplete(20000);
+            boolean shutdownCompleted = ringNetwork.waitForShutdownComplete(30000);
             
             if (shutdownCompleted)
                 System.out.println("Ring Network graceful shutdown completed");
