@@ -1,4 +1,6 @@
-package administration.model;
+package plant.models;
+
+import java.util.Objects;
 
 public class PlantInfo {
     private String plantId;
@@ -32,6 +34,23 @@ public class PlantInfo {
     @Override
     public String toString() {
         return "Id: " + plantId + ", listening on: " + listeningAddress;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        if (obj.getClass().equals("".getClass()))
+            return this.plantId.equals((String)obj);
+
+        PlantInfo other = (PlantInfo)obj;
+        return this.plantId == other.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plantId);
     }
 
 }

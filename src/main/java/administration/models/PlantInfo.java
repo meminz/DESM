@@ -1,4 +1,4 @@
-package plant;
+package administration.models;
 
 public class PlantInfo {
     private String plantId;

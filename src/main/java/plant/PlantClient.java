@@ -1,9 +1,5 @@
 package plant;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,83 +8,58 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import plant.models.PlantInfo;
+
 public class PlantClient {
+    private final String adminServerAddress;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final String getPath = "/plants";
+    private final String postPath = "/plants/add";
+    private final String deletePath = "/plants/delete";
 
-    public static void main(String[] args) {
-        RestTemplate client = new RestTemplate();
-        String serverAddress = "http://localhost:8080";
+    public PlantClient(String adminServerAddress) {
+        this.adminServerAddress=adminServerAddress;
+    }
 
-        String postPath = "/plants/add";
 
-        String listening = "localhost:";
-        int port = -1;
-        String administration = "localhost:8080";
-        String id = "-1";
+    public PlantInfo[] register(PowerPlant plant) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        
-        while (true) {
-            System.out.print("Insert port number: ");
-            
-            try {
-                port = Integer.parseInt(inFromUser.readLine());
+        HttpEntity<PowerPlant> request = new HttpEntity<>(plant, headers);
+        String urlPost = "http://" + adminServerAddress + postPath;
+        try {
+            ResponseEntity<String> postResponse = restTemplate.postForEntity(urlPost, request, String.class);
+            System.out.println("POST Response: " + postResponse.getStatusCode());
 
-                if ((int)Math.log10(port) + 1 == 4) break;
-                else throw new NumberFormatException();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NumberFormatException ne) {
-                System.out.println("You must insert a 4 digit integer number. Try again.");
-            }
-
-        }
-
-        listening += port;
-
-        PowerPlant plant = null;
-        while (true){
-            System.out.print("Insert Id: ");
-            try {
-                id = inFromUser.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            plant = new PowerPlant(id, listening, administration);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<PowerPlant> request = new HttpEntity<>(plant, headers);
-
-            try {
-                ResponseEntity<String> postResponse = client.postForEntity(serverAddress + postPath, request, String.class);
-
-                System.out.println("POST Response: " + postResponse.getStatusCode());
-                break;
-
-            } catch (HttpClientErrorException e) {
-                if (e.getStatusCode() == HttpStatus.CONFLICT)
-                    System.out.println("POST Response: " + HttpStatus.CONFLICT + "\n\t" + e.getResponseBodyAsString() + "\n");
-            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.CONFLICT)
+                System.out.println("POST Response: " + HttpStatus.CONFLICT + "\n\t" + e.getResponseBodyAsString() + "\n");
+                return null;
         }
 
         // GET REQUEST (get all plants)
-        String getPath = "/plants";
-        ResponseEntity<PlantInfo[]> getAllResponse = client.getForEntity(serverAddress + getPath, PlantInfo[].class);
+        String urlGet = "http://" + adminServerAddress + getPath;
+        ResponseEntity<PlantInfo[]> getAllResponse = restTemplate.getForEntity(urlGet, PlantInfo[].class);
         System.out.println("GET All Response: " + getAllResponse.getStatusCode());
 
-        PlantInfo[] plants = getAllResponse.getBody();
-        if (plants != null) {
-            System.out.println("Plants List:");
-            for (PlantInfo p : plants) {
-                System.out.println("\t" + p);
-            }
-            System.out.println();
-        }
+        return getAllResponse.getBody();
+    }
 
-        plant.initializePlant(plants);
+    public boolean notifyLeaving(String plantId) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://" + adminServerAddress + deletePath + "/" + plantId;
+
+            restTemplate.delete(url);
+            System.out.println("Successfully notified admin server of shutdown.");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error notifying admin server: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
 
     }
 

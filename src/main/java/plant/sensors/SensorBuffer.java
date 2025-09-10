@@ -1,4 +1,4 @@
-package plant;
+package plant.sensors;
 
 import java.util.ArrayList;
 import java.util.List;

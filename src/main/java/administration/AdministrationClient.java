@@ -6,7 +6,7 @@ import java.util.Scanner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import administration.model.PlantInfo;
+import administration.models.PlantInfo;
 
 
 public class AdministrationClient {
@@ -29,9 +29,9 @@ public class AdministrationClient {
             showMenu();
             int choice = getUserChoice();
             
-            Runnable action = menu.get(choice);
-            if (action != null)
-                action.run();
+            Runnable command = menu.get(choice);
+            if (command != null)
+                command.run();
             else
                 System.out.println("Invalid choice. Please try again.");
             

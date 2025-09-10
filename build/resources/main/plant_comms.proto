@@ -22,12 +22,11 @@ message GreetingsResponse {
 }
 
 message ElectionMessage {
-    string initiator_id = 1;
-    string current_holder_id = 2;
-    double best_bid = 3;
+    string request_id = 1;
+    int32 energy_request = 2;
+    string initiator_id = 3;
     string current_winner_id = 4;
-    string request_id = 5;
-    int32 energy_request = 6;
+    double best_bid = 5;
 }
 
 message ElectionResponse {
@@ -36,7 +35,6 @@ message ElectionResponse {
 
 message FarewellMessage {
     string plant_id = 1;
-    string prev_plant_id = 2;
 }
 
 message FarewellResponse {

@@ -1124,34 +1124,34 @@ public final class PlantComms {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string initiator_id = 1;</code>
+     * <code>string request_id = 1;</code>
+     * @return The requestId.
+     */
+    java.lang.String getRequestId();
+    /**
+     * <code>string request_id = 1;</code>
+     * @return The bytes for requestId.
+     */
+    com.google.protobuf.ByteString
+        getRequestIdBytes();
+
+    /**
+     * <code>int32 energy_request = 2;</code>
+     * @return The energyRequest.
+     */
+    int getEnergyRequest();
+
+    /**
+     * <code>string initiator_id = 3;</code>
      * @return The initiatorId.
      */
     java.lang.String getInitiatorId();
     /**
-     * <code>string initiator_id = 1;</code>
+     * <code>string initiator_id = 3;</code>
      * @return The bytes for initiatorId.
      */
     com.google.protobuf.ByteString
         getInitiatorIdBytes();
-
-    /**
-     * <code>string current_holder_id = 2;</code>
-     * @return The currentHolderId.
-     */
-    java.lang.String getCurrentHolderId();
-    /**
-     * <code>string current_holder_id = 2;</code>
-     * @return The bytes for currentHolderId.
-     */
-    com.google.protobuf.ByteString
-        getCurrentHolderIdBytes();
-
-    /**
-     * <code>double best_bid = 3;</code>
-     * @return The bestBid.
-     */
-    double getBestBid();
 
     /**
      * <code>string current_winner_id = 4;</code>
@@ -1166,22 +1166,10 @@ public final class PlantComms {
         getCurrentWinnerIdBytes();
 
     /**
-     * <code>string request_id = 5;</code>
-     * @return The requestId.
+     * <code>double best_bid = 5;</code>
+     * @return The bestBid.
      */
-    java.lang.String getRequestId();
-    /**
-     * <code>string request_id = 5;</code>
-     * @return The bytes for requestId.
-     */
-    com.google.protobuf.ByteString
-        getRequestIdBytes();
-
-    /**
-     * <code>int32 energy_request = 6;</code>
-     * @return The energyRequest.
-     */
-    int getEnergyRequest();
+    double getBestBid();
   }
   /**
    * Protobuf type {@code plantcomms.ElectionMessage}
@@ -1205,10 +1193,9 @@ public final class PlantComms {
       super(builder);
     }
     private ElectionMessage() {
-      initiatorId_ = "";
-      currentHolderId_ = "";
-      currentWinnerId_ = "";
       requestId_ = "";
+      initiatorId_ = "";
+      currentWinnerId_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1224,11 +1211,61 @@ public final class PlantComms {
               plant.grpc.PlantComms.ElectionMessage.class, plant.grpc.PlantComms.ElectionMessage.Builder.class);
     }
 
-    public static final int INITIATOR_ID_FIELD_NUMBER = 1;
+    public static final int REQUEST_ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object requestId_ = "";
+    /**
+     * <code>string request_id = 1;</code>
+     * @return The requestId.
+     */
+    @java.lang.Override
+    public java.lang.String getRequestId() {
+      java.lang.Object ref = requestId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        requestId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string request_id = 1;</code>
+     * @return The bytes for requestId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRequestIdBytes() {
+      java.lang.Object ref = requestId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        requestId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ENERGY_REQUEST_FIELD_NUMBER = 2;
+    private int energyRequest_ = 0;
+    /**
+     * <code>int32 energy_request = 2;</code>
+     * @return The energyRequest.
+     */
+    @java.lang.Override
+    public int getEnergyRequest() {
+      return energyRequest_;
+    }
+
+    public static final int INITIATOR_ID_FIELD_NUMBER = 3;
     @SuppressWarnings("serial")
     private volatile java.lang.Object initiatorId_ = "";
     /**
-     * <code>string initiator_id = 1;</code>
+     * <code>string initiator_id = 3;</code>
      * @return The initiatorId.
      */
     @java.lang.Override
@@ -1245,7 +1282,7 @@ public final class PlantComms {
       }
     }
     /**
-     * <code>string initiator_id = 1;</code>
+     * <code>string initiator_id = 3;</code>
      * @return The bytes for initiatorId.
      */
     @java.lang.Override
@@ -1261,56 +1298,6 @@ public final class PlantComms {
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
-    }
-
-    public static final int CURRENT_HOLDER_ID_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object currentHolderId_ = "";
-    /**
-     * <code>string current_holder_id = 2;</code>
-     * @return The currentHolderId.
-     */
-    @java.lang.Override
-    public java.lang.String getCurrentHolderId() {
-      java.lang.Object ref = currentHolderId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        currentHolderId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string current_holder_id = 2;</code>
-     * @return The bytes for currentHolderId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getCurrentHolderIdBytes() {
-      java.lang.Object ref = currentHolderId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        currentHolderId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int BEST_BID_FIELD_NUMBER = 3;
-    private double bestBid_ = 0D;
-    /**
-     * <code>double best_bid = 3;</code>
-     * @return The bestBid.
-     */
-    @java.lang.Override
-    public double getBestBid() {
-      return bestBid_;
     }
 
     public static final int CURRENT_WINNER_ID_FIELD_NUMBER = 4;
@@ -1352,54 +1339,15 @@ public final class PlantComms {
       }
     }
 
-    public static final int REQUEST_ID_FIELD_NUMBER = 5;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object requestId_ = "";
+    public static final int BEST_BID_FIELD_NUMBER = 5;
+    private double bestBid_ = 0D;
     /**
-     * <code>string request_id = 5;</code>
-     * @return The requestId.
+     * <code>double best_bid = 5;</code>
+     * @return The bestBid.
      */
     @java.lang.Override
-    public java.lang.String getRequestId() {
-      java.lang.Object ref = requestId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        requestId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string request_id = 5;</code>
-     * @return The bytes for requestId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getRequestIdBytes() {
-      java.lang.Object ref = requestId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        requestId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ENERGY_REQUEST_FIELD_NUMBER = 6;
-    private int energyRequest_ = 0;
-    /**
-     * <code>int32 energy_request = 6;</code>
-     * @return The energyRequest.
-     */
-    @java.lang.Override
-    public int getEnergyRequest() {
-      return energyRequest_;
+    public double getBestBid() {
+      return bestBid_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1416,23 +1364,20 @@ public final class PlantComms {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(requestId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, requestId_);
+      }
+      if (energyRequest_ != 0) {
+        output.writeInt32(2, energyRequest_);
+      }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(initiatorId_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, initiatorId_);
-      }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(currentHolderId_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, currentHolderId_);
-      }
-      if (java.lang.Double.doubleToRawLongBits(bestBid_) != 0) {
-        output.writeDouble(3, bestBid_);
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, initiatorId_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(currentWinnerId_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 4, currentWinnerId_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(requestId_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, requestId_);
-      }
-      if (energyRequest_ != 0) {
-        output.writeInt32(6, energyRequest_);
+      if (java.lang.Double.doubleToRawLongBits(bestBid_) != 0) {
+        output.writeDouble(5, bestBid_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1443,25 +1388,22 @@ public final class PlantComms {
       if (size != -1) return size;
 
       size = 0;
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(initiatorId_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, initiatorId_);
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(requestId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, requestId_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(currentHolderId_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, currentHolderId_);
-      }
-      if (java.lang.Double.doubleToRawLongBits(bestBid_) != 0) {
+      if (energyRequest_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(3, bestBid_);
+          .computeInt32Size(2, energyRequest_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(initiatorId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, initiatorId_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(currentWinnerId_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(4, currentWinnerId_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(requestId_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, requestId_);
-      }
-      if (energyRequest_ != 0) {
+      if (java.lang.Double.doubleToRawLongBits(bestBid_) != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, energyRequest_);
+          .computeDoubleSize(5, bestBid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1478,19 +1420,17 @@ public final class PlantComms {
       }
       plant.grpc.PlantComms.ElectionMessage other = (plant.grpc.PlantComms.ElectionMessage) obj;
 
-      if (!getInitiatorId()
-          .equals(other.getInitiatorId())) return false;
-      if (!getCurrentHolderId()
-          .equals(other.getCurrentHolderId())) return false;
-      if (java.lang.Double.doubleToLongBits(getBestBid())
-          != java.lang.Double.doubleToLongBits(
-              other.getBestBid())) return false;
-      if (!getCurrentWinnerId()
-          .equals(other.getCurrentWinnerId())) return false;
       if (!getRequestId()
           .equals(other.getRequestId())) return false;
       if (getEnergyRequest()
           != other.getEnergyRequest()) return false;
+      if (!getInitiatorId()
+          .equals(other.getInitiatorId())) return false;
+      if (!getCurrentWinnerId()
+          .equals(other.getCurrentWinnerId())) return false;
+      if (java.lang.Double.doubleToLongBits(getBestBid())
+          != java.lang.Double.doubleToLongBits(
+              other.getBestBid())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1502,19 +1442,17 @@ public final class PlantComms {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + INITIATOR_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getInitiatorId().hashCode();
-      hash = (37 * hash) + CURRENT_HOLDER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getCurrentHolderId().hashCode();
-      hash = (37 * hash) + BEST_BID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getBestBid()));
-      hash = (37 * hash) + CURRENT_WINNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getCurrentWinnerId().hashCode();
       hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
       hash = (53 * hash) + getRequestId().hashCode();
       hash = (37 * hash) + ENERGY_REQUEST_FIELD_NUMBER;
       hash = (53 * hash) + getEnergyRequest();
+      hash = (37 * hash) + INITIATOR_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getInitiatorId().hashCode();
+      hash = (37 * hash) + CURRENT_WINNER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrentWinnerId().hashCode();
+      hash = (37 * hash) + BEST_BID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBestBid()));
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1646,12 +1584,11 @@ public final class PlantComms {
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        initiatorId_ = "";
-        currentHolderId_ = "";
-        bestBid_ = 0D;
-        currentWinnerId_ = "";
         requestId_ = "";
         energyRequest_ = 0;
+        initiatorId_ = "";
+        currentWinnerId_ = "";
+        bestBid_ = 0D;
         return this;
       }
 
@@ -1686,22 +1623,19 @@ public final class PlantComms {
       private void buildPartial0(plant.grpc.PlantComms.ElectionMessage result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.initiatorId_ = initiatorId_;
+          result.requestId_ = requestId_;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.currentHolderId_ = currentHolderId_;
+          result.energyRequest_ = energyRequest_;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.bestBid_ = bestBid_;
+          result.initiatorId_ = initiatorId_;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.currentWinnerId_ = currentWinnerId_;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.requestId_ = requestId_;
-        }
-        if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.energyRequest_ = energyRequest_;
+          result.bestBid_ = bestBid_;
         }
       }
 
@@ -1717,31 +1651,26 @@ public final class PlantComms {
 
       public Builder mergeFrom(plant.grpc.PlantComms.ElectionMessage other) {
         if (other == plant.grpc.PlantComms.ElectionMessage.getDefaultInstance()) return this;
-        if (!other.getInitiatorId().isEmpty()) {
-          initiatorId_ = other.initiatorId_;
+        if (!other.getRequestId().isEmpty()) {
+          requestId_ = other.requestId_;
           bitField0_ |= 0x00000001;
           onChanged();
         }
-        if (!other.getCurrentHolderId().isEmpty()) {
-          currentHolderId_ = other.currentHolderId_;
-          bitField0_ |= 0x00000002;
-          onChanged();
+        if (other.getEnergyRequest() != 0) {
+          setEnergyRequest(other.getEnergyRequest());
         }
-        if (java.lang.Double.doubleToRawLongBits(other.getBestBid()) != 0) {
-          setBestBid(other.getBestBid());
+        if (!other.getInitiatorId().isEmpty()) {
+          initiatorId_ = other.initiatorId_;
+          bitField0_ |= 0x00000004;
+          onChanged();
         }
         if (!other.getCurrentWinnerId().isEmpty()) {
           currentWinnerId_ = other.currentWinnerId_;
           bitField0_ |= 0x00000008;
           onChanged();
         }
-        if (!other.getRequestId().isEmpty()) {
-          requestId_ = other.requestId_;
-          bitField0_ |= 0x00000010;
-          onChanged();
-        }
-        if (other.getEnergyRequest() != 0) {
-          setEnergyRequest(other.getEnergyRequest());
+        if (java.lang.Double.doubleToRawLongBits(other.getBestBid()) != 0) {
+          setBestBid(other.getBestBid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1770,35 +1699,30 @@ public final class PlantComms {
                 done = true;
                 break;
               case 10: {
-                initiatorId_ = input.readStringRequireUtf8();
+                requestId_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
-              case 18: {
-                currentHolderId_ = input.readStringRequireUtf8();
+              case 16: {
+                energyRequest_ = input.readInt32();
                 bitField0_ |= 0x00000002;
                 break;
-              } // case 18
-              case 25: {
-                bestBid_ = input.readDouble();
+              } // case 16
+              case 26: {
+                initiatorId_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000004;
                 break;
-              } // case 25
+              } // case 26
               case 34: {
                 currentWinnerId_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
-              case 42: {
-                requestId_ = input.readStringRequireUtf8();
+              case 41: {
+                bestBid_ = input.readDouble();
                 bitField0_ |= 0x00000010;
                 break;
-              } // case 42
-              case 48: {
-                energyRequest_ = input.readInt32();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 48
+              } // case 41
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1816,9 +1740,113 @@ public final class PlantComms {
       }
       private int bitField0_;
 
+      private java.lang.Object requestId_ = "";
+      /**
+       * <code>string request_id = 1;</code>
+       * @return The requestId.
+       */
+      public java.lang.String getRequestId() {
+        java.lang.Object ref = requestId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          requestId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string request_id = 1;</code>
+       * @return The bytes for requestId.
+       */
+      public com.google.protobuf.ByteString
+          getRequestIdBytes() {
+        java.lang.Object ref = requestId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          requestId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string request_id = 1;</code>
+       * @param value The requestId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRequestId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        requestId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string request_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRequestId() {
+        requestId_ = getDefaultInstance().getRequestId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string request_id = 1;</code>
+       * @param value The bytes for requestId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRequestIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        requestId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int energyRequest_ ;
+      /**
+       * <code>int32 energy_request = 2;</code>
+       * @return The energyRequest.
+       */
+      @java.lang.Override
+      public int getEnergyRequest() {
+        return energyRequest_;
+      }
+      /**
+       * <code>int32 energy_request = 2;</code>
+       * @param value The energyRequest to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEnergyRequest(int value) {
+
+        energyRequest_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 energy_request = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEnergyRequest() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        energyRequest_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object initiatorId_ = "";
       /**
-       * <code>string initiator_id = 1;</code>
+       * <code>string initiator_id = 3;</code>
        * @return The initiatorId.
        */
       public java.lang.String getInitiatorId() {
@@ -1834,7 +1862,7 @@ public final class PlantComms {
         }
       }
       /**
-       * <code>string initiator_id = 1;</code>
+       * <code>string initiator_id = 3;</code>
        * @return The bytes for initiatorId.
        */
       public com.google.protobuf.ByteString
@@ -1851,7 +1879,7 @@ public final class PlantComms {
         }
       }
       /**
-       * <code>string initiator_id = 1;</code>
+       * <code>string initiator_id = 3;</code>
        * @param value The initiatorId to set.
        * @return This builder for chaining.
        */
@@ -1859,22 +1887,22 @@ public final class PlantComms {
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         initiatorId_ = value;
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
       /**
-       * <code>string initiator_id = 1;</code>
+       * <code>string initiator_id = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearInitiatorId() {
         initiatorId_ = getDefaultInstance().getInitiatorId();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
       /**
-       * <code>string initiator_id = 1;</code>
+       * <code>string initiator_id = 3;</code>
        * @param value The bytes for initiatorId to set.
        * @return This builder for chaining.
        */
@@ -1883,111 +1911,7 @@ public final class PlantComms {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         initiatorId_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object currentHolderId_ = "";
-      /**
-       * <code>string current_holder_id = 2;</code>
-       * @return The currentHolderId.
-       */
-      public java.lang.String getCurrentHolderId() {
-        java.lang.Object ref = currentHolderId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          currentHolderId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string current_holder_id = 2;</code>
-       * @return The bytes for currentHolderId.
-       */
-      public com.google.protobuf.ByteString
-          getCurrentHolderIdBytes() {
-        java.lang.Object ref = currentHolderId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          currentHolderId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string current_holder_id = 2;</code>
-       * @param value The currentHolderId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCurrentHolderId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        currentHolderId_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string current_holder_id = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearCurrentHolderId() {
-        currentHolderId_ = getDefaultInstance().getCurrentHolderId();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string current_holder_id = 2;</code>
-       * @param value The bytes for currentHolderId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCurrentHolderIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        currentHolderId_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-
-      private double bestBid_ ;
-      /**
-       * <code>double best_bid = 3;</code>
-       * @return The bestBid.
-       */
-      @java.lang.Override
-      public double getBestBid() {
-        return bestBid_;
-      }
-      /**
-       * <code>double best_bid = 3;</code>
-       * @param value The bestBid to set.
-       * @return This builder for chaining.
-       */
-      public Builder setBestBid(double value) {
-
-        bestBid_ = value;
         bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double best_bid = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearBestBid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        bestBid_ = 0D;
         onChanged();
         return this;
       }
@@ -2064,106 +1988,34 @@ public final class PlantComms {
         return this;
       }
 
-      private java.lang.Object requestId_ = "";
+      private double bestBid_ ;
       /**
-       * <code>string request_id = 5;</code>
-       * @return The requestId.
-       */
-      public java.lang.String getRequestId() {
-        java.lang.Object ref = requestId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          requestId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string request_id = 5;</code>
-       * @return The bytes for requestId.
-       */
-      public com.google.protobuf.ByteString
-          getRequestIdBytes() {
-        java.lang.Object ref = requestId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          requestId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string request_id = 5;</code>
-       * @param value The requestId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setRequestId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        requestId_ = value;
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string request_id = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearRequestId() {
-        requestId_ = getDefaultInstance().getRequestId();
-        bitField0_ = (bitField0_ & ~0x00000010);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string request_id = 5;</code>
-       * @param value The bytes for requestId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setRequestIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        requestId_ = value;
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-
-      private int energyRequest_ ;
-      /**
-       * <code>int32 energy_request = 6;</code>
-       * @return The energyRequest.
+       * <code>double best_bid = 5;</code>
+       * @return The bestBid.
        */
       @java.lang.Override
-      public int getEnergyRequest() {
-        return energyRequest_;
+      public double getBestBid() {
+        return bestBid_;
       }
       /**
-       * <code>int32 energy_request = 6;</code>
-       * @param value The energyRequest to set.
+       * <code>double best_bid = 5;</code>
+       * @param value The bestBid to set.
        * @return This builder for chaining.
        */
-      public Builder setEnergyRequest(int value) {
+      public Builder setBestBid(double value) {
 
-        energyRequest_ = value;
-        bitField0_ |= 0x00000020;
+        bestBid_ = value;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 energy_request = 6;</code>
+       * <code>double best_bid = 5;</code>
        * @return This builder for chaining.
        */
-      public Builder clearEnergyRequest() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        energyRequest_ = 0;
+      public Builder clearBestBid() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        bestBid_ = 0D;
         onChanged();
         return this;
       }
@@ -2669,18 +2521,6 @@ public final class PlantComms {
      */
     com.google.protobuf.ByteString
         getPlantIdBytes();
-
-    /**
-     * <code>string prev_plant_id = 2;</code>
-     * @return The prevPlantId.
-     */
-    java.lang.String getPrevPlantId();
-    /**
-     * <code>string prev_plant_id = 2;</code>
-     * @return The bytes for prevPlantId.
-     */
-    com.google.protobuf.ByteString
-        getPrevPlantIdBytes();
   }
   /**
    * Protobuf type {@code plantcomms.FarewellMessage}
@@ -2705,7 +2545,6 @@ public final class PlantComms {
     }
     private FarewellMessage() {
       plantId_ = "";
-      prevPlantId_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -2760,45 +2599,6 @@ public final class PlantComms {
       }
     }
 
-    public static final int PREV_PLANT_ID_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object prevPlantId_ = "";
-    /**
-     * <code>string prev_plant_id = 2;</code>
-     * @return The prevPlantId.
-     */
-    @java.lang.Override
-    public java.lang.String getPrevPlantId() {
-      java.lang.Object ref = prevPlantId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        prevPlantId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string prev_plant_id = 2;</code>
-     * @return The bytes for prevPlantId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPrevPlantIdBytes() {
-      java.lang.Object ref = prevPlantId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        prevPlantId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2816,9 +2616,6 @@ public final class PlantComms {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(plantId_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, plantId_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(prevPlantId_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, prevPlantId_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2830,9 +2627,6 @@ public final class PlantComms {
       size = 0;
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(plantId_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, plantId_);
-      }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(prevPlantId_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, prevPlantId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -2851,8 +2645,6 @@ public final class PlantComms {
 
       if (!getPlantId()
           .equals(other.getPlantId())) return false;
-      if (!getPrevPlantId()
-          .equals(other.getPrevPlantId())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2866,8 +2658,6 @@ public final class PlantComms {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + PLANT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getPlantId().hashCode();
-      hash = (37 * hash) + PREV_PLANT_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getPrevPlantId().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3000,7 +2790,6 @@ public final class PlantComms {
         super.clear();
         bitField0_ = 0;
         plantId_ = "";
-        prevPlantId_ = "";
         return this;
       }
 
@@ -3037,9 +2826,6 @@ public final class PlantComms {
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.plantId_ = plantId_;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.prevPlantId_ = prevPlantId_;
-        }
       }
 
       @java.lang.Override
@@ -3057,11 +2843,6 @@ public final class PlantComms {
         if (!other.getPlantId().isEmpty()) {
           plantId_ = other.plantId_;
           bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        if (!other.getPrevPlantId().isEmpty()) {
-          prevPlantId_ = other.prevPlantId_;
-          bitField0_ |= 0x00000002;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -3095,11 +2876,6 @@ public final class PlantComms {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
-              case 18: {
-                prevPlantId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3185,78 +2961,6 @@ public final class PlantComms {
         checkByteStringIsUtf8(value);
         plantId_ = value;
         bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object prevPlantId_ = "";
-      /**
-       * <code>string prev_plant_id = 2;</code>
-       * @return The prevPlantId.
-       */
-      public java.lang.String getPrevPlantId() {
-        java.lang.Object ref = prevPlantId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          prevPlantId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string prev_plant_id = 2;</code>
-       * @return The bytes for prevPlantId.
-       */
-      public com.google.protobuf.ByteString
-          getPrevPlantIdBytes() {
-        java.lang.Object ref = prevPlantId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          prevPlantId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string prev_plant_id = 2;</code>
-       * @param value The prevPlantId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPrevPlantId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        prevPlantId_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string prev_plant_id = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPrevPlantId() {
-        prevPlantId_ = getDefaultInstance().getPrevPlantId();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string prev_plant_id = 2;</code>
-       * @param value The bytes for prevPlantId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPrevPlantIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        prevPlantId_ = value;
-        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -3789,22 +3493,21 @@ public final class PlantComms {
       "\n\021plant_comms.proto\022\nplantcomms\"?\n\020Greet" +
       "ingsMessage\022\020\n\010plant_id\030\001 \001(\t\022\031\n\021listeni" +
       "ng_address\030\002 \001(\t\"$\n\021GreetingsResponse\022\017\n" +
-      "\007success\030\001 \001(\010\"\233\001\n\017ElectionMessage\022\024\n\014in" +
-      "itiator_id\030\001 \001(\t\022\031\n\021current_holder_id\030\002 " +
-      "\001(\t\022\020\n\010best_bid\030\003 \001(\001\022\031\n\021current_winner_" +
-      "id\030\004 \001(\t\022\022\n\nrequest_id\030\005 \001(\t\022\026\n\016energy_r" +
-      "equest\030\006 \001(\005\"#\n\020ElectionResponse\022\017\n\007succ" +
-      "ess\030\001 \001(\010\":\n\017FarewellMessage\022\020\n\010plant_id" +
-      "\030\001 \001(\t\022\025\n\rprev_plant_id\030\002 \001(\t\"#\n\020Farewel" +
-      "lResponse\022\017\n\007success\030\001 \001(\0102\215\002\n\022PlantComm" +
-      "unication\022S\n\024SendGreetingsMessage\022\034.plan" +
-      "tcomms.GreetingsMessage\032\035.plantcomms.Gre" +
-      "etingsResponse\022P\n\023SendElectionMessage\022\033." +
-      "plantcomms.ElectionMessage\032\034.plantcomms." +
-      "ElectionResponse\022P\n\023SendFarewellMessage\022" +
-      "\033.plantcomms.FarewellMessage\032\034.plantcomm" +
-      "s.FarewellResponseB\030\n\nplant.grpcB\nPlantC" +
-      "ommsb\006proto3"
+      "\007success\030\001 \001(\010\"\200\001\n\017ElectionMessage\022\022\n\nre" +
+      "quest_id\030\001 \001(\t\022\026\n\016energy_request\030\002 \001(\005\022\024" +
+      "\n\014initiator_id\030\003 \001(\t\022\031\n\021current_winner_i" +
+      "d\030\004 \001(\t\022\020\n\010best_bid\030\005 \001(\001\"#\n\020ElectionRes" +
+      "ponse\022\017\n\007success\030\001 \001(\010\"#\n\017FarewellMessag" +
+      "e\022\020\n\010plant_id\030\001 \001(\t\"#\n\020FarewellResponse\022" +
+      "\017\n\007success\030\001 \001(\0102\215\002\n\022PlantCommunication\022" +
+      "S\n\024SendGreetingsMessage\022\034.plantcomms.Gre" +
+      "etingsMessage\032\035.plantcomms.GreetingsResp" +
+      "onse\022P\n\023SendElectionMessage\022\033.plantcomms" +
+      ".ElectionMessage\032\034.plantcomms.ElectionRe" +
+      "sponse\022P\n\023SendFarewellMessage\022\033.plantcom" +
+      "ms.FarewellMessage\032\034.plantcomms.Farewell" +
+      "ResponseB\030\n\nplant.grpcB\nPlantCommsb\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3827,7 +3530,7 @@ public final class PlantComms {
     internal_static_plantcomms_ElectionMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_plantcomms_ElectionMessage_descriptor,
-        new java.lang.String[] { "InitiatorId", "CurrentHolderId", "BestBid", "CurrentWinnerId", "RequestId", "EnergyRequest", });
+        new java.lang.String[] { "RequestId", "EnergyRequest", "InitiatorId", "CurrentWinnerId", "BestBid", });
     internal_static_plantcomms_ElectionResponse_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_plantcomms_ElectionResponse_fieldAccessorTable = new
@@ -3839,7 +3542,7 @@ public final class PlantComms {
     internal_static_plantcomms_FarewellMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_plantcomms_FarewellMessage_descriptor,
-        new java.lang.String[] { "PlantId", "PrevPlantId", });
+        new java.lang.String[] { "PlantId", });
     internal_static_plantcomms_FarewellResponse_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_plantcomms_FarewellResponse_fieldAccessorTable = new

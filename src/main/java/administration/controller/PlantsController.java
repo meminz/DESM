@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import administration.AdministrationServer;
-import administration.model.PlantInfo;
+import administration.models.PlantInfo;
 import administration.service.PlantService;
 
 @RestController
