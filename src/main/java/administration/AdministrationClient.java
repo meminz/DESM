@@ -74,7 +74,8 @@ public class AdministrationClient {
 
     private static void getPollutionStatistics() {
         try {
-            System.out.println("Current timestamp for reference: " + System.currentTimeMillis());
+            System.out.println("\n--- Pollution Metrics ---\n" +
+                "Current timestamp for reference: " + System.currentTimeMillis());
 
             System.out.print("Enter start timestamp (millisecs): ");
             long t1 = Long.parseLong(scanner.nextLine().trim());
