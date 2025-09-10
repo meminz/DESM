@@ -1,6 +1,5 @@
 package plant.sensors;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +36,8 @@ public class PollutionMonitor {
 
         dataProcessingThread = new Thread(this::processingLoop);
         dataProcessingThread.start();
+
+        System.out.println("Pollution sensor started");
     }
 
     public void stop() {

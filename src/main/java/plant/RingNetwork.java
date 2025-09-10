@@ -1,8 +1,6 @@
 package plant;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -64,7 +62,7 @@ public class RingNetwork {
         this.grpcService = grpcService;
     }
 
-    protected void buildRingTopology(PlantInfo[] plants) {
+    private void buildRingTopology(PlantInfo[] plants) {
         synchronized (ringLock) {
             allPlants.clear();
             sortedPlantIds.clear();
@@ -84,25 +82,11 @@ public class RingNetwork {
 
     protected void joinRingNetwork(PlantInfo[] existingPlants, GrpcService grpcService) {
         this.grpcService = grpcService;
+
+        buildRingTopology(existingPlants);
         
-        List<PlantInfo> tmpList = Arrays.asList(existingPlants);
-        tmpList.sort(Comparator.comparing(PlantInfo::getId));
+        calculateRingConnections();
 
-        int myIndex = tmpList.indexOf(plantId);
-        int size = tmpList.size();
-
-        if (size > 1) {
-            int nextIndex = (myIndex + 1) % size;
-            nextPlantAddress = tmpList.get(nextIndex).getListeningAddress();
-
-            int prevIndex = (myIndex - 1 + size) % size;
-            prevPlantAddress = tmpList.get(prevIndex).getListeningAddress();
-        } else {
-            nextPlantAddress = null;
-            prevPlantAddress = null;
-        }
-
-        System.out.println("Ring setup: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
         if (nextPlantAddress != null)
             grpcService.forwardGreetingMessage(plantId, listeningAddress, nextPlantAddress);
     }
@@ -307,7 +291,8 @@ public class RingNetwork {
         }
 
         // Recalculate my ring connections based on new topology
-        recalculateRingConnections();
+        calculateRingConnections();
+        System.out.println("Updated topology: " + sortedPlantIds);
 
         System.out.println("Rewiring completed, forwarding message to " + nextPlantAddress + "\n");
         grpcService.forwardGreetingMessage(newPlantId, newListeningAddress, nextPlantAddress);
@@ -323,7 +308,7 @@ public class RingNetwork {
             sortedPlantIds.removeIf(i -> i.equals(leavingPlantId));
         }
 
-        recalculateRingConnections();
+        calculateRingConnections();
 
         if (prevPlantId.equals(plantId)) {
             System.out.println("All plants notified of plant " + leavingPlantId + " shutdown.\n");
@@ -351,30 +336,34 @@ public class RingNetwork {
     }
 
 
-    protected void recalculateRingConnections() {
+    protected void calculateRingConnections() {
+        String nextPlant = null;
+        String prevPlant = null;
+
         synchronized (ringLock) {
             int myIndex = sortedPlantIds.indexOf(plantId);
             int size = sortedPlantIds.size();
-
+            
             if (size > 1) {
                 // Calculate next plant
                 int nextIndex = (myIndex + 1) % size;
                 String nextId = sortedPlantIds.get(nextIndex);
                 nextPlantAddress = allPlants.get(nextId);
+                nextPlant = nextId + "@" + nextPlantAddress;
 
                 // Calculate previous plant
                 int prevIndex = (myIndex - 1 + size) % size;
                 String prevId = sortedPlantIds.get(prevIndex);
                 prevPlantAddress = allPlants.get(prevId);
+                prevPlant = prevId + "@" + prevPlantAddress;
+
             } else {
                 nextPlantAddress = null;
                 prevPlantAddress = null;
             }
         }
 
-        System.out.println("Updated topology: " + sortedPlantIds);
-        System.out.println("My connections: " + prevPlantAddress + " --> " + plantId + " --> " + nextPlantAddress);
-
+        System.out.println("My connections: " + prevPlant + " --> " + plantId + " --> " + nextPlant);
     }
 
     // TIMEOUT

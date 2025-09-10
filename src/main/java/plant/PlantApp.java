@@ -92,9 +92,7 @@ public class PlantApp {
 
     private static void exit() {
         System.out.println("Shutting down plant " + plant.getId() + "...");
-        new Thread(() -> {
-            plant.shutdown();
-        }).run();
+        plant.shutdown();
         
         Thread.currentThread().interrupt();
     }

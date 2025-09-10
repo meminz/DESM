@@ -238,7 +238,7 @@ public class GrpcService {
                 } else {
                     System.out.println("Failed to forward greetings message: " + e.getMessage());
                     e.printStackTrace();
-                    ringNetwork.recalculateRingConnections();
+                    ringNetwork.calculateRingConnections();
                 }
 
             }

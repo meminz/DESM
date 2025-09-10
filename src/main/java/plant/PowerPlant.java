@@ -40,7 +40,6 @@ public class PowerPlant {
             pollutionMonitor.start();
             
             // Initialize ring network and gRPC
-            ringNetwork.buildRingTopology(plants);
             grpcService.start();
             ringNetwork.joinRingNetwork(plants, grpcService);
             
