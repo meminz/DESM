@@ -1,4 +1,4 @@
-package administration.model;
+package administration.models;
 
 import java.util.List;
 

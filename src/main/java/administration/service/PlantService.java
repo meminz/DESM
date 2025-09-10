@@ -1,5 +1,5 @@
 package administration.service;
-import administration.model.PlantInfo;
+import administration.models.PlantInfo;
 
 import org.springframework.stereotype.Service;
 

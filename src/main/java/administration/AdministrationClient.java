@@ -6,7 +6,7 @@ import java.util.Scanner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import administration.model.PlantInfo;
+import administration.models.PlantInfo;
 
 
 public class AdministrationClient {
