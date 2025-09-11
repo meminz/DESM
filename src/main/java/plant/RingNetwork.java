@@ -266,7 +266,7 @@ public class RingNetwork {
     private void resetElectionState() {
         isInElection = false;
         currentElectionId = null;
-        myPrice = 100;
+        myPrice = 10;
     }
 
     // ### MADE BY CLAUDE 4
