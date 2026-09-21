@@ -9,35 +9,35 @@ The full project specification is available in [DPS_Project_2025.pdf](DPS_Projec
 ## Architecture
 
 ```
-┌──────────────────────────────┐
-│  Renewable Energy Provider   │  Publishes energy requests every 10s
-│  (MQTT → energy/requests/*)  │
-└──────────────┬───────────────┘
-               │
-               ▼
+                    ┌──────────────────────────────┐
+                    │  Renewable Energy Provider   │  Publishes energy requests every 10s
+                    │  (MQTT → energy/requests/*)  │
+                    └──────────────┬───────────────┘
+                                   │
+                                   ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                     MQTT Broker (Mosquitto)                  │
-└──────┬────────────────────────────────────────────────┬──────┘
+└──────┬─────────────────────────────────────────────────┬─────┘
        │ subscribe                                       │
        ▼                                                 ▼
-┌──────────────┐  gRPC ring  ┌──────────────┐  gRPC ring  ┌──────────────┐
-│  Power Plant │◄───────────►│  Power Plant │◄───────────►│  Power Plant │
-│   (port 9001)│             │   (port 9002)│             │   (port 9003)│
-└──────┬───────┘             └──────┬───────┘             └──────┬───────┘
-       │ MQTT publish               │                            │
-       │ pollution/data             │                            │
-       ▼                            ▼                            ▼
-┌──────────────────────────────────────────────────────────────┐
-│              Administration Server (:8080)                   │
-│          Spring Boot REST API + MQTT subscriber              │
-└──────────────────────────────┬───────────────────────────────┘
-                               │ REST
-                               ▼
-                      ┌─────────────────┐
-                      │ Administration  │
-                      │     Client      │
-                      │   (CLI menu)    │
-                      └─────────────────┘
+┌─────────────┐  gRPC ring  ┌─────────────┐  gRPC ring  ┌─────────────┐
+│ Power Plant │◄───────────►│ Power Plant │◄───────────►│ Power Plant │
+│ (port 9001) │             │ (port 9002) │             │ (port 9003) │
+└──────┬──────┘             └──────┬──────┘             └──────┬──────┘
+       │ MQTT publish              │                           │
+       │ pollution/data            │                           │
+       ▼                           ▼                           ▼
+    ┌──────────────────────────────────────────────────────────────┐
+    │              Administration Server (:8080)                   │
+    │          Spring Boot REST API + MQTT subscriber              │
+    └──────────────────────────────┬───────────────────────────────┘
+                                   │ REST
+                                   ▼
+                          ┌─────────────────┐
+                          │ Administration  │
+                          │     Client      │
+                          │   (CLI menu)    │
+                          └─────────────────┘
 ```
 
 ### Components
